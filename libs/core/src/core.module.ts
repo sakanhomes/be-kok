@@ -7,7 +7,9 @@ import LoggingModule from './logging/logging.module';
 @Module({})
 export class CoreModule {
     public static forRoot() {
-        const config = ConfigModule.forRootAsync();
+        const config = ConfigModule.forRootAsync({
+            envFilePath: '../../../.env',
+        });
 
         return {
             module: CoreModule,

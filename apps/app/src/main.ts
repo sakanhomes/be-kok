@@ -18,6 +18,10 @@ async function bootstrap() {
 	app.useLogger(nestLogger);
 	app.useGlobalFilters(new ExceptionFilter(mainLogger));
 
-	await app.listen(config.get('app.port'));
+	const port = config.get('app.port');
+
+	await app.listen(port);
+
+	nestLogger.log(`Listening post ${port}`);
 }
 bootstrap();

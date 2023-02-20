@@ -1,0 +1,49 @@
+version: "3.9"
+name: kok
+services:
+  app:
+    container_name: kok-app
+    image: node:18
+    command: sh -c "npm install && npm run start:dev app"
+    depends_on:
+      - mysql
+    working_dir: /var/www/
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+    ports:
+      - "${APP_EXTERNAL_PORT}:${APP_PORT}"
+    networks:
+      - backend
+  phpmyadmin:
+    container_name: kok-pma
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_PORT: ${DB_PORT}
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${PMA_PORT}:80"
+    networks:
+      - backend
+  mysql:
+    container_name: kok-mysql
+    image: mysql:8.0
+    platform: linux/amd64
+    volumes:
+      - ./docker/database/data:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - "MYSQL_USER=${DB_USERNAME}"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
