@@ -11,14 +11,17 @@ import { Response } from 'express';
 import { ApplicationException } from './app/application.exception';
 import { NotFoundException } from './app/not-found.exception';
 import { UnprocessableException } from './app/unprocessable.exception';
+import { ValidationException } from './app/validation.exception';
 import { BadRequestException } from './http/bad-request.exception';
 import { ServerErrorException } from './http/server-error.exception';
 import { UnauthorizedException } from './http/unauthorized.exception';
+import { UnprocessableEntityException } from './http/unprocessable-entity.exception';
 
 @Catch()
 export default class ExceptionFilter implements FilterContract<Error> {
     private dontReport = [
         HttpNotFoundException,
+        ValidationException,
         UnauthorizedException,
         UnprocessableException,
         ForbiddenException,
@@ -45,7 +48,9 @@ export default class ExceptionFilter implements FilterContract<Error> {
             return new UnauthorizedException();
         }
 
-        if (error instanceof UnprocessableException) {
+        if (error instanceof ValidationException) {
+            return new UnprocessableEntityException({ errors: error.errors }, error.message);
+        } else if (error instanceof UnprocessableException) {
             return new BadRequestException(error.data, error.message);
         } else if (error instanceof NotFoundException) {
             return this.buildNotFoundException(error.data, error.message);
