@@ -6,7 +6,14 @@
   "root": "apps/app",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/app/tsconfig.app.json"
+    "tsConfigPath": "apps/app/tsconfig.app.json",
+    "assets": [
+      { 
+        "include": "i18n/**/*", 
+        "watchAssets": true, 
+        "outDir": "dist/apps/app" 
+      }
+    ]
   },
   "projects": {
     "app": {
