@@ -1,0 +1,9 @@
+title: Currency
+type: string
+enum:
+  - BTC
+  - ETH
+  - LTC
+  - USDT
+  - USD
+  - USDC

@@ -1,0 +1,32 @@
+description: Validation errors response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+        message:
+          oneOf:
+            - type: string
+              example: The email must me a valid email
+            - type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+                  example: The email muust me a valid email
+
+      example:
+        {
+          "message":
+            {
+              "some_important_field": ["The some important field is required"],
+              "password": ["The password must be at least 10 characters"],
+              "amount": ["The amount must be at least 100 euro"],
+              "user.location": ["Location data invalid"],
+            },
+          "params": {},
+        }

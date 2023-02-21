@@ -1,0 +1,6 @@
+description: UUID of desired resource
+name: uuid
+in: path
+required: true
+schema:
+  $ref: ../../types/uuid.yaml

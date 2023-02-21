@@ -1,0 +1,22 @@
+description: Request forbidden
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+        message:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+      example:
+        {
+          "code": "AE-0001",
+          "message": "You do not have permissions to access this functionality",
+          "params": {},
+        }

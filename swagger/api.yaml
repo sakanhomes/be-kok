@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  version: 0.0.1
+  title: KOK API
+paths:
+  /:
+   get:
+    summary: Hello world
+    responses:
+      200:
+        description: Hello world

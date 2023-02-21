@@ -1,0 +1,18 @@
+description: Server error response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+          nullable: true
+        message:
+          type: string
+      example:
+        {
+          "code": null,
+          "message": "An error occured on server side, please try again later",
+        }

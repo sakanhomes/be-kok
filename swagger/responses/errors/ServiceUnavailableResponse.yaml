@@ -1,0 +1,18 @@
+description: Service in temporaty unavailable
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+          nullable: true
+        message:
+          type: string
+      example:
+        {
+          "code": null,
+          "message": "Service in temporaty unavailable, please try again later",
+        }

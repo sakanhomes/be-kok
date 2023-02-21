@@ -1,0 +1,3 @@
+allOf:
+  - $ref: ./network.yaml
+  - nullable: true

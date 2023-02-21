@@ -1,0 +1,4 @@
+title: AccessToken
+description: Token for authentifiation
+type: string
+example: 6l27zaukNWZQjcycemtbnTkJ7PHgOSjB

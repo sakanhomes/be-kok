@@ -1,0 +1,4 @@
+title: Status
+description: HTTP status code
+type: integer
+example: 200

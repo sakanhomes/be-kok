@@ -1,0 +1,22 @@
+description: Bad request response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+        message:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+      example:
+        {
+          "code": "FO-00002",
+          "message": "Cannot process data you have sent",
+          "params": { "key": "value" },
+        }

@@ -1,0 +1,4 @@
+title: Timestamp
+description: Unix time
+type: integer
+example: 1645668000

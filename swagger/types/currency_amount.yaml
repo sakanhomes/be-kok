@@ -1,0 +1,8 @@
+title: CurrencyAmount
+description: Amount of specific currency
+type: object
+properties:
+  currency:
+    $ref: ./currency.yaml
+  amount:
+    $ref: ./amount.yaml

@@ -1,0 +1,11 @@
+description: Successful response with no data
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../types/http/status.yaml
+        data:
+          type: object
+          example: {}

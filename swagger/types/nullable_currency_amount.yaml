@@ -1,0 +1,10 @@
+title: NullableCurrencyAmount
+description: Nullable amount of specific currency
+type: object
+properties:
+  currency:
+    $ref: ./currency.yaml
+  amount:
+    allOf:
+      - $ref: ./amount.yaml
+      - nullable: true

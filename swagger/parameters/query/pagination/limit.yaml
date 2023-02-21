@@ -1,0 +1,10 @@
+description: Records limit
+name: limit
+in: query
+required: false
+schema:
+  type: integer
+  example: 10
+  minimum: 1
+  maximum: 10
+  default: 10

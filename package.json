@@ -24,7 +24,8 @@
     "migration:down": "knex migrate:down --knexfile=database/knex.ts",
     "migration:run": "knex migrate:latest --knexfile=database/knex.ts",
     "migration:rollback": "knex migrate:rollback --knexfile=database/knex.ts",
-    "migration:refresh": "knex migrate:rollback --all --knexfile=database/knex.ts && knex migrate:latest --knexfile=database/knex.ts"
+    "migration:refresh": "knex migrate:rollback --all --knexfile=database/knex.ts && knex migrate:latest --knexfile=database/knex.ts",
+    "docs:build": "npx swagger-cli bundle -o build/docs/openapi.yaml -r -t yaml swagger/api.yaml"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -43,6 +44,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@apidevtools/swagger-cli": "^4.0.4",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",

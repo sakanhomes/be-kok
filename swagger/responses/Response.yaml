@@ -1,0 +1,7 @@
+title: Response
+type: object
+properties:
+  status:
+    $ref: ../types/http/status.yaml
+  data:
+    type: object

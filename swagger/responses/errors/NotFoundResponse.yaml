@@ -1,0 +1,22 @@
+description: Not found response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+        message:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+      example:
+        {
+          "code": "FO-0002",
+          "message": "Requested resource not found",
+          "params": { "id": "12345678" },
+        }

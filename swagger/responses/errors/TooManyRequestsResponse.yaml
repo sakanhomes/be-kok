@@ -1,0 +1,63 @@
+description: Too many requests, try later
+headers:
+  X-RateLimit-Limit:
+    schema:
+      type: integer
+      example: 60
+  X-RateLimit-Remaining:
+    schema:
+      type: integer
+      example: 0
+  Retry-After:
+    schema:
+      type: integer
+      example: 60
+  X-RateLimit-Reset:
+    schema:
+      type: integer
+      format: timestamp
+      example: 1640861035
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        error:
+          type: string
+        message:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+        headers:
+          type: object
+          properties:
+            Retry-After:
+              type: integer
+              example: 60
+            X-RateLimit-Limit:
+              type: integer
+              example: 60
+            X-RateLimit-Remaining:
+              type: integer
+              example: 0
+            X-RateLimit-Reset:
+              type: integer
+              format: timestamp
+              example: 1640861035
+      example:
+        {
+          "code": "GE-0002",
+          "message": "Too many requests, try later",
+          "params": {},
+          "headers":
+            {
+              "Retry-After": 60,
+              "X-RateLimit-Limit": 60,
+              "X-RateLimit-Remaining": 0,
+              "X-RateLimit-Reset": 1640861035,
+            },
+        }
