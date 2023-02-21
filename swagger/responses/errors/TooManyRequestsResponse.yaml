@@ -31,16 +31,16 @@ content:
         headers:
           type: object
           properties:
-            Retry-After:
+            retry-after:
               type: integer
               example: 60
-            X-RateLimit-Limit:
+            x-ratelimit-limit:
               type: integer
               example: 60
-            X-RateLimit-Remaining:
+            x-ratelimit-remaining:
               type: integer
               example: 0
-            X-RateLimit-Reset:
+            x-ratelimit-reset:
               type: integer
               format: timestamp
               example: 1640861035
@@ -51,9 +51,9 @@ content:
           "data": {},
           "headers":
             {
-              "Retry-After": 60,
-              "X-RateLimit-Limit": 60,
-              "X-RateLimit-Remaining": 0,
-              "X-RateLimit-Reset": 1640861035,
+              "retry-after": 60,
+              "x-ratelimit-limit": 60,
+              "x-ratelimit-remaining": 0,
+              "x-ratelimit-reset": 1640861035,
             },
         }

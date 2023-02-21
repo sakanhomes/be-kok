@@ -14,6 +14,7 @@ import { UnprocessableException } from './app/unprocessable.exception';
 import { ValidationException } from './app/validation.exception';
 import { BadRequestException } from './http/bad-request.exception';
 import { ServerErrorException } from './http/server-error.exception';
+import { TooManyRequestsException } from './http/too-many-requests.exception';
 import { UnauthorizedException } from './http/unauthorized.exception';
 import { UnprocessableEntityException } from './http/unprocessable-entity.exception';
 
@@ -25,9 +26,10 @@ export default class ExceptionFilter implements FilterContract<Error> {
         UnauthorizedException,
         UnprocessableException,
         ForbiddenException,
+        TooManyRequestsException,
     ];
 
-    public constructor(private readonly logger: LoggerService) { }
+    public constructor(private readonly logger: LoggerService) {}
 
     public catch(exception: any, host: ArgumentsHost) {
         if (this.shouldReport(exception)) {
@@ -58,7 +60,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
             return new ServerErrorException(error.data, error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ServerErrorException();
+        return error instanceof ServerErrorException ? error : new ServerErrorException();
     }
 
     protected buildNotFoundException(data: object = {}, message = 'Requested resource not found') {
