@@ -49,13 +49,8 @@ export abstract class Validator implements PipeTransform {
             const path = error.path.join('.');
 
             if (!errors[path]) {
-                errors[path] = {
-                    path,
-                    messages: [],
-                };
+                errors[path] = error.message;
             }
-
-            errors[path].messages.push(error.message);
         });
 
         return errors;

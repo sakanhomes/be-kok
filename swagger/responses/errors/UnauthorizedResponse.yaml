@@ -6,17 +6,13 @@ content:
       properties:
         status:
           $ref: ../../types/http/status.yaml
-        error:
-          type: string
         message:
           type: string
-        params:
+        data:
           type: object
-          additionalProperties:
-            type: string
       example:
         {
-          "code": "AA-0001",
+          "status": 401,
           "message": "You should provide a valid access token",
-          "params": {},
+          "data": {},
         }

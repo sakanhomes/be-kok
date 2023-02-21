@@ -6,13 +6,13 @@ content:
       properties:
         status:
           $ref: ../../types/http/status.yaml
-        error:
-          type: string
-          nullable: true
         message:
           type: string
+        data:
+          type: object
       example:
         {
-          "code": null,
+          "status": 500,
           "message": "An error occured on server side, please try again later",
+          "data": {},
         }

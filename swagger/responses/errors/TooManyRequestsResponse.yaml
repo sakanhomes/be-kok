@@ -24,14 +24,10 @@ content:
       properties:
         status:
           $ref: ../../types/http/status.yaml
-        error:
-          type: string
         message:
           type: string
-        params:
+        data:
           type: object
-          additionalProperties:
-            type: string
         headers:
           type: object
           properties:
@@ -50,9 +46,9 @@ content:
               example: 1640861035
       example:
         {
-          "code": "GE-0002",
+          "status": 429,
           "message": "Too many requests, try later",
-          "params": {},
+          "data": {},
           "headers":
             {
               "Retry-After": 60,

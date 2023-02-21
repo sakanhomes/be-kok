@@ -49,7 +49,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         }
 
         if (error instanceof ValidationException) {
-            return new UnprocessableEntityException({ errors: error.errors }, error.message);
+            return new UnprocessableEntityException(error.errors);
         } else if (error instanceof UnprocessableException) {
             return new BadRequestException(error.data, error.message);
         } else if (error instanceof NotFoundException) {

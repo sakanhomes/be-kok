@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
-import { BadRequestException } from './bad-request.exception';
+import { ServerErrorException } from './server-error.exception';
 
-export class UnprocessableEntityException extends BadRequestException {
-    constructor(data: object = {}, message = 'Given data was invalid') {
-        super(data, message, HttpStatus.UNPROCESSABLE_ENTITY);
+export class UnprocessableEntityException extends ServerErrorException {
+    constructor(errors: object) {
+        super({}, errors, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

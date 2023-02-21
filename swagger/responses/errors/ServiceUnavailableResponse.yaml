@@ -6,13 +6,13 @@ content:
       properties:
         status:
           $ref: ../../types/http/status.yaml
-        error:
-          type: string
-          nullable: true
         message:
           type: string
+        data:
+          type: object
       example:
         {
-          "code": null,
+          "status": 503,
           "message": "Service in temporaty unavailable, please try again later",
+          "data": {},
         }
