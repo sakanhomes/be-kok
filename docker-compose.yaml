@@ -4,7 +4,7 @@ services:
   app:
     container_name: kok-app
     image: node:18
-    command: sh -c "npm install && npm run docs:build && npm run start:dev app"
+    command: sh -c "npm install && npm run start:dev app"
     depends_on:
       - mysql
     working_dir: /var/www/
@@ -34,8 +34,6 @@ services:
   swagger:
     image: swaggerapi/swagger-ui:v4.14.0
     container_name: kok-swagger
-    depends_on:
-      - app
     environment:
       - SWAGGER_JSON=/var/www/openapi.yaml
     volumes:
