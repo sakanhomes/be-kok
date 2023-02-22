@@ -9,7 +9,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         // TODO Pass here nest logger to view all logs
-        logger: false,
+        // logger: false,
     });
 
     const config: ConfigService = app.get(ConfigService);

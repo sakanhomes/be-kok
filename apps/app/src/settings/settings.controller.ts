@@ -1,12 +1,12 @@
-import { onlyKeys } from '@app/core/helpers';
-import { Response } from '@app/core/responses/response';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query, UsePipes } from '@nestjs/common';
 import { GetSettingsAction } from './actions/get-settings.action';
-import { Setting } from './models/setting.model';
+import { UpdateSettingAction } from './actions/update-setting.action';
+import { UpdateSettingDto } from './dtos/update-setting.dto';
+import { UpdateSettingsValidator } from './validators/update-settings.validator';
 
 @Controller('/settings')
 export class SettingsController {
-    public constructor(private readonly retriever: GetSettingsAction) {}
+    public constructor(private readonly retriever: GetSettingsAction, private readonly updater: UpdateSettingAction) {}
 
     @Get()
     public async list() {
@@ -21,5 +21,10 @@ export class SettingsController {
             settings: flatten,
         };
     }
+
+    @Get('/update')
+    @UsePipes(UpdateSettingsValidator)
+    public async update(@Query() data: UpdateSettingDto) {
+        await this.updater.run(data.key, data.value, data.password);
     }
 }
