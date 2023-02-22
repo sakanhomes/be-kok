@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import ConfigModule from './config/config.module';
 import LoggingModule from './logging/logging.module';
 
@@ -10,12 +11,31 @@ export class CoreModule {
         const config = ConfigModule.forRootAsync({
             envFilePath: '../../../.env',
         });
+        const db = CoreModule.registerDatabase();
 
         return {
             module: CoreModule,
-            imports: [config, LoggingModule],
+            imports: [config, db, LoggingModule],
             providers: [ConfigService],
             exports: [ConfigService, LoggingModule],
         };
+    }
+
+    private static registerDatabase() {
+        return TypeOrmModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                return {
+                    type: 'mysql',
+                    host: config.get('db.host'),
+                    port: config.get('db.port'),
+                    username: config.get('db.username'),
+                    password: config.get('db.password'),
+                    database: config.get('db.database'),
+                    autoLoadEntities: true,
+                    synchronize: false,
+                };
+            },
+        });
     }
 }
