@@ -4,14 +4,22 @@ import { Controller, Get } from '@nestjs/common';
 import { GetSettingsAction } from './actions/get-settings.action';
 import { Setting } from './models/setting.model';
 
-@Controller('settings')
+@Controller('/settings')
 export class SettingsController {
     public constructor(private readonly retriever: GetSettingsAction) {}
 
     @Get()
     public async list() {
-        return Response.collection(Setting, await this.retriever.run(), (setting) => {
-            return onlyKeys(setting, ['key', 'value']);
-        });
+        const settings = await this.retriever.run();
+        const flatten = {};
+
+        for (const setting of settings) {
+            flatten[setting.key] = setting.value;
+        }
+
+        return {
+            settings: flatten,
+        };
+    }
     }
 }
