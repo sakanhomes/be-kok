@@ -1,8 +1,6 @@
 import { CoreModule } from '@app/core/core.module';
 import { Module } from '@nestjs/common';
 import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import * as path from 'path';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -23,13 +21,12 @@ import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
             limit: 60,
         }),
     ],
-    controllers: [AppController],
+    controllers: [],
     providers: [
         {
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
         },
-        AppService,
     ],
 })
 export class AppModule {}
