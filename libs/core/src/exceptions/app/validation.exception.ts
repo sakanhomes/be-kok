@@ -3,6 +3,6 @@ import { UnprocessableException } from './unprocessable.exception';
 
 export class ValidationException extends UnprocessableException {
     constructor(public readonly errors: ErrorsContainer, message = 'Given data was invalid') {
-        super({}, message);
+        super(message, {});
     }
 }

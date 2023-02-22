@@ -5,6 +5,7 @@ import * as path from 'path';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
             ttl: 60,
             limit: 60,
         }),
+        SettingsModule,
     ],
     controllers: [],
     providers: [

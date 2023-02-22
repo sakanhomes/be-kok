@@ -1,0 +1,24 @@
+get:
+  summary: Global settings list
+  tags:
+    - Settings
+  responses:
+    "200":
+      description: Global settings
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      settings:
+                        type: object
+                        properties:
+                          setting.key:
+                            type: string
+                            nullable: true
+                            example: setting-value

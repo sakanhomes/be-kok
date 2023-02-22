@@ -1,4 +1,5 @@
 import * as util from 'util';
+import { TranslateOptions, I18nContext } from 'nestjs-i18n';
 
 /**
  * Dump method to print out passed variables.
@@ -69,4 +70,11 @@ export function onlyKeys(source: Record<string, any>, keys: string[]): Record<st
     }
 
     return target;
+}
+
+/**
+ * Get translation for given key.
+ */
+export function __(key: string, options: TranslateOptions | null = null): string {
+    return I18nContext.current().translate(key, options);
 }

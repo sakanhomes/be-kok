@@ -3,9 +3,10 @@ info:
   version: 0.0.1
   title: KOK API
 paths:
-  /:
-   get:
-    summary: Hello world
-    responses:
-      200:
-        description: Hello world
+  /settings:
+    $ref: ./routes/settings/SettingsList.yaml
+  /settings/update:
+    $ref: ./routes/settings/UpdateSettingViaUrl.yaml
+tags:
+  - name: Settings
+    description: Global settings

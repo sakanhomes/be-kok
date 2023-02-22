@@ -3,13 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ConfigModule from './config/config.module';
 import LoggingModule from './logging/logging.module';
+import * as path from 'path';
 
 @Global()
 @Module({})
 export class CoreModule {
     public static forRoot() {
         const config = ConfigModule.forRootAsync({
-            envFilePath: '../../../.env',
+            envFilePath: path.join(__dirname, '../../../.env'),
         });
         const db = CoreModule.registerDatabase();
 
