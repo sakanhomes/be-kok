@@ -1,5 +1,5 @@
 export class ApplicationException extends Error {
-    constructor(public readonly data: object = {}, message = 'Application error') {
+    constructor(message = 'Application error', public readonly data: object = {}) {
         super(message);
     }
 }

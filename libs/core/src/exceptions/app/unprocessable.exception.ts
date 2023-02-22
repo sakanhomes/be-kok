@@ -1,7 +1,7 @@
 import { ApplicationException } from './application.exception';
 
 export class UnprocessableException extends ApplicationException {
-    constructor(params: object = {}, message = 'Unable to process') {
-        super({ params }, message);
+    constructor(message: string | null = null, params: object = {}) {
+        super(message ?? 'Unable to process', { params });
     }
 }
