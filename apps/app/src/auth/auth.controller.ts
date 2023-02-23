@@ -1,4 +1,7 @@
-import { Response } from '@app/core/responses/response';
+import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
+import { __ } from '@app/core/helpers';
+import { Cookie } from '@app/core/http/decorators/cookie.decorator';
+import { Response } from '@app/core/http/response';
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CookieOptions } from 'express';
@@ -6,7 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from '../common/models/user.model';
 import { ACCESS_TOKEN_EXPIRATION, CreateJwtAction } from './actions/create-jwt.action';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
-import { REFRESH_TOKEN_EXPIRATION } from './actions/rotate-refresh-token.action';
+import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 import { RefreshToken } from './models/refresh-token.model';
 
 export const APP_DOMAIN = 'APP_DOMAIN';
@@ -19,6 +22,7 @@ const cookieConfig: CookieOptions = {
     sameSite: 'none',
 };
 
+// TODO Change methods
 @Controller('/auth')
 export class AuthController {
     public constructor(
@@ -26,6 +30,7 @@ export class AuthController {
         private readonly users: Repository<User>,
         private readonly jwtCreator: CreateJwtAction,
         private readonly refreshTokenCreator: CreateRefreshTokenAction,
+        private readonly refreshTokenRotator: RotateRefreshTokenAction,
         @Inject(APP_DOMAIN)
         private readonly domain: string | null,
         @Inject(ACCESS_TOKEN_EXPIRATION)
@@ -42,6 +47,21 @@ export class AuthController {
         const refresh = await this.refreshTokenCreator.run(user);
 
         return this.setAuthCookies(new Response(), jwt, refresh);
+    }
+
+    @Get('/refresh')
+    public async refresh(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
+        if (!token) {
+            throw new UnprocessableException(__('errors.invalid-refresh-token'));
+        }
+
+        const newToken = await this.refreshTokenRotator.run(token);
+        const user = await this.users.findOneBy({
+            id: newToken.userId,
+        });
+        const jwt = await this.jwtCreator.run(user.address);
+
+        return this.setAuthCookies(new Response(), jwt, newToken);
     }
 
     private setAuthCookies(response: Response, jwt: string, refresh: RefreshToken): Response {

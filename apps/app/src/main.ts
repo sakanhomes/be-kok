@@ -1,6 +1,6 @@
 import ExceptionFilter from '@app/core/exceptions/filter';
 import { LOGGER } from '@app/core/logging/logging.module';
-import { ResponseTransformerInterceptor } from '@app/core/responses/response-transformer.interceptor';
+import { ResponseTransformerInterceptor } from '@app/core/http/response-transformer.interceptor';
 import { LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
