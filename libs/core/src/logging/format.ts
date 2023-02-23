@@ -3,17 +3,17 @@ import { format } from 'winston';
 export class Format {
     public static default() {
         return format.combine(
-            this.errors(),
-            this.timestamp(),
+            this.errors(), 
+            this.timestamp(), 
             this.template(),
-        )
+        );
     }
 
     public static template() {
         return format.printf(({ timestamp, level, message, stack, ...meta }) => {
             const nestScope = meta[Symbol.for('splat')] ?? null;
 
-            if (nestScope && typeof nestScope === 'string') {              
+            if (nestScope && typeof nestScope === 'string') {
                 message = `[${nestScope}] ${message}`;
             }
 
@@ -21,7 +21,7 @@ export class Format {
             stack = stack ? '\n' + stack : '';
 
             return `[${timestamp}] ${level}: ${message} ${metaJson}${stack}`;
-        })
+        });
     }
 
     public static errors() {
@@ -41,7 +41,7 @@ export class Format {
     public static timestamp() {
         return format.timestamp({
             format: 'YYYY-MM-DD HH:mm:ss',
-        })
+        });
     }
 
     /**

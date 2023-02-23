@@ -9,8 +9,8 @@ type Driver = 'single' | 'daily' | 'console' | 'stack';
 
 interface ChannelConfig {
     driver: Driver;
-    file?: string,
-    channels?: string[],
+    file?: string;
+    channels?: string[];
 }
 
 @Injectable()
@@ -23,7 +23,7 @@ export default class LogManager {
     };
     private channels: Record<string, LoggerService> = {};
 
-    public constructor(private readonly config: ConfigService) { }
+    public constructor(private readonly config: ConfigService) {}
 
     public channel(channel: string): LoggerService {
         if (this.channels[channel]) {
@@ -34,9 +34,11 @@ export default class LogManager {
         let instance;
 
         if (config.driver === 'stack') {
-            instance = new this.drivers.stack(config.channels.map(channel => {
-                return this.channel(channel);
-            }));
+            instance = new this.drivers.stack(
+                config.channels.map((channel) => {
+                    return this.channel(channel);
+                }),
+            );
         } else {
             const driver = this.getDriverOrFail(config.driver);
             instance = new driver(config);

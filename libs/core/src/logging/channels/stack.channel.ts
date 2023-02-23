@@ -1,7 +1,7 @@
-import { LoggerService, LogLevel } from "@nestjs/common";
+import { LoggerService, LogLevel } from '@nestjs/common';
 
 export class StackChannel implements LoggerService {
-    public constructor(private readonly channels: LoggerService[]) { }
+    public constructor(private readonly channels: LoggerService[]) {}
 
     log(message: any, context = {}): any {
         this.pushToLoggers('log', message, context);

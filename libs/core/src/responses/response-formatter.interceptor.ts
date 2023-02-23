@@ -25,7 +25,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor<any, any> {
             };
         }
 
-        let json = {
+        const json = {
             status: data.status,
             data: data.data,
             headers: Object.keys(data.headers).length ? data.headers : undefined,

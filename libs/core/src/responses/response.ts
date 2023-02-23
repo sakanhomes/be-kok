@@ -6,6 +6,10 @@ interface EntityFormatter<T = ObjectLiteral> {
     (entity: T): Record<string, any>;
 }
 
+interface Class {
+    new ();
+}
+
 export class Response {
     public constructor(
         public readonly data: object = {},
@@ -14,7 +18,7 @@ export class Response {
     ) {}
 
     public static collection<T = ObjectLiteral>(
-        entity: Function | string,
+        entity: Class | string,
         entities: T[],
         formatter: EntityFormatter<T> | null = null,
     ): Response {

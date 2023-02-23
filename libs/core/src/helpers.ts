@@ -54,7 +54,7 @@ export function isMillisecondTimestamp(timestamp: number): boolean {
  * Filter object and remove falsy values.
  */
 export function filterObject<Input = Record<string, any>, Output = Record<string, any>>(object: Input): Output {
-    const entries = Object.entries(object).filter(([key, value]) => Boolean(value));
+    const entries = Object.entries(object).filter(([, value]) => Boolean(value));
 
     return Object.fromEntries(entries) as Output;
 }

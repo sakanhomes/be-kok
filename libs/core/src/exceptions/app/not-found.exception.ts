@@ -1,3 +1,3 @@
 import { ApplicationException } from './application.exception';
 
-export class NotFoundException extends ApplicationException { }
+export class NotFoundException extends ApplicationException {}

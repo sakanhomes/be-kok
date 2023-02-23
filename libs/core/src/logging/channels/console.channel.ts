@@ -1,6 +1,6 @@
-import { ConsoleLogger, LogLevel } from "@nestjs/common";
+import { ConsoleLogger } from '@nestjs/common';
 import { Logger, createLogger, format, transports } from 'winston';
-import { Format } from "../format";
+import { Format } from '../format';
 
 export class ConsoleChannel extends ConsoleLogger {
     private logger: Logger;

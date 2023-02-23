@@ -1,10 +1,10 @@
 import { LoggerService } from '@nestjs/common';
-import { Logger, createLogger, format, transports } from 'winston';
+import { Logger, createLogger, transports } from 'winston';
 import { Format } from '../format';
 
 export type FileChannelOptions = {
     file: string;
-}
+};
 
 export class FileChannel implements LoggerService {
     private logger: Logger;
