@@ -1,10 +1,10 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "../../common/models/user.model";
 
 @Entity('refresh_tokens')
 export class RefreshToken {
-    @PrimaryColumn()
-    id: string
+    @PrimaryGeneratedColumn()
+    id: string;
 
     @Column()
     userId: string;

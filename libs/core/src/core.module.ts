@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import ConfigModule from './config/config.module';
 import LoggingModule from './logging/logging.module';
 import * as path from 'path';
+import { TimestampsRefresher } from './orm/timestamps-refresher.handler';
 
 @Global()
 @Module({})
@@ -35,6 +36,7 @@ export class CoreModule {
                     database: config.get('db.database'),
                     autoLoadEntities: true,
                     synchronize: false,
+                    subscribers: [TimestampsRefresher],
                 };
             },
         });
