@@ -42,6 +42,9 @@ module.exports = {
 			"imports": "always-multiline",
 			"exports": "always-multiline",
 			"functions": "always-multiline"
-		}]
+		}],
+		"space-infix-ops": "error",
+		'no-trailing-spaces': 'error',
+		"@typescript-eslint/type-annotation-spacing": 'error',
 	},
 };

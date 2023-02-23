@@ -6,6 +6,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
 import { SettingsModule } from './settings/settings.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { SettingsModule } from './settings/settings.module';
             limit: 60,
         }),
         SettingsModule,
+        AuthModule,
     ],
     controllers: [],
     providers: [
