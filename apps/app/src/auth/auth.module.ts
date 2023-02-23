@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './models/refresh-token.model';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
+import { ClearRefreshTokensJob } from './schedule/clear-refresh-tokens.job';
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/ro
         CreateJwtAction,
         CreateRefreshTokenAction,
         RotateRefreshTokenAction,
+        ClearRefreshTokensJob,
         {
             provide: REFRESH_TOKEN_EXPIRATION,
             inject: [ConfigService],

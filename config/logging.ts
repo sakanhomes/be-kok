@@ -21,6 +21,6 @@ export default () => ({
             channels: process.env.ENV === 'local'
                 ? ['console']
                 : ['console', 'daily'],
-        }
+        },
     },
 });

@@ -55,5 +55,12 @@ module.exports = {
 			'beforeColon': false,
 			'afterColon': true,
 		}],
+		'space-before-function-paren': ['error', {
+			"anonymous": "always",
+			"named": "never",
+			"asyncArrow": "always"
+		}],
+		'space-before-blocks': 'error',
+		'quotes': ['error', 'single'],
 	},
 };

@@ -5,6 +5,7 @@ import ConfigModule from './config/config.module';
 import LoggingModule from './logging/logging.module';
 import * as path from 'path';
 import { TimestampsRefresher } from './orm/timestamps-refresher.handler';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Global()
 @Module({})
@@ -17,7 +18,7 @@ export class CoreModule {
 
         return {
             module: CoreModule,
-            imports: [config, db, LoggingModule],
+            imports: [config, db, LoggingModule, ScheduleModule.forRoot()],
             providers: [ConfigService],
             exports: [ConfigService, LoggingModule],
         };
