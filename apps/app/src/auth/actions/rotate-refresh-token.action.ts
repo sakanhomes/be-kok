@@ -1,10 +1,13 @@
 import { UnprocessableException } from "@app/core/exceptions/app/unprocessable.exception";
 import { __ } from "@app/core/helpers";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IsNull, Repository, UpdateResult } from "typeorm";
+import { IsNull, MoreThan, Repository, UpdateResult } from "typeorm";
 import { RefreshToken } from "../models/refresh-token.model";
 import { CreateRefreshTokenAction } from "./create-refresh-token.action";
+import { subSeconds } from 'date-fns'
+
+export const REFRESH_TOKEN_EXPIRATION = 'REFRESH_TOKEN_EXPIRATION';
 
 @Injectable()
 export class RotateRefreshTokenAction {
@@ -12,6 +15,8 @@ export class RotateRefreshTokenAction {
         @InjectRepository(RefreshToken)
         private readonly tokens: Repository<RefreshToken>,
         private readonly tokenCreator: CreateRefreshTokenAction,
+        @Inject(REFRESH_TOKEN_EXPIRATION)
+        private readonly expiration: number | null,
     ){}
 
     /**
@@ -53,8 +58,14 @@ export class RotateRefreshTokenAction {
     }
 
     private async getTokenOrFail(token: string): Promise<RefreshToken> {
+        const conditions: any = { token };
+
+        if (this.expiration) {
+            conditions.createdAt = MoreThan(subSeconds(new Date, this.expiration));
+        }
+
         const model = await this.tokens.findOne({
-            where: { token },
+            where: conditions,
             relations: ['user'],
         });
 

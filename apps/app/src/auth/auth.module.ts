@@ -7,7 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './models/refresh-token.model';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
-import { RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
+import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 
 @Module({
     imports: [
@@ -29,7 +29,20 @@ import { RotateRefreshTokenAction } from './actions/rotate-refresh-token.action'
         }),
         TypeOrmModule.forFeature([RefreshToken]),
     ],
-    providers: [CreateJwtAction, CreateRefreshTokenAction, RotateRefreshTokenAction],
+    providers: [
+        CreateJwtAction,
+        CreateRefreshTokenAction,
+        RotateRefreshTokenAction,
+        {
+            provide: REFRESH_TOKEN_EXPIRATION,
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                const expiration = config.get('auth.expiration.refresh');
+
+                return expiration ? expiration : null;
+            },
+        },
+    ],
     controllers: [AuthController],
 })
 export class AuthModule {}
