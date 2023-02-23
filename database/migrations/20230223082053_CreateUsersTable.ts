@@ -1,5 +1,4 @@
-import { Knex } from "knex";
-
+import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable('users', table => {
@@ -7,6 +6,8 @@ export async function up(knex: Knex): Promise<void> {
         table.string('address').notNullable().unique();
         table.timestamp('createdAt').notNullable();
         table.timestamp('updatedAt').notNullable();
+
+        table.index('address');
     });
 }
 

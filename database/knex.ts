@@ -2,7 +2,7 @@ import * as path from 'path';
 import { config } from 'dotenv';
 
 config({
-    path: path.join(process.cwd(), '.env'),
+    path: path.join(process.cwd(), '../.env'),
     override: true,
 });
 
@@ -18,7 +18,7 @@ const settings = {
     migrations: {
         tableName: 'migrations',
         path: 'database/migrations',
-    }
+    },
 };
 
 module.exports = {
