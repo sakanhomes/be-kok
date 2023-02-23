@@ -1,4 +1,5 @@
 {
     "invalid-master-password": "Password is invalid",
-    "invalid-setting-key": "Setting key is invalid"
+    "invalid-setting-key": "Setting key is invalid",
+    "invalid-refresh-token": "Refresh token is invalid"
 }

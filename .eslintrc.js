@@ -30,6 +30,7 @@ module.exports = {
 			{ blankLine: "always", prev: "*", next: "for" },
 			{ blankLine: "always", prev: "*", next: "while" },
 			{ blankLine: "always", prev: "*", next: "return" },
+			{ blankLine: "always", prev: "*", next: "throw" },
 		],
 		'function-call-argument-newline': ['error', 'consistent'],
 		'comma-spacing': ['error', {
@@ -49,5 +50,10 @@ module.exports = {
 		'arrow-spacing': 'error',
 		'no-multi-spaces': 'error',
 		'object-curly-spacing': ['error', 'always'],
+		'no-multiple-empty-lines': ['error', { max: 1 }],
+		'key-spacing': ['error', {
+			'beforeColon': false,
+			'afterColon': true,
+		}],
 	},
 };
