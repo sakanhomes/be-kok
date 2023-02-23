@@ -9,6 +9,7 @@ import { RefreshToken } from './models/refresh-token.model';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 import { ClearRefreshTokensJob } from './schedule/clear-refresh-tokens.job';
+import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ClearRefreshTokensJob } from './schedule/clear-refresh-tokens.job';
         CreateJwtAction,
         CreateRefreshTokenAction,
         RotateRefreshTokenAction,
+        InvalidateRefreshTokensAction,
         ClearRefreshTokensJob,
         {
             provide: APP_DOMAIN,

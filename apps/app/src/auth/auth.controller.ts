@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from '../common/models/user.model';
 import { ACCESS_TOKEN_EXPIRATION, CreateJwtAction } from './actions/create-jwt.action';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
+import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 import { RefreshToken } from './models/refresh-token.model';
 
@@ -16,28 +17,33 @@ export const APP_DOMAIN = 'APP_DOMAIN';
 
 const ACCESS_TOKEN_COOKIE = 'access_token';
 const REFRESH_TOKEN_COOKIE = 'refresh_token';
-const cookieConfig: CookieOptions = {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-};
+const REFRESH_TOKEN_COOKIE_PATH = '/auth';
 
 // TODO Change methods
 @Controller('/auth')
 export class AuthController {
+    private cookieConfig: CookieOptions = {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+    };
+
     public constructor(
         @InjectRepository(User)
         private readonly users: Repository<User>,
         private readonly jwtCreator: CreateJwtAction,
         private readonly refreshTokenCreator: CreateRefreshTokenAction,
         private readonly refreshTokenRotator: RotateRefreshTokenAction,
+        private readonly refreshTokenInvalidator: InvalidateRefreshTokensAction,
         @Inject(APP_DOMAIN)
         private readonly domain: string | null,
         @Inject(ACCESS_TOKEN_EXPIRATION)
         private readonly accessTokenExpiration: number | null,
         @Inject(REFRESH_TOKEN_EXPIRATION)
         private readonly refreshTokenExpiration: number | null,
-    ) {}
+    ) {
+        this.cookieConfig.domain = this.domain ? this.domain : null;
+    }
 
     @Get('/login')
     public async login(@Query('address') address: string) {
@@ -64,22 +70,45 @@ export class AuthController {
         return this.setAuthCookies(new Response(), jwt, newToken);
     }
 
+    @Get('/logout')
+    public logout(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
+        if (token) {
+            this.refreshTokenInvalidator.run(token);
+        }
+
+        return this.removeAuthCookies(new Response());
+    }
+
     private setAuthCookies(response: Response, jwt: string, refresh: RefreshToken): Response {
         return response
-            .withCookie(ACCESS_TOKEN_COOKIE, jwt, {
-                ...cookieConfig,
-                ...{
-                    maxAge: this.accessTokenExpiration,
-                    domain: this.domain ? this.domain : null,
-                },
+            .withCookie(ACCESS_TOKEN_COOKIE, jwt, this.makeAccessTokenCookieOptions())
+            .withCookie(REFRESH_TOKEN_COOKIE, refresh.token, this.makeRefreshTokenCookieOptions());
+    }
+
+    private removeAuthCookies(response: Response): Response {
+        return response
+            .withCookie(ACCESS_TOKEN_COOKIE, '', {
+                ...this.makeAccessTokenCookieOptions(),
+                maxAge: 0,
             })
-            .withCookie(REFRESH_TOKEN_COOKIE, refresh.token, {
-                ...cookieConfig,
-                ...{
-                    maxAge: this.refreshTokenExpiration,
-                    domain: this.domain ? this.domain : null,
-                    path: '/auth/refresh',
-                },
+            .withCookie(REFRESH_TOKEN_COOKIE, '', {
+                ...this.makeRefreshTokenCookieOptions(),
+                maxAge: 0,
             });
+    }
+
+    private makeAccessTokenCookieOptions(): CookieOptions {
+        return {
+            ...this.cookieConfig,
+            maxAge: this.accessTokenExpiration,
+        };
+    }
+
+    private makeRefreshTokenCookieOptions(): CookieOptions {
+        return {
+            ...this.cookieConfig,
+            maxAge: this.refreshTokenExpiration,
+            path: REFRESH_TOKEN_COOKIE_PATH,
+        };
     }
 }
