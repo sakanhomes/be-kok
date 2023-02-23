@@ -62,5 +62,6 @@ module.exports = {
 		}],
 		'space-before-blocks': 'error',
 		'quotes': ['error', 'single'],
+		'semi': 'error',
 	},
 };

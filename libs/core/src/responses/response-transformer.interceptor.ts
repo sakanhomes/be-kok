@@ -1,10 +1,10 @@
 import { ExecutionContext, Injectable, NestInterceptor, CallHandler, HttpStatus } from '@nestjs/common';
 import { Response as HttpResponse } from 'express';
 import { map, Observable } from 'rxjs';
-import { Response } from './response';
+import { Cookie, Response } from './response';
 
 @Injectable()
-export class ResponseFormatterInterceptor implements NestInterceptor<any, any> {
+export class ResponseTransformerInterceptor implements NestInterceptor<any, any> {
     public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next.handle().pipe(
             map((data) => {
@@ -35,6 +35,18 @@ export class ResponseFormatterInterceptor implements NestInterceptor<any, any> {
             response.status(data.status);
         }
 
+        const cookies = Object.values(data.cookies);
+
+        if (cookies.length) {
+            this.setCookies(response, cookies);
+        }
+
         return json;
+    }
+
+    private setCookies(response: HttpResponse, cookies: Cookie[]) {
+        for (const cookie of cookies) {
+            response.cookie(cookie.name, cookie.value, cookie.options);
+        }
     }
 }

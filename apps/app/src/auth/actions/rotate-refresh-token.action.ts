@@ -1,11 +1,11 @@
-import { UnprocessableException } from "@app/core/exceptions/app/unprocessable.exception";
-import { __ } from "@app/core/helpers";
-import { Inject, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { IsNull, MoreThan, Repository, UpdateResult } from "typeorm";
-import { RefreshToken } from "../models/refresh-token.model";
-import { CreateRefreshTokenAction } from "./create-refresh-token.action";
-import { subSeconds } from 'date-fns'
+import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
+import { __ } from '@app/core/helpers';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, MoreThan, Repository, UpdateResult } from 'typeorm';
+import { RefreshToken } from '../models/refresh-token.model';
+import { CreateRefreshTokenAction } from './create-refresh-token.action';
+import { subSeconds } from 'date-fns';
 
 export const REFRESH_TOKEN_EXPIRATION = 'REFRESH_TOKEN_EXPIRATION';
 
@@ -17,7 +17,7 @@ export class RotateRefreshTokenAction {
         private readonly tokenCreator: CreateRefreshTokenAction,
         @Inject(REFRESH_TOKEN_EXPIRATION)
         private readonly expiration: number | null,
-    ){}
+    ) {}
 
     /**
      * @throws {UnprocessableException} When token is invalid or not found
@@ -38,7 +38,7 @@ export class RotateRefreshTokenAction {
         });
     }
 
-    private invalidateToken(token: RefreshToken): Promise<RefreshToken>{
+    private invalidateToken(token: RefreshToken): Promise<RefreshToken> {
         token.usedAt = new Date;
 
         return this.tokens.save(token);

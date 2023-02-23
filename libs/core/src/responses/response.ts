@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { CookieOptions } from 'express';
 import { plural } from 'pluralize';
 import { ObjectLiteral } from 'typeorm';
 
@@ -10,11 +11,18 @@ interface Class {
     new ();
 }
 
+export class Cookie {
+    name: string;
+    value: any;
+    options: CookieOptions;
+}
+
 export class Response {
     public constructor(
         public readonly data: object = {},
         public status: HttpStatus = HttpStatus.OK,
         public readonly headers: object = {},
+        public readonly cookies: Record<string, Cookie> = {},
     ) {}
 
     public static collection<T = ObjectLiteral>(
@@ -40,6 +48,16 @@ export class Response {
 
     public with(data: object = {}): Response {
         Object.assign(this.data, data);
+
+        return this;
+    }
+
+    public withCookie(name: string, value: any, options: CookieOptions): Response {
+        this.cookies[name] = { name, value, options };
+
+        if (options.maxAge) {
+            options.maxAge *= 1000;
+        }
 
         return this;
     }
