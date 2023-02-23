@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import * as jwt from 'jsonwebtoken';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './models/refresh-token.model';
 
 @Module({
     imports: [
@@ -23,6 +25,7 @@ import * as jwt from 'jsonwebtoken';
                 };
             },
         }),
+        TypeOrmModule.forFeature([RefreshToken]),
     ],
     providers: [CreateJwtAction],
     controllers: [AuthController],

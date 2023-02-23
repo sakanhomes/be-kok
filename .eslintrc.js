@@ -46,5 +46,8 @@ module.exports = {
 		"space-infix-ops": "error",
 		'no-trailing-spaces': 'error',
 		"@typescript-eslint/type-annotation-spacing": 'error',
+		'arrow-spacing': 'error',
+		'no-multi-spaces': 'error',
+		'object-curly-spacing': ['error', 'always'],
 	},
 };
