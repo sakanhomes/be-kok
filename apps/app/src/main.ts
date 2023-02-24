@@ -1,9 +1,10 @@
 import ExceptionFilter from '@app/core/exceptions/filter';
 import { LOGGER } from '@app/core/logging/logging.module';
-import { ResponseFormatterInterceptor } from '@app/core/responses/response-formatter.interceptor';
+import { ResponseTransformerInterceptor } from '@app/core/http/response-transformer.interceptor';
 import { LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -16,8 +17,9 @@ async function bootstrap() {
     const nestLogger: LoggerService = app.get('logger.nest');
     const mainLogger: LoggerService = app.get(LOGGER);
 
+    app.use(cookieParser());
     app.useLogger(nestLogger);
-    app.useGlobalInterceptors(new ResponseFormatterInterceptor());
+    app.useGlobalInterceptors(new ResponseTransformerInterceptor());
     app.useGlobalFilters(new ExceptionFilter(mainLogger));
 
     const port = config.get('app.port');

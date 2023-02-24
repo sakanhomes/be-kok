@@ -6,6 +6,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
 import { SettingsModule } from './settings/settings.module';
+import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './common/models/user.model';
 
 @Module({
     imports: [
@@ -21,7 +24,9 @@ import { SettingsModule } from './settings/settings.module';
             ttl: 60,
             limit: 60,
         }),
+        TypeOrmModule.forFeature([User]),
         SettingsModule,
+        AuthModule,
     ],
     controllers: [],
     providers: [

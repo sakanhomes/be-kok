@@ -1,0 +1,7 @@
+post:
+  summary: Remove token cookies
+  tags:
+    - Auth
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml

@@ -8,8 +8,6 @@ services:
     depends_on:
       - mysql
     working_dir: /var/www/
-    env_file:
-      - .env
     volumes:
       - ./:/var/www
     ports:

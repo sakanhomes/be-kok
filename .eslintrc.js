@@ -30,6 +30,7 @@ module.exports = {
 			{ blankLine: "always", prev: "*", next: "for" },
 			{ blankLine: "always", prev: "*", next: "while" },
 			{ blankLine: "always", prev: "*", next: "return" },
+			{ blankLine: "always", prev: "*", next: "throw" },
 		],
 		'function-call-argument-newline': ['error', 'consistent'],
 		'comma-spacing': ['error', {
@@ -42,6 +43,32 @@ module.exports = {
 			"imports": "always-multiline",
 			"exports": "always-multiline",
 			"functions": "always-multiline"
-		}]
+		}],
+		"space-infix-ops": "error",
+		'no-trailing-spaces': 'error',
+		"@typescript-eslint/type-annotation-spacing": 'error',
+		'arrow-spacing': 'error',
+		'no-multi-spaces': 'error',
+		'object-curly-spacing': ['error', 'always'],
+		'no-multiple-empty-lines': ['error', { max: 1 }],
+		'key-spacing': ['error', {
+			'beforeColon': false,
+			'afterColon': true,
+		}],
+		'space-before-function-paren': ['error', {
+			"anonymous": "always",
+			"named": "never",
+			"asyncArrow": "always"
+		}],
+		'space-before-blocks': 'error',
+		'quotes': ['error', 'single', {
+			'avoidEscape': true,
+		}],
+		'semi': 'error',
+		'object-property-newline': 'error',
+		'object-curly-newline': ['error', {
+			'multiline': true,
+			'consistent': true,
+		}],
 	},
 };

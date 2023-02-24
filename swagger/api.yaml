@@ -7,6 +7,26 @@ paths:
     $ref: ./routes/settings/SettingsList.yaml
   /settings/update:
     $ref: ./routes/settings/UpdateSettingViaUrl.yaml
+  /auth/nonce:
+    $ref: ./routes/auth/GetNonce.yaml
+  /auth/login:
+    $ref: ./routes/auth/Login.yaml
+  /auth/refresh:
+    $ref: ./routes/auth/RefreshAccessToken.yaml
+  /auth/logout:
+    $ref: ./routes/auth/Logout.yaml
+components:
+  securitySchemes:
+    accessTokenCookie:
+      type: apiKey
+      in: cookie
+      name: access_token
+    refreshTokenCookie:
+      type: apiKey
+      in: cookie
+      name: refresh_token
 tags:
   - name: Settings
     description: Global settings
+  - name: Auth
+    description: Auth endpoints

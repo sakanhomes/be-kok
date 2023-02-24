@@ -1,0 +1,14 @@
+description: Successful login
+content:
+  application/json:
+    schema:
+      $ref: ./Response.yaml
+headers:
+  " Set-Cookie":
+    schema:
+      type: string
+      example: access_token=jwt; Path=/; Secure; HttpOnly;
+  "\0Set-Cookie":
+    schema:
+      type: string
+      example: refresh_token=jwt; Path=/auth; Secure; HttpOnly;

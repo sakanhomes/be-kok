@@ -78,3 +78,19 @@ export function onlyKeys(source: Record<string, any>, keys: string[]): Record<st
 export function __(key: string, options: TranslateOptions | null = null): string {
     return I18nContext.current().translate(key, options);
 }
+
+/**
+ * Generate a random string.
+ */
+export function randomString(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+}

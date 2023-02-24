@@ -6,6 +6,7 @@ import {
     HttpStatus,
     ForbiddenException,
     NotFoundException as HttpNotFoundException,
+    UnauthorizedException as NestUnauthorizedException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApplicationException } from './app/application.exception';
@@ -24,6 +25,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         HttpNotFoundException,
         ValidationException,
         UnauthorizedException,
+        NestUnauthorizedException,
         UnprocessableException,
         ForbiddenException,
         TooManyRequestsException,
@@ -47,6 +49,8 @@ export default class ExceptionFilter implements FilterContract<Error> {
         if (error instanceof HttpNotFoundException) {
             return this.buildNotFoundException();
         } else if (error instanceof ForbiddenException) {
+            return new UnauthorizedException();
+        } else if (error instanceof NestUnauthorizedException) {
             return new UnauthorizedException();
         }
 

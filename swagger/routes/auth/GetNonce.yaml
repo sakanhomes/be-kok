@@ -1,0 +1,32 @@
+post:
+  summary: Get nonce to sign
+  tags:
+    - Auth
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            address:
+              $ref: ../../types/crypto/address.yaml
+          required:
+            - address
+  responses:
+    "200":
+      description: Nonce to sign
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      nonce:
+                        type: string
+                        example: "263007442420586"
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
