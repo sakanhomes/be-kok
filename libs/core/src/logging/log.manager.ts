@@ -51,7 +51,6 @@ export default class LogManager {
         const config = this.config.get(`logging.channels.${channel}`);
 
         if (!config) {
-            // TODO Replace with app exception
             throw new Error(`Unable to find config for logging channel ${channel}`);
         }
 
@@ -62,7 +61,6 @@ export default class LogManager {
         const driver = this.drivers[name];
 
         if (!driver) {
-            // TODO Replace with app exception
             throw new Error(`Unknown logging driver ${name}`);
         }
 

@@ -6,26 +6,41 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { StackChannel } from '@app/core/logging/channels/stack.channel';
+import DailyChannel from '@app/core/logging/channels/daily.channel';
+import * as path from 'path';
+import { ConsoleChannel } from '@app/core/logging/channels/console.channel';
+
+function makeNestLogger(): LoggerService {
+    if (process.env.ENV === 'local') {
+        return new ConsoleChannel();
+    }
+
+    return new StackChannel([
+        new DailyChannel({
+            file: path.join(process.cwd(), 'storage/logs/kok.log'),
+        }),
+        new ConsoleChannel(),
+    ]);
+}
 
 async function bootstrap() {
+    const nestLogger = makeNestLogger();
+
     const app = await NestFactory.create(AppModule, {
-        // TODO Pass here nest logger to view all logs
-        // logger: false,
+        logger: nestLogger,
     });
 
     const config: ConfigService = app.get(ConfigService);
-    const nestLogger: LoggerService = app.get('logger.nest');
     const mainLogger: LoggerService = app.get(LOGGER);
+    const port = config.get('app.port');
 
     app.use(cookieParser());
-    app.useLogger(nestLogger);
     app.useGlobalInterceptors(new ResponseTransformerInterceptor());
     app.useGlobalFilters(new ExceptionFilter(mainLogger));
 
-    const port = config.get('app.port');
-
     await app.listen(port);
 
-    nestLogger.log(`Listening post ${port}`);
+    nestLogger.log(`Listening port ${port}`);
 }
 bootstrap();
