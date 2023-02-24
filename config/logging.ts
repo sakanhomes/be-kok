@@ -16,11 +16,5 @@ export default () => ({
         console: {
             driver: 'console',
         },
-        nest: {
-            driver: 'stack',
-            channels: process.env.ENV === 'local'
-                ? ['console']
-                : ['console', 'daily'],
-        },
     },
 });

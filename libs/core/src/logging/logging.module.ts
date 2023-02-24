@@ -5,7 +5,7 @@ import LogManager from './log.manager';
 export const LOGGER = 'logger';
 
 @Module({
-    providers: [LogManager, LoggingModule.main(), LoggingModule.channel('nest')],
+    providers: [LogManager, LoggingModule.main()],
     exports: [LogManager, LOGGER],
 })
 export default class LoggingModule {
