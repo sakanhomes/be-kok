@@ -39,6 +39,7 @@
         "@nestjs/typeorm": "^9.0.1",
         "cookie-parser": "^1.4.6",
         "dotenv": "^16.0.3",
+        "ethereumjs-util": "^7.1.5",
         "joi": "^17.8.1",
         "knex": "^2.4.2",
         "mysql2": "^3.1.2",

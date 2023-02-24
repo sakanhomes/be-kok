@@ -12,9 +12,12 @@ import { CreateRefreshTokenAction } from './actions/create-refresh-token.action'
 import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
+import { ValidateNonceAction } from './actions/validate-nonce.action';
 import { GetNonceDto } from './dtos/get-nonce.dto';
+import { LoginDto } from './dtos/login.dto';
 import { RefreshToken } from './models/refresh-token.model';
 import { GetNonceValidator } from './validators/get-nonce.validator';
+import { LoginValidator } from './validators/login.validator';
 
 export const APP_DOMAIN = 'APP_DOMAIN';
 export const ACCESS_TOKEN_COOKIE = 'access_token';
@@ -34,6 +37,7 @@ export class AuthController {
         @InjectRepository(User)
         private readonly users: Repository<User>,
         private readonly nonceGenerator: GenerateNonceAction,
+        private readonly nonceValidator: ValidateNonceAction,
         private readonly jwtCreator: CreateJwtAction,
         private readonly refreshTokenCreator: CreateRefreshTokenAction,
         private readonly refreshTokenRotator: RotateRefreshTokenAction,
@@ -51,13 +55,7 @@ export class AuthController {
     @Post('/nonce')
     @UsePipes(GetNonceValidator)
     public async nonce(@Body() data: GetNonceDto) {
-        const user = await this.users.findOneBy({
-            address: data.address,
-        });
-
-        if (!user) {
-            throw new UnprocessableException(__('errors.invalid-address'));
-        }
+        const user = await this.getUserOrFail(data.address);
 
         await this.nonceGenerator.run(user);
 
@@ -67,10 +65,11 @@ export class AuthController {
     }
 
     @Post('/login')
-    public async login(@Body('address') address: string) {
-        const user = await this.users.findOneBy({
-            address: address.toLowerCase(),
-        });
+    @UsePipes(LoginValidator)
+    public async login(@Body() data: LoginDto) {
+        const user = await this.getUserOrFail(data.address);
+
+        await this.nonceValidator.run(user, data.signature);
 
         const jwt = await this.jwtCreator.run(user.address);
         const refresh = await this.refreshTokenCreator.run(user);
@@ -100,6 +99,16 @@ export class AuthController {
         }
 
         return this.removeAuthCookies(new Response());
+    }
+
+    private async getUserOrFail(address: string): Promise<User> {
+        const user = await this.users.findOneBy({ address });
+
+        if (!user) {
+            throw new UnprocessableException(__('errors.invalid-address'));
+        }
+
+        return user;
     }
 
     private setAuthCookies(response: Response, jwt: string, refresh: RefreshToken): Response {

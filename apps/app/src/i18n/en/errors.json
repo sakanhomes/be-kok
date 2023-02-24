@@ -2,5 +2,6 @@
     "invalid-master-password": "Password is invalid",
     "invalid-setting-key": "Setting key is invalid",
     "invalid-refresh-token": "Refresh token is invalid",
-    "invalid-address": "Invalid address"
+    "invalid-address": "Invalid address",
+    "invalid-signature": "Invalid signature"
 }
