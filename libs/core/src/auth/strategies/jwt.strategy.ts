@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { ACCESS_TOKEN_COOKIE } from 'apps/app/src/auth/auth-cookies.helper';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'apps/app/src/common/models/user.model';
+import { User } from 'apps/app/src/users/models/user.model';
 import { UnauthorizedException } from '@app/core/exceptions/http/unauthorized.exception';
 
 @Injectable()

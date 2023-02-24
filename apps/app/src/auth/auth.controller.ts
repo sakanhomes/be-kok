@@ -5,7 +5,7 @@ import { Response } from '@app/core/http/response';
 import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../common/models/user.model';
+import { User } from '../users/models/user.model';
 import { CreateJwtAction } from './actions/create-jwt.action';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
 import { GenerateNonceAction } from './actions/generate-nonce.action';

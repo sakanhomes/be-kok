@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../../common/models/user.model';
+import { User } from '../../users/models/user.model';
 import {
     bufferToHex,
     ECDSASignature,

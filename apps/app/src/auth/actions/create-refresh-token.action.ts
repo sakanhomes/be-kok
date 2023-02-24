@@ -2,7 +2,7 @@ import { randomString } from "@app/core/helpers";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { User } from "../../common/models/user.model";
+import { User } from "../../users/models/user.model";
 import { RefreshToken } from "../models/refresh-token.model";
 
 @Injectable()

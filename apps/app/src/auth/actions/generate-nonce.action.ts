@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomInt } from 'crypto';
 import { Repository } from 'typeorm';
-import { User } from '../../common/models/user.model';
+import { User } from '../../users/models/user.model';
 
 @Injectable()
 export class GenerateNonceAction {

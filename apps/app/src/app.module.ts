@@ -8,7 +8,8 @@ import { ThrottlerGuard } from '@app/core/throttling/throttler.guard';
 import { SettingsModule } from './settings/settings.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './common/models/user.model';
+import { User } from './users/models/user.model';
+import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { User } from './common/models/user.model';
         TypeOrmModule.forFeature([User]),
         SettingsModule,
         AuthModule,
+        UsersModule,
     ],
     controllers: [],
     providers: [

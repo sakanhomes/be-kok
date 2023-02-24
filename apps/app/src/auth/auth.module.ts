@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../common/models/user.model';
+import { User } from '../users/models/user.model';
 import { RefreshToken } from './models/refresh-token.model';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
