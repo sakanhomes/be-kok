@@ -2,16 +2,19 @@ import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.e
 import { __ } from '@app/core/helpers';
 import { Cookie } from '@app/core/http/decorators/cookie.decorator';
 import { Response } from '@app/core/http/response';
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CookieOptions } from 'express';
 import { Repository } from 'typeorm';
 import { User } from '../common/models/user.model';
 import { ACCESS_TOKEN_EXPIRATION, CreateJwtAction } from './actions/create-jwt.action';
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
+import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
+import { GetNonceDto } from './dtos/get-nonce.dto';
 import { RefreshToken } from './models/refresh-token.model';
+import { GetNonceValidator } from './validators/get-nonce.validator';
 
 export const APP_DOMAIN = 'APP_DOMAIN';
 export const ACCESS_TOKEN_COOKIE = 'access_token';
@@ -30,6 +33,7 @@ export class AuthController {
     public constructor(
         @InjectRepository(User)
         private readonly users: Repository<User>,
+        private readonly nonceGenerator: GenerateNonceAction,
         private readonly jwtCreator: CreateJwtAction,
         private readonly refreshTokenCreator: CreateRefreshTokenAction,
         private readonly refreshTokenRotator: RotateRefreshTokenAction,
@@ -42,6 +46,24 @@ export class AuthController {
         private readonly refreshTokenExpiration: number | null,
     ) {
         this.cookieConfig.domain = this.domain ? this.domain : null;
+    }
+
+    @Post('/nonce')
+    @UsePipes(GetNonceValidator)
+    public async nonce(@Body() data: GetNonceDto) {
+        const user = await this.users.findOneBy({
+            address: data.address,
+        });
+
+        if (!user) {
+            throw new UnprocessableException(__('errors.invalid-address'));
+        }
+
+        await this.nonceGenerator.run(user);
+
+        return {
+            nonce: user.nonce,
+        };
     }
 
     @Post('/login')

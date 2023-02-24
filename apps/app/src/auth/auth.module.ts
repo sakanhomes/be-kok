@@ -11,6 +11,7 @@ import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/ro
 import { ClearRefreshTokensJob } from './schedule/clear-refresh-tokens.job';
 import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
 import { JwtStrategy } from '@app/core/auth/strategies/jwt.strategy';
+import { GenerateNonceAction } from './actions/generate-nonce.action';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { JwtStrategy } from '@app/core/auth/strategies/jwt.strategy';
     ],
     providers: [
         JwtStrategy,
+        GenerateNonceAction,
         CreateJwtAction,
         CreateRefreshTokenAction,
         RotateRefreshTokenAction,
