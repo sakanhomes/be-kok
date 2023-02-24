@@ -11,6 +11,7 @@ import { ACCESS_TOKEN_EXPIRATION, CreateJwtAction } from './actions/create-jwt.a
 import { CreateRefreshTokenAction } from './actions/create-refresh-token.action';
 import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
+import { RegisterUserAction } from './actions/register-user.action';
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 import { ValidateNonceAction } from './actions/validate-nonce.action';
 import { GetNonceDto } from './dtos/get-nonce.dto';
@@ -36,6 +37,7 @@ export class AuthController {
     public constructor(
         @InjectRepository(User)
         private readonly users: Repository<User>,
+        private readonly userRegistrar: RegisterUserAction,
         private readonly nonceGenerator: GenerateNonceAction,
         private readonly nonceValidator: ValidateNonceAction,
         private readonly jwtCreator: CreateJwtAction,
@@ -55,7 +57,7 @@ export class AuthController {
     @Post('/nonce')
     @UsePipes(GetNonceValidator)
     public async nonce(@Body() data: GetNonceDto) {
-        const user = await this.getUserOrFail(data.address);
+        const user = await this.userRegistrar.run(data.address);
 
         await this.nonceGenerator.run(user);
 

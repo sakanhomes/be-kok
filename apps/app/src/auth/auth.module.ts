@@ -13,6 +13,7 @@ import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-toke
 import { JwtStrategy } from '@app/core/auth/strategies/jwt.strategy';
 import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { ValidateNonceAction } from './actions/validate-nonce.action';
+import { RegisterUserAction } from './actions/register-user.action';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { ValidateNonceAction } from './actions/validate-nonce.action';
         JwtStrategy,
         GenerateNonceAction,
         ValidateNonceAction,
+        RegisterUserAction,
         CreateJwtAction,
         CreateRefreshTokenAction,
         RotateRefreshTokenAction,
