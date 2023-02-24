@@ -14,9 +14,9 @@ import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/ro
 import { RefreshToken } from './models/refresh-token.model';
 
 export const APP_DOMAIN = 'APP_DOMAIN';
+export const ACCESS_TOKEN_COOKIE = 'access_token';
+export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
-const ACCESS_TOKEN_COOKIE = 'access_token';
-const REFRESH_TOKEN_COOKIE = 'refresh_token';
 const REFRESH_TOKEN_COOKIE_PATH = '/auth';
 
 // TODO Change methods
@@ -47,9 +47,11 @@ export class AuthController {
 
     @Get('/login')
     public async login(@Query('address') address: string) {
-        const user = await this.users.findOneBy({ address });
+        const user = await this.users.findOneBy({
+            address: address.toLowerCase(),
+        });
 
-        const jwt = await this.jwtCreator.run(address);
+        const jwt = await this.jwtCreator.run(user.address);
         const refresh = await this.refreshTokenCreator.run(user);
 
         return this.setAuthCookies(new Response(), jwt, refresh);

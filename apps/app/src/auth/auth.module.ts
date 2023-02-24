@@ -10,6 +10,7 @@ import { CreateRefreshTokenAction } from './actions/create-refresh-token.action'
 import { REFRESH_TOKEN_EXPIRATION, RotateRefreshTokenAction } from './actions/rotate-refresh-token.action';
 import { ClearRefreshTokensJob } from './schedule/clear-refresh-tokens.job';
 import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-token.action';
+import { JwtStrategy } from '@app/core/auth/strategies/jwt.strategy';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { InvalidateRefreshTokensAction } from './actions/invalidate-refresh-toke
         TypeOrmModule.forFeature([RefreshToken, User]),
     ],
     providers: [
+        JwtStrategy,
         CreateJwtAction,
         CreateRefreshTokenAction,
         RotateRefreshTokenAction,

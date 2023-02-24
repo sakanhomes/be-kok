@@ -12,8 +12,11 @@ export class CreateJwtAction {
     ) {}
 
     public run(address: string): Promise<string> {
-        return this.jwt.signAsync({ address }, {
-            expiresIn: this.expiration,
-        });
+        return this.jwt.signAsync(
+            { address },
+            this.expiration
+                ? { expiresIn: this.expiration }
+                : {},
+        );
     }
 }
