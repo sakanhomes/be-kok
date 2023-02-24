@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { ACCESS_TOKEN_COOKIE } from 'apps/app/src/auth/auth.controller';
+import { ACCESS_TOKEN_COOKIE } from 'apps/app/src/auth/auth-cookies.helper';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'apps/app/src/common/models/user.model';

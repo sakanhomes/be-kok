@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ACCESS_TOKEN_EXPIRATION, CreateJwtAction } from './actions/create-jwt.action';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { APP_DOMAIN, AuthController } from './auth.controller';
+import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../common/models/user.model';
 import { RefreshToken } from './models/refresh-token.model';
@@ -14,6 +14,7 @@ import { JwtStrategy } from '@app/core/auth/strategies/jwt.strategy';
 import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { ValidateNonceAction } from './actions/validate-nonce.action';
 import { RegisterUserAction } from './actions/register-user.action';
+import { APP_DOMAIN, AuthCookiesHelper } from './auth-cookies.helper';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { RegisterUserAction } from './actions/register-user.action';
         RotateRefreshTokenAction,
         InvalidateRefreshTokensAction,
         ClearRefreshTokensJob,
+        AuthCookiesHelper,
         {
             provide: APP_DOMAIN,
             inject: [ConfigService],
