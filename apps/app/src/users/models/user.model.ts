@@ -11,6 +11,18 @@ export class User {
     @Column()
     nonce: string | null;
 
+    @Column()
+    name: string | null;
+
+    @Column()
+    profileImage: string | null;
+
+    @Column()
+    backgroundImage: string | null;
+
+    @Column()
+    description: string | null;
+
     @CreateDateColumn()
     createdAt: Date;
 
