@@ -1,0 +1,24 @@
+post:
+  summary: Login with addres and signature
+  tags:
+    - Auth
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            address:
+              $ref: ../../types/crypto/address.yaml
+            signature:
+              type: string
+              example: "0x11ba88d49805542c8880770e5e41eaa89eb03b1121fbd6765e12d96f0be9fe37614e822d7e1537311967a56ce0a4d58f6646f1d148fb96b2be1086651b76ed461b"
+              description: Signed nonce
+          required:
+            - address
+            - signature
+  responses:
+    "200":
+      $ref: ../../responses/LoginResponse.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml

@@ -1,0 +1,11 @@
+post:
+  summary: Refresh access token
+  tags:
+    - Auth
+  securitySchemes:
+    - refreshTokenCookie: []
+  responses:
+    "200":
+      $ref: ../../responses/LoginResponse.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
