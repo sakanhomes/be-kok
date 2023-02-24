@@ -65,7 +65,9 @@ module.exports = {
 			'avoidEscape': true,
 		}],
 		'semi': 'error',
-		'object-property-newline': 'error',
+		'object-property-newline': ['error', {
+			'allowAllPropertiesOnSameLine': true,
+		}],
 		'object-curly-newline': ['error', {
 			'multiline': true,
 			'consistent': true,

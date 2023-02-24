@@ -7,6 +7,7 @@ import {
     ForbiddenException,
     NotFoundException as HttpNotFoundException,
     UnauthorizedException as NestUnauthorizedException,
+    BadRequestException as NestBadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApplicationException } from './app/application.exception';
@@ -44,7 +45,6 @@ export default class ExceptionFilter implements FilterContract<Error> {
         this.response(host, exception);
     }
 
-    // TODO Handle invalid JSON (bad request exception)
     protected transform(error: any): ServerErrorException {
         if (error instanceof HttpNotFoundException) {
             return this.buildNotFoundException();
@@ -52,6 +52,8 @@ export default class ExceptionFilter implements FilterContract<Error> {
             return new UnauthorizedException();
         } else if (error instanceof NestUnauthorizedException) {
             return new UnauthorizedException();
+        } else if (error instanceof NestBadRequestException) {
+            return new BadRequestException({}, error.message);
         }
 
         if (error instanceof ValidationException) {
