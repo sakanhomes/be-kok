@@ -2,7 +2,7 @@ import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.e
 import { __ } from '@app/core/helpers';
 import { Cookie } from '@app/core/http/decorators/cookie.decorator';
 import { Response } from '@app/core/http/response';
-import { Body, Controller, Inject, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, HttpCode, Inject, Post, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CookieOptions } from 'express';
 import { Repository } from 'typeorm';
@@ -55,6 +55,7 @@ export class AuthController {
     }
 
     @Post('/nonce')
+    @HttpCode(200)
     @UsePipes(GetNonceValidator)
     public async nonce(@Body() data: GetNonceDto) {
         const user = await this.userRegistrar.run(data.address);
@@ -67,11 +68,13 @@ export class AuthController {
     }
 
     @Post('/login')
+    @HttpCode(200)
     @UsePipes(LoginValidator)
     public async login(@Body() data: LoginDto) {
         const user = await this.getUserOrFail(data.address);
 
         await this.nonceValidator.run(user, data.signature);
+        await this.nonceGenerator.run(user);
 
         const jwt = await this.jwtCreator.run(user.address);
         const refresh = await this.refreshTokenCreator.run(user);
@@ -80,6 +83,7 @@ export class AuthController {
     }
 
     @Post('/refresh')
+    @HttpCode(200)
     public async refresh(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
         if (!token) {
             throw new UnprocessableException(__('errors.invalid-refresh-token'));
@@ -95,6 +99,7 @@ export class AuthController {
     }
 
     @Post('/logout')
+    @HttpCode(200)
     public logout(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
         if (token) {
             this.refreshTokenInvalidator.run(token);
