@@ -9,7 +9,7 @@ export class LoginValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
             address: Crypto.address(),
-            signature: Joi.string().length(132).required(),
+            signature: Joi.string().length(132).required().custom(Crypto.isHex()),
         });
     }
 }

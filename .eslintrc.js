@@ -61,7 +61,14 @@ module.exports = {
 			"asyncArrow": "always"
 		}],
 		'space-before-blocks': 'error',
-		'quotes': ['error', 'single'],
+		'quotes': ['error', 'single', {
+			'avoidEscape': true,
+		}],
 		'semi': 'error',
+		'object-property-newline': 'error',
+		'object-curly-newline': ['error', {
+			'multiline': true,
+			'consistent': true,
+		}],
 	},
 };
