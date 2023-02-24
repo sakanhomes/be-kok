@@ -2,7 +2,7 @@ import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.e
 import { __ } from '@app/core/helpers';
 import { Cookie } from '@app/core/http/decorators/cookie.decorator';
 import { Response } from '@app/core/http/response';
-import { Controller, Get, Inject, Query } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CookieOptions } from 'express';
 import { Repository } from 'typeorm';
@@ -19,7 +19,6 @@ export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
 const REFRESH_TOKEN_COOKIE_PATH = '/auth';
 
-// TODO Change methods
 @Controller('/auth')
 export class AuthController {
     private cookieConfig: CookieOptions = {
@@ -45,8 +44,8 @@ export class AuthController {
         this.cookieConfig.domain = this.domain ? this.domain : null;
     }
 
-    @Get('/login')
-    public async login(@Query('address') address: string) {
+    @Post('/login')
+    public async login(@Body('address') address: string) {
         const user = await this.users.findOneBy({
             address: address.toLowerCase(),
         });
@@ -57,7 +56,7 @@ export class AuthController {
         return this.setAuthCookies(new Response(), jwt, refresh);
     }
 
-    @Get('/refresh')
+    @Post('/refresh')
     public async refresh(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
         if (!token) {
             throw new UnprocessableException(__('errors.invalid-refresh-token'));
@@ -72,7 +71,7 @@ export class AuthController {
         return this.setAuthCookies(new Response(), jwt, newToken);
     }
 
-    @Get('/logout')
+    @Post('/logout')
     public logout(@Cookie(REFRESH_TOKEN_COOKIE) token: string | null) {
         if (token) {
             this.refreshTokenInvalidator.run(token);
