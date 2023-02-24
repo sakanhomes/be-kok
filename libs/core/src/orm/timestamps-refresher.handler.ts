@@ -1,5 +1,5 @@
-import { EntitySubscriberInterface, EventSubscriber, InsertEvent } from "typeorm";
-import { ColumnMetadata } from "typeorm/metadata/ColumnMetadata";
+import { EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
+import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata';
 
 @EventSubscriber()
 export class TimestampsRefresher implements EntitySubscriberInterface {

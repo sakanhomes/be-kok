@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { REFRESH_TOKEN_EXPIRATION } from '../actions/rotate-refresh-token.action';
 import { RefreshToken } from '../models/refresh-token.model';
-import { subSeconds } from 'date-fns'
+import { subSeconds } from 'date-fns';
 
 @Injectable()
 export class ClearRefreshTokensJob {

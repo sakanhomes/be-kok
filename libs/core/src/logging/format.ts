@@ -3,8 +3,8 @@ import { format } from 'winston';
 export class Format {
     public static default() {
         return format.combine(
-            this.errors(), 
-            this.timestamp(), 
+            this.errors(),
+            this.timestamp(),
             this.template(),
         );
     }

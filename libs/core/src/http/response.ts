@@ -53,7 +53,11 @@ export class Response {
     }
 
     public withCookie(name: string, value: any, options: CookieOptions): Response {
-        this.cookies[name] = { name, value, options };
+        this.cookies[name] = {
+            name,
+            value,
+            options,
+        };
 
         if (options.maxAge) {
             options.maxAge *= 1000;
