@@ -94,3 +94,17 @@ export function randomString(length: number): string {
 
     return result;
 }
+
+export function benchmark(callback: () => void, iterations = 10000) {
+    const begin = performance.now();
+
+    for (let i = 0; i < iterations; i++) {
+        callback();
+    }
+
+    return performance.now() - begin;
+}
+
+export function startsWith(string: string, prefix: string): boolean {
+    return string.substring(0, prefix.length) === prefix;
+}

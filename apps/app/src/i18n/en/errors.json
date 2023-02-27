@@ -3,5 +3,6 @@
     "invalid-setting-key": "Setting key is invalid",
     "invalid-refresh-token": "Refresh token is invalid",
     "invalid-address": "Invalid address",
-    "invalid-signature": "Invalid signature"
+    "invalid-signature": "Invalid signature",
+    "name-already-set": "Name has been already set"
 }
