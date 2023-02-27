@@ -41,6 +41,8 @@ export class VideosController {
             user: onlyKeys(video.user, ['address', 'name', 'profileImage']),
         });
 
-        return response;
+        return {
+            video: response,
+        };
     }
 }
