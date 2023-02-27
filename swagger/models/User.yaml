@@ -1,0 +1,23 @@
+title: User
+type: object
+properties:
+  address:
+    $ref: ../types/crypto/address.yaml
+  name:
+    type: string
+    nullable: true
+    exampe: John Smith
+  profileImage:
+    type: string
+    format: uri
+    nullable: true
+    example: https://storage.domain.com/path/to/image.jpg
+  backgroundImage:
+    type: string
+    format: uri
+    nullable: true
+    example: https://storage.domain.com/path/to/image.jpg
+  description:
+    type: string
+    nullable: true
+    example: Long profile description

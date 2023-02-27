@@ -15,6 +15,8 @@ paths:
     $ref: ./routes/auth/RefreshAccessToken.yaml
   /auth/logout:
     $ref: ./routes/auth/Logout.yaml
+  /me:
+    $ref: ./routes/profile/CurrentUser.yaml
 components:
   securitySchemes:
     accessTokenCookie:
@@ -30,3 +32,5 @@ tags:
     description: Global settings
   - name: Auth
     description: Auth endpoints
+  - name: Profile
+    description: Current user profile

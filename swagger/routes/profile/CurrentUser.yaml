@@ -1,0 +1,21 @@
+get:
+  summary: Current user data
+  tags:
+    - Profile
+  securitySchemes:
+    - accessTokenCookie: []
+  responses:
+    "200":
+      description: Current user
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: ../../models/User.yaml
