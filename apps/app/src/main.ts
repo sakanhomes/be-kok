@@ -35,6 +35,10 @@ async function bootstrap() {
     const mainLogger: LoggerService = app.get(LOGGER);
     const port = config.get('app.port');
 
+    app.enableCors({
+        origin: true,
+        credentials: true,
+    });
     app.use(cookieParser());
     app.useGlobalInterceptors(new ResponseTransformerInterceptor());
     app.useGlobalFilters(new ExceptionFilter(mainLogger));
