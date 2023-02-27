@@ -10,6 +10,7 @@ import {
     BadRequestException as NestBadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { EntityNotFoundError } from 'typeorm';
 import { ApplicationException } from './app/application.exception';
 import { NotFoundException } from './app/not-found.exception';
 import { UnprocessableException } from './app/unprocessable.exception';
@@ -46,7 +47,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
     }
 
     protected transform(error: any): ServerErrorException {
-        if (error instanceof HttpNotFoundException) {
+        if (error instanceof HttpNotFoundException || error instanceof EntityNotFoundError) {
             return this.buildNotFoundException();
         } else if (error instanceof ForbiddenException) {
             return new UnauthorizedException();

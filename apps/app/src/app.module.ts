@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/models/user.model';
 import { UsersModule } from './users/users.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
     imports: [
@@ -29,6 +30,7 @@ import { UsersModule } from './users/users.module';
         SettingsModule,
         AuthModule,
         UsersModule,
+        VideosModule,
     ],
     controllers: [],
     providers: [
