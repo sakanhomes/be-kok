@@ -25,7 +25,9 @@ export class UpdateSettingAction {
 
         let setting = await this.settings.findOneBy({ key });
 
-        if (!setting) {
+        if (setting) {
+            setting.value = value;
+        } else {
             setting = this.settings.create({
                 key,
                 value,
