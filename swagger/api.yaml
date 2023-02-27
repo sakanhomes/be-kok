@@ -2,6 +2,9 @@ openapi: 3.0.3
 info:
   version: 0.0.1
   title: KOK API
+servers:
+  - url: https://api.kok.dev-page.site
+    description: Dev server
 paths:
   /settings:
     $ref: ./routes/settings/SettingsList.yaml
