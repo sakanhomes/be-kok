@@ -17,6 +17,8 @@ paths:
     $ref: ./routes/auth/Logout.yaml
   /me:
     $ref: ./routes/profile/CurrentUser.yaml
+  /videos/{id}:
+    $ref: ./routes/videos/Video.yaml
 components:
   securitySchemes:
     accessTokenCookie:
@@ -34,3 +36,5 @@ tags:
     description: Auth endpoints
   - name: Profile
     description: Current user profile
+  - name: Videos
+    description: Videos endpoints

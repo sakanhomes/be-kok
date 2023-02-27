@@ -8,15 +8,13 @@ properties:
     nullable: true
     exampe: John Smith
   profileImage:
-    type: string
-    format: uri
-    nullable: true
-    example: https://storage.domain.com/path/to/image.jpg
+    allOf:
+      - $ref: ../types/file_url.yaml
+      - nullable: true
   backgroundImage:
-    type: string
-    format: uri
-    nullable: true
-    example: https://storage.domain.com/path/to/image.jpg
+    allOf:
+      - $ref: ../types/file_url.yaml
+      - nullable: true
   description:
     type: string
     nullable: true

@@ -1,0 +1,45 @@
+title: Video
+type: object
+properties:
+  id:
+    type: string
+    example: b560bm00Mi
+  category:
+    $ref: ../types/category.yaml
+  title:
+    type: string
+    example: Video title
+  duration:
+    type: string
+    example: "12:34"
+  description:
+    type: string
+    example: Long video description
+  previewImage:
+    $ref: ../types/file_url.yaml
+  video:
+    $ref: ../types/file_url.yaml
+  viewAmount:
+    type: integer
+    example: 12345
+  likesAmount:
+    type: integer
+    example: 12345
+  commentsAmount:
+    type: integer
+    example: 12345
+  createdAt:
+    $ref: ../types/timestamp.yaml
+  user:
+    type: object
+    properties:
+      address:
+        $ref: ../types/crypto/address.yaml
+      name:
+        type: string
+        nullable: true
+        example: John Smith
+      profileImage:
+        allOf:
+          - $ref: ../types/file_url.yaml
+          - nullable: true

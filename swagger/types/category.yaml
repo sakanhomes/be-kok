@@ -1,0 +1,14 @@
+title: Category
+type: string
+enum:
+  - music
+  - art
+  - dance
+  - eating
+  - travel
+  - gaming
+  - tech
+  - education
+  - lifestyle
+  - animation
+  - documentary
