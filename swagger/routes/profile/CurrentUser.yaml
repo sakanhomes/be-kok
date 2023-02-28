@@ -60,5 +60,7 @@ patch:
                     properties:
                       user:
                         $ref: ../../models/User.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
     "422":
       $ref: ../../responses/errors/ValidationErrorsResponse.yaml
