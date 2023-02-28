@@ -10,6 +10,7 @@ export const ACCESS_TOKEN_COOKIE = 'access_token';
 export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
 const REFRESH_TOKEN_COOKIE_PATH = '/auth';
+const ONE_YEAR_EXPIRATION = 31536000;
 
 @Injectable()
 export class AuthCookiesHelper {
@@ -51,14 +52,14 @@ export class AuthCookiesHelper {
     private makeAccessTokenCookieOptions(): CookieOptions {
         return {
             ...this.cookieConfig,
-            maxAge: this.accessTokenExpiration,
+            maxAge: this.accessTokenExpiration ?? ONE_YEAR_EXPIRATION,
         };
     }
 
     private makeRefreshTokenCookieOptions(): CookieOptions {
         return {
             ...this.cookieConfig,
-            maxAge: this.refreshTokenExpiration,
+            maxAge: this.refreshTokenExpiration ?? ONE_YEAR_EXPIRATION,
             path: REFRESH_TOKEN_COOKIE_PATH,
         };
     }
