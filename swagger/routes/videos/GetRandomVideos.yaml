@@ -1,0 +1,32 @@
+get:
+  summary: Get random Videos
+  tags:
+    - Videos
+  parameters:
+    - in: query
+      name: amount
+      description: Amount of videos
+      schema:
+        type: integer
+        min: 1
+        max: 25
+        exampe: 10
+  responses:
+    "200":
+      description: Videos list
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: ../../models/Video.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

@@ -20,6 +20,8 @@ paths:
     $ref: ./routes/auth/Logout.yaml
   /me:
     $ref: ./routes/profile/CurrentUser.yaml
+  /videos/random:
+    $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:
     $ref: ./routes/videos/Video.yaml
 components:
