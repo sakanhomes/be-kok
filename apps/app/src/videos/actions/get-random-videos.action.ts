@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Video } from '../video.model';
+import { Video } from '../models/video.model';
 
 @Injectable()
 export class GetRandomVideosAction {

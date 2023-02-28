@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
 import { Category } from './enums/category.enum';
 import { GetRandomVideosValidator } from './validators/get-random-videos.validator';
-import { Video } from './video.model';
+import { Video } from './models/video.model';
 
 @Controller('videos')
 export class VideosController {
