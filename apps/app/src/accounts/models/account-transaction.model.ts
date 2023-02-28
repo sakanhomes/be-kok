@@ -1,3 +1,4 @@
+import { decimal } from '@app/core/orm/transformers/decimal.transformer';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Video } from '../../videos/models/video.model';
 import { TransactionSubtype } from '../enums/transaction-subtype.enum';
@@ -18,7 +19,10 @@ export class AccountTransaction {
     @Column('text')
     subtype: TransactionSubtype;
 
-    @Column()
+    @Column({
+        type: 'decimal',
+        transformer: decimal,
+    })
     amount: string;
 
     @Column()
