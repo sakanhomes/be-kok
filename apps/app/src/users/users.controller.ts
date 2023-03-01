@@ -42,7 +42,7 @@ export class UsersController {
             'description',
             'previewImage',
             'video',
-            'viewAmount',
+            'viewsAmount',
             'likesAmount',
             'commentsAmount',
         ]);

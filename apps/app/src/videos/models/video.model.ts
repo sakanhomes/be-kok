@@ -32,7 +32,7 @@ export class Video {
     video: string;
 
     @Column()
-    viewAmount: number;
+    viewsAmount: number;
 
     @Column()
     likesAmount: number;

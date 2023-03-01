@@ -22,7 +22,7 @@ export class VideosController {
         return Response.collection<Video>(
             Video,
             await this.videosRandomizer.run(data.amount),
-            this.videoResouse,
+            this.videoResourse,
         );
     }
 
@@ -36,14 +36,14 @@ export class VideosController {
         return this.videoResponse(video);
     }
 
-    private videoResouse(video: Video) {
+    private videoResourse(video: Video) {
         const resource = onlyKeys(video, [
             'title',
             'duration',
             'description',
             'previewImage',
             'video',
-            'viewAmount',
+            'viewsAmount',
             'likesAmount',
             'commentsAmount',
         ]);
@@ -60,7 +60,7 @@ export class VideosController {
 
     private videoResponse(video: Video) {
         return {
-            video: this.videoResouse(video),
+            video: this.videoResourse(video),
         };
     }
 }
