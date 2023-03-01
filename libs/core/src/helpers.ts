@@ -1,5 +1,6 @@
 import * as util from 'util';
 import { TranslateOptions, I18nContext } from 'nestjs-i18n';
+import { resolve } from 'path';
 
 /**
  * Dump method to print out passed variables.
@@ -107,4 +108,8 @@ export function benchmark(callback: () => void, iterations = 10000) {
 
 export function startsWith(string: string, prefix: string): boolean {
     return string.substring(0, prefix.length) === prefix;
+}
+
+export async function sleep(milliseconds: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
