@@ -4,5 +4,6 @@
     "invalid-refresh-token": "Refresh token is invalid",
     "invalid-address": "Invalid address",
     "invalid-signature": "Invalid signature",
-    "name-already-set": "Name has been already set"
+    "name-already-set": "Name has been already set",
+    "insufficient-account-balance": "Insufficient account balance"
 }

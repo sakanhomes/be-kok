@@ -1,4 +1,5 @@
-import { sleep } from '@app/core/helpers';
+import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
+import { __ } from '@app/core/helpers';
 import { ModelLocker } from '@app/core/orm/model-locker';
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
@@ -14,7 +15,11 @@ export class DecreaseBalanceAction {
     }
 
     public async run(account: Account, amount: Decimal.Value): Promise<Account> {
-        const updatedAccount = this.locker.lock(account, async (manager, account) => {
+        const updatedAccount = await this.locker.lock(account, async (manager, account) => {
+            if (account.balance.lessThan(amount)) {
+                throw new UnprocessableException(__('errors.insufficient-account-balance'));
+            }
+
             account.balance = account.balance.sub(amount);
 
             await manager.save(account);
