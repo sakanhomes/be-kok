@@ -2,6 +2,9 @@ import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { onlyKeys } from '@app/core/helpers';
 import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Account } from '../accounts/models/account.model';
 import { UpdateUserAction } from './actions/update-user.action';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
@@ -10,7 +13,11 @@ import { UpdateUserValidator } from './validators/update-user.validator';
 @Controller('/me')
 @JwtAuth()
 export class ProfileController {
-    public constructor(private readonly updater: UpdateUserAction) {}
+    public constructor(
+        @InjectRepository(Account)
+        private readonly accounts: Repository<Account>,
+        private readonly updater: UpdateUserAction,
+    ) {}
 
     @Get('/')
     public user(@CurrentUser() user: User) {
@@ -25,9 +32,19 @@ export class ProfileController {
         return this.userResponse(user);
     }
 
-    private userResponse(user: User) {
+    private async userResponse(user: User) {
+        const resource = onlyKeys(user, ['address', 'name', 'profileImage', 'backgroundImage', 'description']);
+        const account: Account | null = await this.accounts.createQueryBuilder()
+            .relation(User, 'accounts')
+            .of(user)
+            .loadOne();
+
+        Object.assign(resource, {
+            balance: account.balance ? account.balance.toNumber() : 0,
+        });
+
         return {
-            user: onlyKeys(user, ['address', 'name', 'profileImage', 'backgroundImage', 'description']),
+            user: resource,
         };
     }
 }

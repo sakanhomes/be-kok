@@ -63,11 +63,11 @@ export function filterObject<Input = Record<string, any>, Output = Record<string
 /**
  * Create a new object with only given keys from source object.
  */
-export function onlyKeys(source: Record<string, any>, keys: string[]): Record<string, any> {
+export function onlyKeys<T = Record<string, any>>(source: T, keys: (keyof T)[]): {[key: string]: any} {
     const target = {};
 
     for (const key of keys) {
-        target[key] = source[key];
+        target[key as string] = source[key];
     }
 
     return target;
