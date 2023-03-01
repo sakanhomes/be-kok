@@ -1,4 +1,5 @@
 import { decimal } from '@app/core/orm/transformers/decimal.transformer';
+import Decimal from 'decimal.js';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Video } from '../../videos/models/video.model';
 import { TransactionSubtype } from '../enums/transaction-subtype.enum';
@@ -23,7 +24,7 @@ export class AccountTransaction {
         type: 'decimal',
         transformer: decimal,
     })
-    amount: string;
+    amount: Decimal;
 
     @Column()
     videoId: string | null;
@@ -35,7 +36,7 @@ export class AccountTransaction {
     updatedAt: Date;
 
     @ManyToOne(() => Account)
-    user: Account;
+    account: Account;
 
     @ManyToOne(() => Video)
     video: Video;

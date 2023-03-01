@@ -5,5 +5,6 @@
     "invalid-address": "Invalid address",
     "invalid-signature": "Invalid signature",
     "name-already-set": "Name has been already set",
-    "insufficient-account-balance": "Insufficient account balance"
+    "insufficient-account-balance": "Insufficient account balance",
+    "invalid-transaction-subtype": "Invalid transaction subtype"
 }
