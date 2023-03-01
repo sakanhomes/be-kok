@@ -1,0 +1,23 @@
+get:
+  summary: Get user by address
+  tags:
+    - Users
+  parameters:
+    - $ref: ../../parameters/path/address.yaml
+  responses:
+    "200":
+      description: User resource
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: ../../models/User.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
