@@ -7,10 +7,7 @@ export class ParseUUIDPipe extends OriginalPipe {
 
         this.exceptionFactory = () =>
             new ValidationException({
-                uuid: {
-                    path: 'uuid',
-                    messages: ['UUID is invalid'],
-                },
+                uuid: ['UUID is invalid'],
             });
     }
 }
