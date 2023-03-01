@@ -6,7 +6,7 @@ properties:
   name:
     type: string
     nullable: true
-    exampe: John Smith
+    example: John Smith
   profileImage:
     allOf:
       - $ref: ../types/file_url.yaml
@@ -19,3 +19,7 @@ properties:
     type: string
     nullable: true
     example: Long profile description
+  balance:
+    type: number
+    min: 0
+    example: 123.45
