@@ -39,5 +39,5 @@ export class AccountTransaction {
     account: Account;
 
     @ManyToOne(() => Video)
-    video: Video;
+    video: Video | null;
 }

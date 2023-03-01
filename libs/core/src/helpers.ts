@@ -1,6 +1,5 @@
 import * as util from 'util';
 import { TranslateOptions, I18nContext } from 'nestjs-i18n';
-import { resolve } from 'path';
 
 /**
  * Dump method to print out passed variables.
