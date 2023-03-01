@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Account } from '../../accounts/models/account.model';
 
 @Entity('users')
@@ -23,6 +23,15 @@ export class User {
 
     @Column()
     description: string | null;
+
+    @Column()
+    videosAmount: number;
+
+    @Column()
+    followersAmount: number;
+
+    @Column()
+    followingsAmount: number;
 
     @CreateDateColumn()
     createdAt: Date;

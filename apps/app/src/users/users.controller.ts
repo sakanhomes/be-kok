@@ -22,6 +22,15 @@ export class UsersController {
     }
 
     private userResponse(user: User) {
-        return onlyKeys(user, ['address', 'name', 'profileImage', 'backgroundImage', 'description']);
+        return onlyKeys(user, [
+            'address',
+            'name',
+            'profileImage',
+            'backgroundImage',
+            'description',
+            'videosAmount',
+            'followersAmount',
+            'followingsAmount',
+        ]);
     }
 }
