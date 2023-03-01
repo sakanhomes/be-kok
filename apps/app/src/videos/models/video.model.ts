@@ -49,6 +49,6 @@ export class Video {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, 'videos')
     user: User;
 }

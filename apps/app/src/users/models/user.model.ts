@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Account } from '../../accounts/models/account.model';
+import { Video } from '../../videos/models/video.model';
 
 @Entity('users')
 export class User {
@@ -41,4 +42,7 @@ export class User {
 
     @OneToMany(() => Account, 'user')
     accounts: Account[];
+
+    @OneToMany(() => Video, 'user')
+    videos: Video[];
 }
