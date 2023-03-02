@@ -1,10 +1,16 @@
-import { Controller, Get, Param, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
 import { GetRandomVideosValidator } from './validators/get-random-videos.validator';
 import { Video } from './models/video.model';
 import { VideoResource } from './resources/video.resource';
+import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
+import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
+import { User } from '../users/models/user.model';
+import { UpdateVideoDto } from './dtos/update-video.dto';
+import { UpdateVideoValidator } from './validators/update-video.validator';
+import { UpdateVideoAction } from './actions/update-video.action';
 
 @Controller('videos')
 export class VideosController {
@@ -12,6 +18,7 @@ export class VideosController {
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         private readonly videosRandomizer: GetRandomVideosAction,
+        private readonly videoUpdater: UpdateVideoAction,
     ) {}
 
     @Get('/random')
@@ -31,4 +38,16 @@ export class VideosController {
 
         return new VideoResource(video, video.user);
     }
+
+    @Patch('/:publicId')
+    @UsePipes(UpdateVideoValidator)
+    public async update(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+        @Body() data: UpdateVideoDto,
+    ) {
+        await this.videoUpdater.run(video, data);
+
+        return new VideoResource(video, user);
+}
 }
