@@ -40,7 +40,7 @@ export class ProfileController {
             .loadOne();
 
         Object.assign(resource, {
-            balance: account.balance ? account.balance.toNumber() : 0,
+            balance: account ? account.balance.toNumber() : 0,
         });
 
         return {
