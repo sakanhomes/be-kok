@@ -15,6 +15,7 @@ import { GenerateNonceAction } from './actions/generate-nonce.action';
 import { ValidateNonceAction } from './actions/validate-nonce.action';
 import { RegisterUserAction } from './actions/register-user.action';
 import { APP_DOMAIN, AuthCookiesHelper } from './auth-cookies.helper';
+import { AnonymousStrategy } from '@app/core/auth/strategies/anonymous.strategy';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { APP_DOMAIN, AuthCookiesHelper } from './auth-cookies.helper';
     ],
     providers: [
         JwtStrategy,
+        AnonymousStrategy,
         GenerateNonceAction,
         ValidateNonceAction,
         RegisterUserAction,
