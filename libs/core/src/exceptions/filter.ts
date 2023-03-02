@@ -31,6 +31,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         UnprocessableException,
         ForbiddenException,
         TooManyRequestsException,
+        EntityNotFoundError,
     ];
 
     public constructor(private readonly logger: LoggerService) {}
