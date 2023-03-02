@@ -30,16 +30,3 @@ properties:
     example: 12345
   createdAt:
     $ref: ../types/timestamp.yaml
-  user:
-    type: object
-    properties:
-      address:
-        $ref: ../types/crypto/address.yaml
-      name:
-        type: string
-        nullable: true
-        example: John Smith
-      profileImage:
-        allOf:
-          - $ref: ../types/file_url.yaml
-          - nullable: true

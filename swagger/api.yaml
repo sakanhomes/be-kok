@@ -20,6 +20,10 @@ paths:
     $ref: ./routes/auth/Logout.yaml
   /me:
     $ref: ./routes/profile/CurrentUser.yaml
+  /users/{address}:
+    $ref: ./routes/users/User.yaml
+  /users/{address}/videos:
+    $ref: ./routes/users/UserVideos.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:
@@ -41,5 +45,7 @@ tags:
     description: Auth endpoints
   - name: Profile
     description: Current user profile
+  - name: Users
+    description: Users (creators)
   - name: Videos
     description: Videos endpoints

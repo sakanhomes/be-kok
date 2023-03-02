@@ -1,14 +1,12 @@
 get:
-  summary: Get video entity
+  summary: Get user by address
   tags:
-    - Videos
-  securitySchemes:
-    - accessTokenCookie: []
+    - Users
   parameters:
-    - $ref: ../../parameters/path/video_id.yaml
+    - $ref: ../../parameters/path/address.yaml
   responses:
     "200":
-      description: Video entity
+      description: User resource
       content:
         application/json:
           schema:
@@ -19,7 +17,7 @@ get:
                   data:
                     type: object
                     properties:
-                      video:
-                        $ref: ../../models/UserVideo.yaml
+                      user:
+                        $ref: ../../models/User.yaml
     "404":
       $ref: ../../responses/errors/NotFoundResponse.yaml

@@ -18,7 +18,7 @@ get:
                     type: object
                     properties:
                       user:
-                        $ref: ../../models/User.yaml
+                        $ref: ../../models/CurrentUser.yaml
 patch:
   summary: Update profile
   tags:
@@ -59,7 +59,7 @@ patch:
                     type: object
                     properties:
                       user:
-                        $ref: ../../models/User.yaml
+                        $ref: ../../models/CurrentUser.yaml
     "401":
       $ref: ../../responses/errors/UnauthorizedResponse.yaml
     "422":

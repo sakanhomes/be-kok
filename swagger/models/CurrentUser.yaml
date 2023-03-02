@@ -1,4 +1,4 @@
-title: User
+title: CurrentUser
 type: object
 properties:
   address:
@@ -19,15 +19,7 @@ properties:
     type: string
     nullable: true
     example: Long profile description
-  videosAmount:
-    type: integer
+  balance:
+    type: number
     min: 0
-    example: 12345
-  followersAmount:
-    type: integer
-    min: 0
-    example: 12345
-  followingsAmount:
-    type: integer
-    min: 0
-    example: 12345
+    example: 123.45

@@ -1,0 +1,6 @@
+description: Address
+name: address
+in: path
+required: true
+schema:
+  $ref: ../../types/crypto/address.yaml

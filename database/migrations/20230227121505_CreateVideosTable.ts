@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
         table.text('description').nullable().defaultTo(null);
         table.string('previewImage').notNullable();
         table.string('video').notNullable();
-        table.integer('viewAmount').unsigned().notNullable().defaultTo(0);
+        table.integer('viewsAmount').unsigned().notNullable().defaultTo(0);
         table.integer('likesAmount').unsigned().notNullable().defaultTo(0);
         table.integer('commentsAmount').unsigned().notNullable().defaultTo(0);
         table.boolean('isPublic').notNullable().defaultTo(true);

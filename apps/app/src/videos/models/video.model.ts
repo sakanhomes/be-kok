@@ -32,7 +32,7 @@ export class Video {
     video: string;
 
     @Column()
-    viewAmount: number;
+    viewsAmount: number;
 
     @Column()
     likesAmount: number;
@@ -49,6 +49,6 @@ export class Video {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, 'videos')
     user: User;
 }
