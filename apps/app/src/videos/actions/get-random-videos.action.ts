@@ -17,6 +17,7 @@ export class GetRandomVideosAction {
             .leftJoinAndSelect('video.user', 'user')
             .orderBy('RAND()')
             .limit(amount)
+            .where('video.isPublic = 1')
             .getMany();
     }
 }

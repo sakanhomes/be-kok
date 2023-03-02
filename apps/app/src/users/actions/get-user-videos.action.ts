@@ -15,6 +15,7 @@ export class GetUserVideos {
         return this.videos.find({
             where: {
                 userId: user.id,
+                isPublic: true,
             },
             order: {
                 createdAt: 'desc',

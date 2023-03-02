@@ -13,6 +13,8 @@ import { UpdateVideoValidator } from './validators/update-video.validator';
 import { UpdateVideoAction } from './actions/update-video.action';
 import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
+import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
+import { ForbiddenException } from '@app/core/exceptions/app/forbidden.exception';
 
 @Controller('videos')
 export class VideosController {
@@ -32,11 +34,16 @@ export class VideosController {
     }
 
     @Get('/:id')
-    public async entity(@Param('id') id: string) {
+    @OptionalJwtAuth()
+    public async entity(@CurrentUser() user: User | null, @Param('id') id: string) {
         const video = await this.videos.findOneOrFail({
             where: { publicId: id },
             relations: ['user'],
         });
+
+        if (!video.isPublic && !OwnershipVerifier.verify(user, video)) {
+            throw new ForbiddenException();
+        }
 
         return new VideoResource(video, video.user);
     }
@@ -54,5 +61,5 @@ export class VideosController {
         await this.videoUpdater.run(video, data);
 
         return new VideoResource(video, user);
-}
+    }
 }
