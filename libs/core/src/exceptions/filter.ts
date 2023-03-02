@@ -4,7 +4,7 @@ import {
     ArgumentsHost,
     LoggerService,
     HttpStatus,
-    ForbiddenException,
+    ForbiddenException as NestForbiddenException,
     NotFoundException as HttpNotFoundException,
     UnauthorizedException as NestUnauthorizedException,
     BadRequestException as NestBadRequestException,
@@ -12,6 +12,8 @@ import {
 import { Response } from 'express';
 import { EntityNotFoundError } from 'typeorm';
 import { ApplicationException } from './app/application.exception';
+import { ForbiddenException } from './app/forbidden.exception';
+import { ForbiddenException as HttpForbiddenException } from './http/forbidden.exception';
 import { NotFoundException } from './app/not-found.exception';
 import { UnprocessableException } from './app/unprocessable.exception';
 import { ValidationException } from './app/validation.exception';
@@ -29,9 +31,10 @@ export default class ExceptionFilter implements FilterContract<Error> {
         UnauthorizedException,
         NestUnauthorizedException,
         UnprocessableException,
-        ForbiddenException,
+        NestForbiddenException,
         TooManyRequestsException,
         EntityNotFoundError,
+        ForbiddenException,
     ];
 
     public constructor(private readonly logger: LoggerService) {}
@@ -50,7 +53,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
     protected transform(error: any): ServerErrorException {
         if (error instanceof HttpNotFoundException || error instanceof EntityNotFoundError) {
             return this.buildNotFoundException();
-        } else if (error instanceof ForbiddenException) {
+        } else if (error instanceof NestForbiddenException) {
             return new UnauthorizedException();
         } else if (error instanceof NestUnauthorizedException) {
             return new UnauthorizedException();
@@ -64,6 +67,8 @@ export default class ExceptionFilter implements FilterContract<Error> {
             return new BadRequestException(error.data, error.message);
         } else if (error instanceof NotFoundException) {
             return this.buildNotFoundException(error.data, error.message);
+        } else if (error instanceof ForbiddenException) {
+            return new HttpForbiddenException(error.data, error.message);
         } else if (error instanceof ApplicationException) {
             return new ServerErrorException(error.data, error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }

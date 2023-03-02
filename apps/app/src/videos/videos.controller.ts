@@ -11,6 +11,8 @@ import { User } from '../users/models/user.model';
 import { UpdateVideoDto } from './dtos/update-video.dto';
 import { UpdateVideoValidator } from './validators/update-video.validator';
 import { UpdateVideoAction } from './actions/update-video.action';
+import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
+import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 
 @Controller('videos')
 export class VideosController {
@@ -40,12 +42,15 @@ export class VideosController {
     }
 
     @Patch('/:publicId')
+    @JwtAuth()
     @UsePipes(UpdateVideoValidator)
     public async update(
         @CurrentUser() user: User,
         @Param('publicId', ResolveModelPipe) video: Video,
         @Body() data: UpdateVideoDto,
     ) {
+        OwnershipVerifier.verifyOrFail(user, video);
+
         await this.videoUpdater.run(video, data);
 
         return new VideoResource(video, user);
