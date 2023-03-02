@@ -17,7 +17,7 @@ export class UpdateSettingsValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
             key: Joi.string().allow(...this.settings).required(),
-            value: Joi.string().min(10).required(),
+            value: Joi.string().trim().min(10).required(),
             password: Joi.string().required(),
         });
     }

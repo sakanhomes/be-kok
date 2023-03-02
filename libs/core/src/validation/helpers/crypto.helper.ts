@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 
 export class Crypto {
     public static address(): Joi.StringSchema {
-        return Joi.string().length(42).required().custom(Crypto.isHex()).custom(Crypto.isAddress());
+        return Joi.string().trim().length(42).required().custom(Crypto.isHex()).custom(Crypto.isAddress());
     }
 
     public static isAddress(): Joi.CustomValidator {
