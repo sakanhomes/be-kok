@@ -1,0 +1,18 @@
+allOf:
+  - $ref: ./Video.yaml
+  - title: UserVideo
+    type: object
+    properties:
+      user:
+        type: object
+        properties:
+          address:
+            $ref: ../types/crypto/address.yaml
+          name:
+            type: string
+            nullable: true
+            example: John Smith
+          profileImage:
+            allOf:
+              - $ref: ../types/file_url.yaml
+              - nullable: true

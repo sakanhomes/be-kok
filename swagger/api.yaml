@@ -22,6 +22,8 @@ paths:
     $ref: ./routes/profile/CurrentUser.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
+  /users/{address}/videos:
+    $ref: ./routes/users/UserVideos.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:

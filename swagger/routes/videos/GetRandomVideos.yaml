@@ -27,6 +27,6 @@ get:
                       videos:
                         type: array
                         items:
-                          $ref: ../../models/Video.yaml
+                          $ref: ../../models/UserVideo.yaml
     "422":
       $ref: ../../responses/errors/ValidationErrorsResponse.yaml
