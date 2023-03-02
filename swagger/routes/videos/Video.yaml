@@ -23,3 +23,37 @@ get:
                         $ref: ../../models/UserVideo.yaml
     "404":
       $ref: ../../responses/errors/NotFoundResponse.yaml
+patch:
+  summary: Update video
+  tags:
+    - Videos
+  securitySchemes:
+    - accessTokenCookie: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            isPublic:
+              type: boolean
+              exampe: true
+  responses:
+    "200":
+      description: Video
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      video:
+                        $ref: ../../models/Video.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml
