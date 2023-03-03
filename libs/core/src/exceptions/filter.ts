@@ -35,6 +35,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         TooManyRequestsException,
         EntityNotFoundError,
         ForbiddenException,
+        NestBadRequestException,
     ];
 
     public constructor(private readonly logger: LoggerService) {}

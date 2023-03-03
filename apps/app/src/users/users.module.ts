@@ -5,6 +5,7 @@ import { Account } from '../accounts/models/account.model';
 import { Video } from '../videos/models/video.model';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
+import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { USER_SETTINGS_CONFIG } from './constants';
 import { UserSetting } from './models/user-setting.model';
@@ -17,6 +18,7 @@ import { UsersController } from './users.controller';
     providers: [
         UpdateUserAction,
         GetUserSettingsAction,
+        UpdateUserSettingsAction,
         GetUserVideos,
         {
             provide: USER_SETTINGS_CONFIG,

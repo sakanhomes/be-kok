@@ -6,9 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
+import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
+import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 
 @Controller('/me')
@@ -19,6 +21,7 @@ export class ProfileController {
         private readonly accounts: Repository<Account>,
         private readonly updater: UpdateUserAction,
         private readonly settingsGetter: GetUserSettingsAction,
+        private readonly settingsUpdater: UpdateUserSettingsAction,
     ) {}
 
     @Get('/')
@@ -39,6 +42,12 @@ export class ProfileController {
         const settings = await this.settingsGetter.run(user);
 
         return { settings };
+    }
+
+    @Patch('/settings')
+    @UsePipes(UpdateUserSettingsValidator)
+    public async updateSettings(@CurrentUser() user: User, @Body() data) {
+        await this.settingsUpdater.run(user, data);
     }
 
     private async userResponse(user: User) {
