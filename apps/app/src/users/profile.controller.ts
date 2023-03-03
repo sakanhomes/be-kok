@@ -5,6 +5,7 @@ import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
+import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
@@ -17,6 +18,7 @@ export class ProfileController {
         @InjectRepository(Account)
         private readonly accounts: Repository<Account>,
         private readonly updater: UpdateUserAction,
+        private readonly settingsGetter: GetUserSettingsAction,
     ) {}
 
     @Get('/')
@@ -30,6 +32,13 @@ export class ProfileController {
         await this.updater.run(user, data);
 
         return this.userResponse(user);
+    }
+
+    @Get('/settings')
+    public async getSettings(@CurrentUser() user: User) {
+        const settings = await this.settingsGetter.run(user);
+
+        return { settings };
     }
 
     private async userResponse(user: User) {
