@@ -16,8 +16,15 @@ import { __ } from '@app/core/helpers';
 export class ValidateNonceAction {
     public async run(user: User, signature: string) {
         const nonceHash = this.makeNonceHashBuffer(user.nonce);
-        const signatureParams = this.getSignatureParams(signature);
-        const address = this.recoverAddress(nonceHash, signatureParams);
+        let signatureParams: ECDSASignature;
+        let address: string;
+
+        try {
+            signatureParams = this.getSignatureParams(signature);
+            address = this.recoverAddress(nonceHash, signatureParams);
+        } catch (error) {
+            throw new UnprocessableException(__('errors.invalid-signature'));
+        }
 
         if (address.toLowerCase() !== user.address) {
             throw new UnprocessableException(__('errors.invalid-address'));
