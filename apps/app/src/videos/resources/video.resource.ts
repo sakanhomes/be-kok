@@ -24,6 +24,7 @@ export class VideoResource extends Resource {
             'viewsAmount',
             'likesAmount',
             'commentsAmount',
+            'isPublic',
         ]);
 
         const user = this.user ?? this.video.user ?? null;

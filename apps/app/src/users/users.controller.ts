@@ -1,3 +1,5 @@
+import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
+import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { onlyKeys } from '@app/core/helpers';
 import { ParseAddressPipe } from '@app/core/validation/pipes/parse-address.pipe';
 import { Controller, Get, Param } from '@nestjs/common';
@@ -25,9 +27,10 @@ export class UsersController {
     }
 
     @Get('/:address/videos')
-    public async videos(@Param('address', ParseAddressPipe) address: string) {
+    @OptionalJwtAuth()
+    public async videos(@CurrentUser() currentUser: User | null, @Param('address', ParseAddressPipe) address: string) {
         const user = await this.users.findOneByOrFail({ address });
-        const videos = await this.videosLoader.run(user);
+        const videos = await this.videosLoader.run(user, currentUser?.id !== user.id);
 
         return VideoResource.collection(videos);
     }

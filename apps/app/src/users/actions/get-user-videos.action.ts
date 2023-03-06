@@ -11,12 +11,17 @@ export class GetUserVideos {
         private readonly videos: Repository<Video>,
     ) {}
 
-    public run(user: User): Promise<Video[]> {
+    public run(user: User, publicOnly = true): Promise<Video[]> {
+        const conditions: Record<string, any> = {
+            userId: user.id,
+        };
+
+        if (publicOnly) {
+            conditions.isPublic = true;
+        }
+
         return this.videos.find({
-            where: {
-                userId: user.id,
-                isPublic: true,
-            },
+            where: conditions,
             order: {
                 createdAt: 'desc',
             },

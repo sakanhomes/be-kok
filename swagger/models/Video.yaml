@@ -30,3 +30,6 @@ properties:
     example: 12345
   createdAt:
     $ref: ../types/timestamp.yaml
+  isPublic:
+    type: boolean
+    example: true
