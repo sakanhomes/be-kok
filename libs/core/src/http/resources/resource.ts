@@ -2,7 +2,7 @@ import { Response } from '../response';
 import { ResouceCollection } from './resource-collection';
 
 export abstract class Resource {
-    public wrap: string | null = null;
+    public static wrap: string | null = null;
 
     public static collection(items: Array<any>, ...extra: any[]) {
         return new ResouceCollection(this, items, ...extra);
@@ -11,8 +11,9 @@ export abstract class Resource {
     public abstract data(): Record<string, any>
 
     public toResponse(): Response {
-        const data = this.wrap ? {
-            [this.wrap]: this.data(),
+        const wrap = (this.constructor as any).wrap;
+        const data = wrap ? {
+            [wrap]: this.data(),
         } : this.data();
 
         return new Response(data);
