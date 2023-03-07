@@ -51,7 +51,16 @@ export class ProfileController {
     }
 
     private async userResponse(user: User) {
-        const resource = onlyKeys(user, ['address', 'name', 'profileImage', 'backgroundImage', 'description']);
+        const resource = onlyKeys(user, [
+            'address',
+            'name',
+            'profileImage',
+            'backgroundImage',
+            'description',
+            'videosAmount',
+            'followersAmount',
+            'followingsAmount',
+        ]);
         const account: Account | null = await this.accounts.createQueryBuilder()
             .relation(User, 'accounts')
             .of(user)
