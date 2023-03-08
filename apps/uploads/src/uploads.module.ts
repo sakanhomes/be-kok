@@ -1,9 +1,10 @@
 import { PlainJwtStrategy } from '@app/core/auth/strategies/plain-jwt.strategy';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { CoreModule } from '@app/core/core.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { text } from 'body-parser';
 import { Upload } from './models/upload.model';
 
 @Module({
@@ -24,4 +25,19 @@ import { Upload } from './models/upload.model';
         },
     ],
 })
-export class UploadsModule {}
+export class UploadsModule implements NestModule {
+    public constructor(private readonly config: ConfigService) {}
+
+    public configure(consumer: MiddlewareConsumer) {
+        consumer.apply(text({
+            limit: this.config.get('uploads.singleUploadMaxSize'),
+            type: () => true,
+        })).forRoutes('/uploads/single');
+
+        consumer.apply(text({
+            limit: this.config.get('uploads.multipartUploadMaxSize'),
+            type: () => true,
+        })).exclude('/uploads/single')
+            .forRoutes('/uploads/*');
+    }
+}

@@ -22,6 +22,7 @@ import { ServerErrorException } from './http/server-error.exception';
 import { TooManyRequestsException } from './http/too-many-requests.exception';
 import { UnauthorizedException } from './http/unauthorized.exception';
 import { UnprocessableEntityException } from './http/unprocessable-entity.exception';
+import { PayloadTooLarge } from 'http-errors';
 
 @Catch()
 export default class ExceptionFilter implements FilterContract<Error> {
@@ -36,6 +37,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         EntityNotFoundError,
         ForbiddenException,
         NestBadRequestException,
+        PayloadTooLarge,
     ];
 
     public constructor(private readonly logger: LoggerService) {}
@@ -60,6 +62,11 @@ export default class ExceptionFilter implements FilterContract<Error> {
             return new UnauthorizedException();
         } else if (error instanceof NestBadRequestException) {
             return new BadRequestException({}, error.message);
+        } else if (error instanceof PayloadTooLarge) {
+            return new BadRequestException({
+                size: error.length ?? undefined,
+                limit: error.limit ?? undefined,
+            }, 'Payload Too Large', HttpStatus.PAYLOAD_TOO_LARGE);
         }
 
         if (error instanceof ValidationException) {
