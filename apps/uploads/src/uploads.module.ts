@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { text } from 'body-parser';
 import { Upload } from './models/upload.model';
+import { UploadsController } from './uploads.controller';
 import * as path from 'path';
 
 @Module({
@@ -29,6 +30,7 @@ import * as path from 'path';
             ),
         },
     ],
+    controllers: [UploadsController],
 })
 export class UploadsModule implements NestModule {
     public constructor(private readonly config: ConfigService) {}
