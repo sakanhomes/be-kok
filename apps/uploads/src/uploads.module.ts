@@ -1,3 +1,4 @@
+import { PlainJwtStrategy } from '@app/core/auth/strategies/plain-jwt.strategy';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { CoreModule } from '@app/core/core.module';
 import { Module } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { Upload } from './models/upload.model';
         TypeOrmModule.forFeature([Upload]),
     ],
     providers: [
+        PlainJwtStrategy,
         {
             provide: AwsS3Service,
             inject: [ConfigService],
