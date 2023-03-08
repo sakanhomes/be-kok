@@ -8,7 +8,7 @@ export class Upload {
     id: string;
 
     @Column()
-    ownerAddress: string;
+    owner: string;
 
     @Column({
         type: 'tinyint',
@@ -21,7 +21,10 @@ export class Upload {
     status: UploadStatus;
 
     @Column()
-    chunkSize: number | null;
+    filename: string;
+
+    @Column()
+    chunkSize: number | null | null;
 
     @CreateDateColumn()
     createdAt: Date;
@@ -30,5 +33,5 @@ export class Upload {
     updatedAt: Date;
 
     @Column()
-    lastChunkAt: Date;
+    lastChunkAt: Date | null = null;
 }
