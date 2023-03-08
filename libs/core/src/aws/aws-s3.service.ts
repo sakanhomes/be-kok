@@ -1,36 +1,22 @@
 import {
     AbortMultipartUploadCommand,
-    CompletedPart,
     CompleteMultipartUploadCommand,
     CreateMultipartUploadCommand,
+    DeleteObjectCommand,
     PutObjectCommand,
     S3Client,
     UploadPartCommand,
 } from '@aws-sdk/client-s3';
+import {
+    AwsS3ServiceInterface,
+    CompleteUploadParams,
+    MultipartUploadParams,
+    ObjectIdentifier,
+    ObjectParams,
+    UploadPartParams,
+} from './aws-s3.interface';
 
-type ObjectParams = {
-    Bucket: string;
-    Key: string;
-    ContentType: string;
-    Metadata?: Record<string, string>;
-}
-
-type UploadPartParams = ObjectParams & {
-    UploadId: string;
-    PartNumber: number;
-}
-
-type MultipartUploadParams = {
-    Bucket: string;
-    Key: string;
-    UploadId: string;
-}
-
-type CompleteUploadParams = MultipartUploadParams & {
-    Parts: CompletedPart[];
-}
-
-export class AwsS3Service {
+export class AwsS3Service implements AwsS3ServiceInterface {
     private readonly client: S3Client;
 
     public constructor(region: string, accessKeyId: string, secretAccessKey: string) {
@@ -79,5 +65,9 @@ export class AwsS3Service {
 
     public async abortUpload(params: MultipartUploadParams): Promise<void> {
         await this.client.send(new AbortMultipartUploadCommand(params));
+    }
+
+    public async delete(params: ObjectIdentifier): Promise<void> {
+        await this.client.send(new DeleteObjectCommand(params));
     }
 }

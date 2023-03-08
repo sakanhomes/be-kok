@@ -1,11 +1,13 @@
 import { PlainJwtStrategy } from '@app/core/auth/strategies/plain-jwt.strategy';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
+import { LocalAwsS3Service } from '@app/core/aws/local-s3.service';
 import { CoreModule } from '@app/core/core.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { text } from 'body-parser';
 import { Upload } from './models/upload.model';
+import * as path from 'path';
 
 @Module({
     imports: [
@@ -16,11 +18,14 @@ import { Upload } from './models/upload.model';
         PlainJwtStrategy,
         {
             provide: AwsS3Service,
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => new AwsS3Service(
-                config.get('services.aws-s3.region'),
-                config.get('services.aws-s3.key'),
-                config.get('services.aws-s3.secret'),
+            // inject: [ConfigService],
+            // useFactory: (config: ConfigService) => new AwsS3Service(
+            //     config.get('services.aws-s3.region'),
+            //     config.get('services.aws-s3.key'),
+            //     config.get('services.aws-s3.secret'),
+            // ),
+            useValue: new LocalAwsS3Service(
+                path.join(process.cwd(), 'storage/aws-local'),
             ),
         },
     ],
