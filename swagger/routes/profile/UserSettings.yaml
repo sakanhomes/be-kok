@@ -53,7 +53,29 @@ patch:
               nullable: true
   responses:
     "200":
-      $ref: ../../responses/EmptyResponse.yaml
+      description: Current user settings
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      settings:
+                        type: object
+                        additionalProperties:
+                          oneOf:
+                            - type: string
+                              nullable: true
+                            - type: number
+                              nullable: true
+                            - type: boolean
+                              nullable: true
+                            - type: object
+                              nullable: true
     "401":
       $ref: ../../responses/errors/UnauthorizedResponse.yaml
     "422":

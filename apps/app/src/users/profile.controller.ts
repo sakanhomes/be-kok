@@ -48,6 +48,10 @@ export class ProfileController {
     @UsePipes(UpdateUserSettingsValidator)
     public async updateSettings(@CurrentUser() user: User, @Body() data) {
         await this.settingsUpdater.run(user, data);
+
+        const settings = await this.settingsGetter.run(user);
+
+        return { settings };
     }
 
     private async userResponse(user: User) {
