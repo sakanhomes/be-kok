@@ -4,4 +4,5 @@ export enum UploadStatus {
     uploaded,
     aborted,
     completed,
+    failed,
 }

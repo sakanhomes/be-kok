@@ -1,4 +1,5 @@
 import * as util from 'util';
+import * as path from 'path';
 import { TranslateOptions, I18nContext } from 'nestjs-i18n';
 
 /**
@@ -121,4 +122,8 @@ export function keyBy<T = Record<string, any>>(items: T[], key: string): Record<
     }
 
     return map;
+}
+
+export function fileExtension(file: string): string {
+    return path.extname(file).replace('.', '').toLowerCase();
 }

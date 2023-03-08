@@ -16,5 +16,9 @@ export default () => ({
         console: {
             driver: 'console',
         },
+        uploads: {
+            driver: 'daily',
+            file: path.join(dir, 'uploads/uploads.log'),
+        },
     },
 });
