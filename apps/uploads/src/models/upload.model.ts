@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
+import { UploadPart } from './upload-part.model';
 
 @Entity('uploads')
 export class Upload {
@@ -37,4 +38,7 @@ export class Upload {
 
     @Column()
     lastChunkAt: Date | null = null;
+
+    @OneToMany(() => UploadPart, 'user')
+    parts: UploadPart[] | null;
 }
