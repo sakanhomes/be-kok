@@ -6,12 +6,12 @@ import LoggingModule from '@app/core/logging/logging.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { text } from 'body-parser';
 import { VIDEO_BUCKET } from './constants';
 import { Upload } from './models/upload.model';
 import { UploadsController } from './uploads.controller';
 import * as path from 'path';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
+import { storeUploadsToDisk } from './middleware/store-uploads-to-disk.middleware';
 
 @Module({
     imports: [
@@ -46,14 +46,16 @@ export class UploadsModule implements NestModule {
     public constructor(private readonly config: ConfigService) {}
 
     public configure(consumer: MiddlewareConsumer) {
-        consumer.apply(text({
+        const uploadsDir = path.join(process.cwd(), '/storage/uploads');
+
+        consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.singleUploadMaxSize'),
-            type: () => true,
+            dir: uploadsDir,
         })).forRoutes('/uploads/single');
 
-        consumer.apply(text({
+        consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.multipartUploadMaxSize'),
-            type: () => true,
+            dir: uploadsDir,
         })).exclude('/uploads/single')
             .forRoutes('/uploads/*');
     }
