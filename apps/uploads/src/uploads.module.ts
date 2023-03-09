@@ -6,12 +6,13 @@ import LoggingModule from '@app/core/logging/logging.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { VIDEO_BUCKET } from './constants';
+import { UPLOADS_CONFIG, VIDEO_BUCKET } from './constants';
 import { Upload } from './models/upload.model';
 import { UploadsController } from './uploads.controller';
 import * as path from 'path';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
 import { storeUploadsToDisk } from './middleware/store-uploads-to-disk.middleware';
+import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
 
 @Module({
     imports: [
@@ -33,12 +34,18 @@ import { storeUploadsToDisk } from './middleware/store-uploads-to-disk.middlewar
             ),
         },
         {
+            provide: UPLOADS_CONFIG,
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => config.get('uploads'),
+        },
+        {
             provide: VIDEO_BUCKET,
             inject: [ConfigService],
             useFactory: (config: ConfigService) => config.get('uploads.awsBucket'),
         },
         LoggingModule.channel('uploads'),
         UploadSingleFileAction,
+        CreateMultipartUploadAction,
     ],
     controllers: [UploadsController],
 })
@@ -53,6 +60,7 @@ export class UploadsModule implements NestModule {
             dir: uploadsDir,
         })).forRoutes('/uploads/single');
 
+        // TODO Apply only to part upload endpoint
         consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.multipartUploadMaxSize'),
             dir: uploadsDir,

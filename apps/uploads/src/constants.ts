@@ -1,1 +1,2 @@
+export const UPLOADS_CONFIG = 'UPLOADS_CONFIG';
 export const VIDEO_BUCKET = 'VIDEO_BUCKET';
