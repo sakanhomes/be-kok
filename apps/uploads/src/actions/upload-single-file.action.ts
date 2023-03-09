@@ -10,6 +10,7 @@ import { FileExcensionChecker } from '../file-extension-checker';
 import { Upload } from '../models/upload.model';
 import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
+import * as fs from 'fs';
 
 @Injectable()
 export class UploadSingleFileAction {
@@ -23,9 +24,15 @@ export class UploadSingleFileAction {
         private readonly bucket: string,
     ) {}
 
-    public async run(owner: string, name: string, content: string): Promise<Upload> {
-        this.ensureContentIsNotEmpty(content);
-        this.ensureFileExtensionIsSupported(name);
+    public async run(owner: string, name: string, filepath: string): Promise<Upload> {
+        try {
+            await this.ensureContentIsNotEmpty(filepath);
+            this.ensureFileExtensionIsSupported(name);
+        } catch (error) {
+            await this.removeFileOrLog(filepath);
+
+            throw error;
+        }
 
         const id = randomString(64);
         const extension = fileExtension(name);
@@ -39,13 +46,15 @@ export class UploadSingleFileAction {
 
         await this.uploads.save(upload);
 
-        this.uploadInBackground(upload, content);
+        this.uploadInBackground(upload, filepath);
 
         return upload;
     }
 
-    private async uploadInBackground(upload: Upload, content: string): Promise<void> {
+    private async uploadInBackground(upload: Upload, filepath: string): Promise<void> {
         try {
+            const content = await fs.promises.readFile(filepath);
+
             await this.aws.upload({
                 Bucket: this.bucket,
                 Key: upload.filename,
@@ -65,7 +74,19 @@ export class UploadSingleFileAction {
             upload.status = UploadStatus.failed;
         }
 
-        await this.uploads.save(upload);
+        Promise.all([
+            this.uploads.save(upload),
+            this.removeFileOrLog(filepath),
+        ]);
+    }
+
+    private async removeFileOrLog(filepath: string): Promise<void> {
+        try {
+            await fs.promises.unlink(filepath);
+        } catch (error) {
+            this.logger.error(`Failed to remove file [${filepath}]: ${error?.message}`, { filepath });
+            this.logger.error(error);
+        }
     }
 
     private ensureFileExtensionIsSupported(name: string) {
@@ -74,8 +95,10 @@ export class UploadSingleFileAction {
         }
     }
 
-    private ensureContentIsNotEmpty(content: string) {
-        if (!content.length) {
+    private async ensureContentIsNotEmpty(filepath: string) {
+        const stat = await fs.promises.stat(filepath);
+
+        if (!stat.size) {
             throw new UnprocessableException('Empty payload');
         }
     }

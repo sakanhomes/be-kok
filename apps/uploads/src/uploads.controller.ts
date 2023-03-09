@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
+import { HasUpload } from './middleware/store-uploads-to-disk.middleware';
 import { Upload } from './models/upload.model';
 import { UploadResource } from './resources/upload.resource';
 import { UploadSingleFileValidator } from './validators/upload-single-file.validator';
@@ -34,11 +35,11 @@ export class UploadsController {
     @HttpCode(200)
     @UsePipes(UploadSingleFileValidator)
     public async singleUpload(
-        @Req() request: Request,
+        @Req() request: HasUpload<Request>,
         @PlainJwtPayload('address') owner: string,
         @Query() { name }: { name: string },
     ) {
-        const upload = await this.singleUploader.run(owner, name, request.body);
+        const upload = await this.singleUploader.run(owner, name, request.upload.file);
 
         return new UploadResource(upload);
     }
