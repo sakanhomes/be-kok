@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
+import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { UploadPartAction } from './actions/upload-part.action';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
 import { CreateMultipartUploadDto } from './dtos/create-multipart-upload.dto';
@@ -23,6 +24,7 @@ export class UploadsController {
         @InjectRepository(Upload)
         private readonly uploads: Repository<Upload>,
         private readonly singleUploader: UploadSingleFileAction,
+        private readonly partsLoader: GetUploadPartsAction,
         private readonly multipartUploadCreator: CreateMultipartUploadAction,
         private readonly multipartUploader: UploadPartAction,
     ) {}
@@ -64,6 +66,13 @@ export class UploadsController {
         return new UploadResource(upload);
     }
 
+    @Get('/:publicId')
+    public async getUpload(@Param('publicId', ResolveModelPipe) upload: Upload) {
+        const parts = await this.partsLoader.run(upload);
+
+        return new UploadResource(upload, parts);
+    }
+
     @Post('/:publicId/:part')
     @HttpCode(200)
     public async uploadPart(
@@ -73,7 +82,8 @@ export class UploadsController {
         @Param('part', new ParsePositiveIntPipe({ allowZero: true })) part: number,
     ) {
         upload = await this.multipartUploader.run(upload, part, request.upload);
+        const parts = await this.partsLoader.run(upload);
 
-        return new UploadResource(upload);
+        return new UploadResource(upload, parts);
     }
 }

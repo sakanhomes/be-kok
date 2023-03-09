@@ -15,6 +15,7 @@ import { storeUploadsToDisk } from './middleware/store-uploads-to-disk.middlewar
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
 import { UploadPartAction } from './actions/upload-part.action';
 import { UploadPart } from './models/upload-part.model';
+import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { UploadPart } from './models/upload-part.model';
         },
         LoggingModule.channel('uploads'),
         UploadSingleFileAction,
+        GetUploadPartsAction,
         CreateMultipartUploadAction,
         UploadPartAction,
     ],
@@ -63,11 +65,9 @@ export class UploadsModule implements NestModule {
             dir: uploadsDir,
         })).forRoutes('/uploads/single');
 
-        // TODO Apply only to part upload endpoint
         consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.multipartUploadMaxSize'),
             dir: uploadsDir,
-        })).exclude('/uploads/single')
-            .forRoutes('/uploads/*');
+        })).forRoutes('/uploads/*/*');
     }
 }
