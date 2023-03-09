@@ -2,7 +2,8 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable('uploads', table => {
-        table.string('id').primary().notNullable();
+        table.bigIncrements('id').primary().notNullable();
+        table.string('publicId').notNullable();
         table.string('owner').notNullable();
         table.tinyint('type').unsigned().notNullable();
         table.tinyint('status').unsigned().notNullable();
@@ -11,6 +12,8 @@ export async function up(knex: Knex): Promise<void> {
         table.timestamp('createdAt').notNullable();
         table.timestamp('updatedAt').notNullable();
         table.timestamp('lastChunkAt').nullable().defaultTo(null);
+
+        table.unique(['publicId']);
     });
 }
 

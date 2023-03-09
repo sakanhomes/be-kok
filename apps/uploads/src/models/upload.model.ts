@@ -1,11 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
 
 @Entity('uploads')
 export class Upload {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: string;
+
+    @Column()
+    publicId: string;
 
     @Column()
     owner: string;

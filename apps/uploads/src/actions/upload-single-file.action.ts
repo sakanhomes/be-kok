@@ -40,7 +40,7 @@ export class UploadSingleFileAction {
         const id = this.helper.generateUploadId();
         const extension = fileExtension(name);
         const upload = this.uploads.create({
-            id,
+            publicId: id,
             owner,
             type: UploadType.single,
             status: UploadStatus.created,

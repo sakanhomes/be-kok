@@ -13,13 +13,13 @@ export class UploadResource extends Resource {
 
     public data(): Record<string, any> {
         const resource = onlyKeys(this.upload, [
-            'id',
-            'owner',,
+            'owner',
             'filename',
             'chunkSize',
         ]);
 
         Object.assign(resource, {
+            id: this.upload.publicId,
             type: UploadType[this.upload.type],
             status: UploadStatus[this.upload.status],
             createdAt: unixtime(this.upload.createdAt.getTime()),

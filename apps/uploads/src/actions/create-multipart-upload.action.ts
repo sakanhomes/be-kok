@@ -30,6 +30,7 @@ export class CreateMultipartUploadAction {
 
     public async run(owner: string, data: CreateMultipartUploadDto): Promise<Upload> {
         this.ensureSizeSatisfiesMinLimit(data.size);
+        this.helper.ensureFileExtensionIsSupported(data.name);
 
         const key = this.helper.generateUploadId();
         const extension = fileExtension(data.name);
@@ -42,7 +43,7 @@ export class CreateMultipartUploadAction {
         });
 
         try {
-            upload.id = await this.aws.createUpload({
+            upload.publicId = await this.aws.createUpload({
                 Bucket: this.config.awsBucket,
                 Key: upload.filename,
                 ContentType: 'video/mp4',
@@ -53,6 +54,8 @@ export class CreateMultipartUploadAction {
         } catch (error) {
             this.logger.error(`Failed to create multipart upload on AWS S3: ${error?.message}`, { data, upload });
             this.logger.error(error);
+
+            throw error;
         }
 
         return await this.uploads.save(upload);
