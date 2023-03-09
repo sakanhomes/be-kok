@@ -15,7 +15,7 @@ export type Options = {
 }
 
 export type Upload = {
-    file: string,
+    path: string,
     size: number;
 }
 
@@ -62,7 +62,7 @@ export class StoreUploadsToDiskMiddleware implements NestMiddleware {
         const stat = await fs.promises.stat(filepath);
 
         request.upload = {
-            file: filepath,
+            path: filepath,
             size: stat.size,
         };
 

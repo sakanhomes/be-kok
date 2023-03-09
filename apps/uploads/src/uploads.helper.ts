@@ -3,6 +3,7 @@ import { LoggerService } from '@nestjs/common';
 import { FileExcensionChecker } from './file-extension-checker';
 import * as fs from 'fs';
 import { randomString } from '@app/core/helpers';
+import { Upload as UploadedFile } from './middleware/store-uploads-to-disk.middleware';
 
 export class UploadsHelper {
     public constructor(private readonly logger?: LoggerService) {}
@@ -20,16 +21,14 @@ export class UploadsHelper {
         }
     }
 
-    public ensureFileExtensionIsSupported(name: string) {
+    public ensureFileExtensionIsSupported(name: string): void {
         if (!FileExcensionChecker.isVideo(name)) {
             throw new UnprocessableException('Unsupported file type');
         }
     }
 
-    public async ensureContentIsNotEmpty(filepath: string) {
-        const stat = await fs.promises.stat(filepath);
-
-        if (!stat.size) {
+    public ensureContentIsNotEmpty(file: UploadedFile): void {
+        if (!file.size) {
             throw new UnprocessableException('Empty payload');
         }
     }

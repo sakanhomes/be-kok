@@ -43,7 +43,7 @@ export class UploadsController {
         @PlainJwtPayload('address') owner: string,
         @Query() { name }: { name: string },
     ) {
-        const upload = await this.singleUploader.run(owner, name, request.upload.file);
+        const upload = await this.singleUploader.run(owner, name, request.upload);
 
         return new UploadResource(upload);
     }

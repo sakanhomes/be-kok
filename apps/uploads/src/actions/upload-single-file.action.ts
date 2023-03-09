@@ -10,6 +10,7 @@ import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
 import { UploadsHelper } from '../uploads.helper';
+import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
 
 @Injectable()
 export class UploadSingleFileAction {
@@ -27,12 +28,12 @@ export class UploadSingleFileAction {
         this.helper = new UploadsHelper;
     }
 
-    public async run(owner: string, name: string, filepath: string): Promise<Upload> {
+    public async run(owner: string, name: string, file: UploadedFile): Promise<Upload> {
         try {
-            await this.helper.ensureContentIsNotEmpty(filepath);
+            this.helper.ensureContentIsNotEmpty(file);
             this.helper.ensureFileExtensionIsSupported(name);
         } catch (error) {
-            await this.helper.removeFileOrLog(filepath);
+            await this.helper.removeFileOrLog(file.path);
 
             throw error;
         }
@@ -49,7 +50,7 @@ export class UploadSingleFileAction {
 
         await this.uploads.save(upload);
 
-        this.uploadInBackground(upload, filepath);
+        this.uploadInBackground(upload, file.path);
 
         return upload;
     }
