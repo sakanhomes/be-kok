@@ -3,6 +3,8 @@ import { LoggerService } from '@nestjs/common';
 import { FileExcensionChecker } from './file-extension-checker';
 import * as fs from 'fs';
 import { randomString } from '@app/core/helpers';
+import { Upload } from './models/upload.model';
+import { UploadStatus } from './enums/upload-status.enum';
 import { Upload as UploadedFile } from './middleware/store-uploads-to-disk.middleware';
 
 export class UploadsHelper {
@@ -10,6 +12,10 @@ export class UploadsHelper {
 
     public generateUploadId(): string {
         return randomString(64);
+    }
+
+    public getPartsAmount(upload: Upload): number {
+        return Math.ceil(upload.size / upload.chunkSize);
     }
 
     public async removeFileOrLog(filepath: string): Promise<void> {
@@ -30,6 +36,37 @@ export class UploadsHelper {
     public ensureContentIsNotEmpty(file: UploadedFile): void {
         if (!file.size) {
             throw new UnprocessableException('Empty payload');
+        }
+    }
+
+    public ensureUploadIsntFinished(upload: Upload): void {
+        if (![UploadStatus.created, UploadStatus.uploading].includes(upload.status)) {
+            throw new UnprocessableException('All chunks already uploaded');
+        }
+    }
+
+    public ensurePartNumberIsValid(upload: Upload, part: number): void {
+        const totalParts = this.getPartsAmount(upload);
+
+        if (part >= totalParts) {
+            throw new UnprocessableException('Invalid chunk number', {
+                totalParts,
+            });
+        }
+    }
+
+    public ensureChunkSizeIsValid(upload: Upload, chunkNumber: number, chunkSize: number): void {
+        const totalParts = this.getPartsAmount(upload);
+
+        if (chunkNumber === totalParts - 1) {
+            return;
+        }
+
+        if (chunkSize !== upload.chunkSize) {
+            throw new UnprocessableException('Invalid chunk size', {
+                requiredChunkSize: upload.chunkSize,
+                actualChunkSize: chunkSize,
+            });
         }
     }
 }

@@ -13,11 +13,13 @@ import * as path from 'path';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
 import { storeUploadsToDisk } from './middleware/store-uploads-to-disk.middleware';
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
+import { UploadPartAction } from './actions/upload-part.action';
+import { UploadPart } from './models/upload-part.model';
 
 @Module({
     imports: [
         CoreModule.forRoot(),
-        TypeOrmModule.forFeature([Upload]),
+        TypeOrmModule.forFeature([Upload, UploadPart]),
     ],
     providers: [
         PlainJwtStrategy,
@@ -46,6 +48,7 @@ import { CreateMultipartUploadAction } from './actions/create-multipart-upload.a
         LoggingModule.channel('uploads'),
         UploadSingleFileAction,
         CreateMultipartUploadAction,
+        UploadPartAction,
     ],
     controllers: [UploadsController],
 })

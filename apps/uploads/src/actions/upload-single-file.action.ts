@@ -79,7 +79,7 @@ export class UploadSingleFileAction {
             upload.status = UploadStatus.failed;
         }
 
-        Promise.all([
+        await Promise.all([
             this.uploads.save(upload),
             this.helper.removeFileOrLog(filepath),
         ]);

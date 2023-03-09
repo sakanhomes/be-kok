@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { PartStatus } from '../enums/part-status.enum';
 import { Upload } from './upload.model';
 
 @Entity('upload_parts')
@@ -12,7 +13,7 @@ export class UploadPart {
     @Column({
         type: 'tinyint',
     })
-    status: UploadPart;
+    status: PartStatus;
 
     @CreateDateColumn()
     createdAt: Date;
@@ -20,6 +21,6 @@ export class UploadPart {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => UploadPart, 'parts')
+    @ManyToOne(() => Upload, 'parts')
     upload: Upload;
 }
