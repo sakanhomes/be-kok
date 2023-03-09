@@ -39,6 +39,7 @@ export class CreateMultipartUploadAction {
             type: UploadType.multipart,
             status: UploadStatus.created,
             filename: `${key}.${extension}`,
+            size: data.size,
             chunkSize: 15 * 2 ** 20, // 15 MiB
         });
 

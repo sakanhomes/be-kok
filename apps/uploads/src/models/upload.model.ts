@@ -28,7 +28,10 @@ export class Upload {
     filename: string;
 
     @Column()
-    chunkSize: number | null | null;
+    size: number;
+
+    @Column()
+    chunkSize: number | null;
 
     @CreateDateColumn()
     createdAt: Date;

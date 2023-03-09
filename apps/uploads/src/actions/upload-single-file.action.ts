@@ -46,6 +46,7 @@ export class UploadSingleFileAction {
             type: UploadType.single,
             status: UploadStatus.created,
             filename: `${id}.${extension}`,
+            size: file.size,
         });
 
         await this.uploads.save(upload);
