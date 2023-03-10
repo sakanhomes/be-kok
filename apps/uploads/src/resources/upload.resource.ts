@@ -1,6 +1,6 @@
 import { onlyKeys, unixtime } from '@app/core/helpers';
 import { Resource } from '@app/core/http/resources/resource';
-import { PartStatus } from '../enums/part-status.enum';
+import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
 import { UploadPart } from '../models/upload-part.model';
@@ -37,7 +37,7 @@ export class UploadResource extends Resource {
         const map = {};
 
         for (const part of parts) {
-            map[part.part] = PartStatus[part.status];
+            map[part.part] = UploadPartStatus[part.status];
         }
 
         return map;

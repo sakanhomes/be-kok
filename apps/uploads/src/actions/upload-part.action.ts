@@ -10,7 +10,7 @@ import * as fs from 'fs';
 import { UploadsHelper } from '../uploads.helper';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
 import { UploadPart } from '../models/upload-part.model';
-import { PartStatus } from '../enums/part-status.enum';
+import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 
@@ -37,11 +37,11 @@ export class UploadPartAction {
 
         const part = await this.getPartOrFail(upload, partNumber);
 
-        part.status = PartStatus.uploading;
+        part.status = UploadPartStatus.uploading;
         await this.lockPart(part, async (manager, part) => {
             this.ensurePartCanBeUploaded(part);
 
-            part.status = PartStatus.uploading;
+            part.status = UploadPartStatus.uploading;
 
             await manager.save(part);
         });
@@ -52,7 +52,7 @@ export class UploadPartAction {
     }
 
     private async uploadInBackground(upload: Upload, part: UploadPart, filepath: string): Promise<void> {
-        let newPartStatus: PartStatus;
+        let newPartStatus: UploadPartStatus;
         let eTag: string | null = null;
 
         try {
@@ -69,14 +69,14 @@ export class UploadPartAction {
                 },
             }, content);
 
-            newPartStatus = PartStatus.uploaded;
+            newPartStatus = UploadPartStatus.uploaded;
         } catch (error) {
             this.logger.error(`Failed to upload part to AWS S3: ${error?.message}`, {
                 upload,
             });
             this.logger.error(error);
 
-            newPartStatus = PartStatus.failed;
+            newPartStatus = UploadPartStatus.failed;
         }
 
         part.status = newPartStatus;
@@ -101,7 +101,7 @@ export class UploadPartAction {
             await this.parts.insert({
                 uploadId: upload.id,
                 part,
-                status: PartStatus.created,
+                status: UploadPartStatus.created,
                 createdAt: Date.now(),
                 updatedAt: Date.now(),
                 upload: null,
@@ -139,7 +139,7 @@ export class UploadPartAction {
     }
 
     private ensurePartCanBeUploaded(part: UploadPart): void {
-        if (![PartStatus.created, PartStatus.failed].includes(part.status)) {
+        if (![UploadPartStatus.created, UploadPartStatus.failed].includes(part.status)) {
             throw new UnprocessableException(`Part ${part.part} is already uploaded`);
         }
     }
