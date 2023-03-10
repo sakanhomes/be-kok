@@ -32,6 +32,8 @@ export class AbortMultipartUploadAction {
     }
 
     public async run(upload: Upload): Promise<Upload> {
+        this.helper.ensureUploadIsMultipart(upload);
+
         await this.markUploadAsAborted(upload);
 
         this.abortInBackground(upload);

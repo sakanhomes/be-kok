@@ -133,6 +133,7 @@ export class UploadPartAction {
 
     private async performChecks(upload: Upload, part: number, file: UploadedFile): Promise<void> {
         try {
+            this.helper.ensureUploadIsMultipart(upload);
             this.helper.ensureContentIsNotEmpty(file);
             this.helper.ensureUploadIsntFinished(upload);
             this.helper.ensurePartNumberIsValid(upload, part);

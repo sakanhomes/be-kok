@@ -32,6 +32,7 @@ export class CompleteMultipartUploadAction {
     }
 
     public async run(upload: Upload): Promise<Upload> {
+        this.helper.ensureUploadIsMultipart(upload);
         this.helper.ensureUploadIsntFinished(upload);
         await this.helper.ensureAllPartsAreUploaded(upload);
 

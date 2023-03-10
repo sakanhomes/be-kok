@@ -10,6 +10,7 @@ import { UploadPart } from './models/upload-part.model';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 import { Repository } from 'typeorm';
 import { UploadPartStatus } from './enums/upload-part-status.enum';
+import { UploadType } from './enums/upload-type.enum';
 
 type UploadsHelperOptions = {
     logger?: LoggerService,
@@ -77,6 +78,12 @@ export class UploadsHelper {
     public ensureUploadIsntFinished(upload: Upload): void {
         if (![UploadStatus.created, UploadStatus.uploading].includes(upload.status)) {
             throw new UnprocessableException('Upload is already finished');
+        }
+    }
+
+    public ensureUploadIsMultipart(upload: Upload): void {
+        if (upload.type !== UploadType.multipart) {
+            throw new UnprocessableException('Upload must be of type "multipart"');
         }
     }
 
