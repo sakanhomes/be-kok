@@ -6,4 +6,10 @@ export default () => ({
     singleUploadMaxSize: 5 * FileSize.MB,
     multipartUploadMaxSize: 50 * FileSize.MB,
     abandonedUploadsTtl: Time.day,
+    enableAbandonedUploadsRemover: process.env.ENABLE_ABANDONED_UPLOADS_REMOVER
+        ? process.env.ENABLE_ABANDONED_UPLOADS_REMOVER === 'true'
+        : true,
+    enableLocalAwsStub: process.env.ENABLE_LOCAL_AWS_STUB
+        ? process.env.ENABLE_LOCAL_AWS_STUB === 'true'
+        : false,
 });

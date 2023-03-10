@@ -29,15 +29,18 @@ import { RemoveAbandonedUploadsJob } from './jobs/remove-abandoned-uploads.job';
         PlainJwtStrategy,
         {
             provide: AwsS3Service,
-            // inject: [ConfigService],
-            // useFactory: (config: ConfigService) => new AwsS3Service(
-            //     config.get('services.aws-s3.region'),
-            //     config.get('services.aws-s3.key'),
-            //     config.get('services.aws-s3.secret'),
-            // ),
-            useValue: new LocalAwsS3Service(
-                path.join(process.cwd(), 'storage/aws-local'),
-            ),
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                return config.get('uploads.enableLocalAwsStub')
+                    ? new LocalAwsS3Service(
+                        path.join(process.cwd(), 'storage/aws-local'),
+                    )
+                    : new AwsS3Service(
+                        config.get('services.aws-s3.region'),
+                        config.get('services.aws-s3.key'),
+                        config.get('services.aws-s3.secret'),
+                    );
+            },
         },
         {
             provide: UPLOADS_CONFIG,

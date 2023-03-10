@@ -1,8 +1,8 @@
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { timestamp } from '@app/core/helpers';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Inject, Injectable, LoggerService, OnApplicationBootstrap } from '@nestjs/common';
+import { CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { UPLOADS_CONFIG } from '../constants';
@@ -11,10 +11,12 @@ import { UploadPart } from '../models/upload-part.model';
 import { Upload } from '../models/upload.model';
 import { UploadsHelper } from '../uploads.helper';
 import { UploadType } from '../enums/upload-type.enum';
+import { CronJob } from 'cron';
 
 @Injectable()
-export class RemoveAbandonedUploadsJob {
+export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
     private readonly helper: UploadsHelper;
+    private readonly job: CronJob;
 
     public constructor(
         @InjectRepository(Upload)
@@ -32,10 +34,18 @@ export class RemoveAbandonedUploadsJob {
             uploads: this.uploads,
             parts: this.parts,
         });
+        this.job = new CronJob(CronExpression.EVERY_SECOND, () => this.run());
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-    public async run(): Promise<void> {
+    public onApplicationBootstrap() {
+        if (!this.config.enableAbandonedUploadsRemover) {
+            return;
+        }
+
+        this.job.start();
+    }
+
+    private async run(): Promise<void> {
         await this.chunkAbandonedUploads(25, async (uploads) => {
             for (const upload of uploads) {
                 if (upload.type === UploadType.single) {
