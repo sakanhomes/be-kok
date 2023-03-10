@@ -72,6 +72,10 @@ export class UploadsModule implements NestModule {
         consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.multipartUploadMaxSize'),
             dir: uploadsDir,
-        })).forRoutes({ path: '/uploads/*', method: RequestMethod.POST });
+        })).exclude(
+            '/uploads/single',
+            '/uploads/*/complete',
+            '/uploads/*/abort',
+        ).forRoutes({ path: '/uploads/*', method: RequestMethod.POST });
     }
 }
