@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
 import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
+import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { UploadPartAction } from './actions/upload-part.action';
@@ -28,6 +29,7 @@ export class UploadsController {
         private readonly partsLoader: GetUploadPartsAction,
         private readonly multipartUploadCreator: CreateMultipartUploadAction,
         private readonly multipartUploader: UploadPartAction,
+        private readonly multipartUploadCompleter: CompleteMultipartUploadAction,
         private readonly multipartUploadAborted: AbortMultipartUploadAction,
     ) {}
 
@@ -86,6 +88,14 @@ export class UploadsController {
         const parts = await this.partsLoader.run(upload);
 
         return new UploadResource(upload, parts);
+    }
+
+    @Post('/:publicId/complete')
+    @HttpCode(200)
+    public async completeMultipartUpload(@Param('publicId', ResolveModelPipe) upload: Upload) {
+        upload = await this.multipartUploadCompleter.run(upload);
+
+        return new UploadResource(upload);
     }
 
     @Post('/:publicId/abort')

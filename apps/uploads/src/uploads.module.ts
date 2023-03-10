@@ -17,6 +17,7 @@ import { UploadPartAction } from './actions/upload-part.action';
 import { UploadPart } from './models/upload-part.model';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
+import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
 
 @Module({
     imports: [
@@ -52,6 +53,7 @@ import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.act
         GetUploadPartsAction,
         CreateMultipartUploadAction,
         UploadPartAction,
+        CompleteMultipartUploadAction,
         AbortMultipartUploadAction,
     ],
     controllers: [UploadsController],

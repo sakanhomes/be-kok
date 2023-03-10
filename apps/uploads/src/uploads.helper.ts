@@ -9,6 +9,7 @@ import { Upload as UploadedFile } from './middleware/store-uploads-to-disk.middl
 import { UploadPart } from './models/upload-part.model';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 import { Repository } from 'typeorm';
+import { UploadPartStatus } from './enums/upload-part-status.enum';
 
 type UploadsHelperOptions = {
     logger?: LoggerService,
@@ -48,6 +49,17 @@ export class UploadsHelper {
 
     public async lockPart(part: UploadPart, callback: LockedCallback<UploadPart>): Promise<UploadPart> {
         return ModelLocker.using(this.parts.manager).lock(part, callback, ['uploadId', 'part']);
+    }
+
+    public async ensureAllPartsAreUploaded(upload: Upload): Promise<void> {
+        const uploadedPartsAmount = await this.parts.countBy({
+            uploadId: upload.id,
+            status: UploadPartStatus.uploaded,
+        });
+
+        if (uploadedPartsAmount !== this.getPartsAmount(upload)) {
+            throw new UnprocessableException('File is not yet completely uploaded');
+        }
     }
 
     public ensureFileExtensionIsSupported(name: string): void {
