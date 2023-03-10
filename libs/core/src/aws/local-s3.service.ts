@@ -99,7 +99,7 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
     public async delete(params: ObjectIdentifier): Promise<void> {
         await this.sleep();
 
-        const filepath = this.makeFilePath(params);
+        const filepath = path.join(this.baseDir, this.makeFilePath(params));
 
         if (!fs.existsSync(filepath)) {
             throw new Error(`Object [${filepath}] does not exist`);

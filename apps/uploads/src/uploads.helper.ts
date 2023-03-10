@@ -44,6 +44,50 @@ export class UploadsHelper {
         }
     }
 
+    public async allPartUploadsFinished(upload: Upload): Promise<void> {
+        const uploadingParts = await this.getUploadingParts(upload);
+
+        if (!uploadingParts.length) {
+            return;
+        }
+
+        await new Promise<void>((resolve, reject) => {
+            let processing = false;
+
+            const interval = setInterval(async () => {
+                if (processing) {
+                    return;
+                }
+
+                processing = true;
+
+                try {
+                    const uploadingParts = await this.getUploadingParts(upload);
+
+                    if (uploadingParts.length) {
+                        processing = false;
+
+                        return;
+                    }
+
+                    clearInterval(interval);
+                    resolve();
+                } catch (error) {
+                    reject(error);
+
+                    return;
+                }
+            }, 1000);
+        });
+    }
+
+    private getUploadingParts(upload: Upload): Promise<UploadPart[]> {
+        return this.parts.findBy({
+            uploadId: upload.id,
+            status: UploadPartStatus.uploading,
+        });
+    }
+
     public async lockUpload(upload: Upload, callback: LockedCallback<Upload>): Promise<Upload> {
         return ModelLocker.using(this.uploads.manager).lock(upload, callback);
     }
@@ -76,7 +120,7 @@ export class UploadsHelper {
     }
 
     public ensureUploadIsntFinished(upload: Upload): void {
-        if ([UploadStatus.completed, UploadStatus.aborted].includes(upload.status)) {
+        if ([UploadStatus.completed, UploadStatus.aborted, UploadStatus.failed].includes(upload.status)) {
             throw new UnprocessableException('Upload is already finished');
         }
     }

@@ -18,6 +18,7 @@ import { UploadPart } from './models/upload-part.model';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
 import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
+import { RemoveAbandonedUploadsJob } from './jobs/remove-abandoned-uploads.job';
 
 @Module({
     imports: [
@@ -55,6 +56,7 @@ import { CompleteMultipartUploadAction } from './actions/complete-multipart-uplo
         UploadPartAction,
         CompleteMultipartUploadAction,
         AbortMultipartUploadAction,
+        RemoveAbandonedUploadsJob,
     ],
     controllers: [UploadsController],
 })

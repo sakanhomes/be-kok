@@ -4,7 +4,6 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VIDEO_BUCKET } from '../constants';
-import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadPart } from '../models/upload-part.model';
 import { Upload } from '../models/upload.model';
@@ -28,6 +27,7 @@ export class AbortMultipartUploadAction {
         this.helper = new UploadsHelper({
             logger: this.logger,
             uploads: this.uploads,
+            parts: this.parts,
         });
     }
 
@@ -43,7 +43,7 @@ export class AbortMultipartUploadAction {
 
     private async abortInBackground(upload: Upload): Promise<void> {
         try {
-            await this.allPartUploadsFinished(upload);
+            await this.helper.allPartUploadsFinished(upload);
             await this.aws.abortUpload({
                 Bucket: this.bucket,
                 Key: upload.filename,
@@ -59,50 +59,6 @@ export class AbortMultipartUploadAction {
             this.logger.error(`Failed to abort upload [${upload.id}]: ${error?.message}`, { upload });
             this.logger.error(error);
         }
-    }
-
-    private async allPartUploadsFinished(upload: Upload): Promise<void> {
-        const uploadingParts = await this.getUploadingParts(upload);
-
-        if (!uploadingParts.length) {
-            return;
-        }
-
-        await new Promise<void>((resolve, reject) => {
-            let processing = false;
-
-            const interval = setInterval(async () => {
-                if (processing) {
-                    return;
-                }
-
-                processing = true;
-
-                try {
-                    const uploadingParts = await this.getUploadingParts(upload);
-
-                    if (uploadingParts.length) {
-                        processing = false;
-
-                        return;
-                    }
-
-                    clearInterval(interval);
-                    resolve();
-                } catch (error) {
-                    reject(error);
-
-                    return;
-                }
-            }, 1000);
-        });
-    }
-
-    private getUploadingParts(upload: Upload): Promise<UploadPart[]> {
-        return this.parts.findBy({
-            uploadId: upload.id,
-            status: UploadPartStatus.uploading,
-        });
     }
 
     private async markUploadAsAborted(upload: Upload): Promise<void> {
