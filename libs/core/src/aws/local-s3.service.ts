@@ -40,8 +40,8 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
         this.ensureDirExists(dir);
 
         await fs.promises.writeFile(
-            path.join(dir, this.uploadPropsFile),
-            JSON.stringify({ ContentType: params.ContentType, Metadata: params.Metadata }),
+            path.join(this.baseDir, dir, this.uploadPropsFile),
+            JSON.stringify({ ContentType: params.ContentType, Metadata: params.Metadata }, null, 4),
             {
                 flag: 'w',
             },
@@ -54,9 +54,10 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
         await this.sleep();
 
         const etag = randomUUID();
-        const dir = path.join(params.Bucket, this.uploadsDir, params.UploadId);
+        const dir = path.join(this.baseDir, params.Bucket, this.uploadsDir, params.UploadId);
+        const uploadPropsFilePath = path.join(dir, this.uploadPropsFile);
 
-        const propsContent = await fs.promises.readFile(path.join(dir, this.uploadPropsFile));
+        const propsContent = await fs.promises.readFile(uploadPropsFilePath);
         const props = JSON.parse(propsContent.toString());
 
         if (!props.parts) {
@@ -65,10 +66,10 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
 
         props.parts[params.PartNumber] = etag;
 
-        await fs.promises.writeFile(path.join(dir, params.Key), data, { flag: 'a' });
+        await fs.promises.writeFile(path.join(dir, String(params.PartNumber)), data, { flag: 'w' });
         await fs.promises.writeFile(
-            path.join(dir, this.uploadPropsFile),
-            JSON.stringify(props),
+            uploadPropsFilePath,
+            JSON.stringify(props, null, 4),
             {
                 flag: 'w',
             },
@@ -81,16 +82,16 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
         await this.sleep();
 
         const filepath = this.makeFilePath(params);
-        const dir = path.join(params.Bucket, this.uploadsDir, params.UploadId);
+        const dir = path.join(this.baseDir, params.Bucket, this.uploadsDir, params.UploadId);
 
-        await fs.promises.rename(path.join(dir, params.Key), path.join(this.baseDir, filepath));
-        await fs.promises.rm(dir, { recursive: true });
+        await fs.promises.writeFile(path.join(this.baseDir, filepath), '');
+        await fs.promises.rm(path.join(dir), { recursive: true });
     }
 
     public async abortUpload(params: MultipartUploadParams): Promise<void> {
         await this.sleep();
 
-        const dir = path.join(params.Bucket, this.uploadsDir, params.UploadId);
+        const dir = path.join(this.baseDir, params.Bucket, this.uploadsDir, params.UploadId);
 
         await fs.promises.rm(dir, { recursive: true });
     }
@@ -121,7 +122,7 @@ export class LocalAwsS3Service implements AwsS3ServiceInterface {
         }
     }
 
-    private async sleep(): Promise<void> {
-        await sleep(this.delay);
+    private async sleep(delay?: number): Promise<void> {
+        await sleep(delay ?? this.delay);
     }
 }
