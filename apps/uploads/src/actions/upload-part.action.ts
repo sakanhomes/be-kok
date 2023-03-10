@@ -53,11 +53,12 @@ export class UploadPartAction {
 
     private async uploadInBackground(upload: Upload, part: UploadPart, filepath: string): Promise<void> {
         let newPartStatus: PartStatus;
+        let eTag: string | null = null;
 
         try {
             const content = await fs.promises.readFile(filepath);
 
-            await this.aws.uploadPart({
+            eTag = await this.aws.uploadPart({
                 Bucket: this.bucket,
                 Key: upload.filename,
                 UploadId: upload.publicId,
@@ -79,6 +80,7 @@ export class UploadPartAction {
         }
 
         part.status = newPartStatus;
+        part.externalId = eTag;
 
         upload.status = UploadStatus.uploading;
         upload.lastChunkAt = new Date();

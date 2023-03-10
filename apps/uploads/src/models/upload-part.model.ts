@@ -15,6 +15,9 @@ export class UploadPart {
     })
     status: PartStatus;
 
+    @Column()
+    externalId: string | null = null;
+
     @CreateDateColumn()
     createdAt: Date;
 

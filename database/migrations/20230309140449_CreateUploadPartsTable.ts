@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
         table.bigInteger('uploadId').unsigned().notNullable();
         table.integer('part').unsigned().notNullable();
         table.tinyint('status').unsigned().notNullable();
+        table.string('externalId').nullable().defaultTo(null);
         table.timestamp('createdAt').notNullable();
         table.timestamp('updatedAt').notNullable();
 
