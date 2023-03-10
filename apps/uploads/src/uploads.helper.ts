@@ -64,7 +64,7 @@ export class UploadsHelper {
 
     public ensureUploadIsntFinished(upload: Upload): void {
         if (![UploadStatus.created, UploadStatus.uploading].includes(upload.status)) {
-            throw new UnprocessableException('All chunks already uploaded');
+            throw new UnprocessableException('Upload is already finished');
         }
     }
 

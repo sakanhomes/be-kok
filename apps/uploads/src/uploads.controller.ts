@@ -6,6 +6,7 @@ import { Body, Controller, Get, HttpCode, Param, Post, Query, Req, UseGuards, Us
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
+import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { UploadPartAction } from './actions/upload-part.action';
@@ -27,6 +28,7 @@ export class UploadsController {
         private readonly partsLoader: GetUploadPartsAction,
         private readonly multipartUploadCreator: CreateMultipartUploadAction,
         private readonly multipartUploader: UploadPartAction,
+        private readonly multipartUploadAborted: AbortMultipartUploadAction,
     ) {}
 
     @Get('/')
@@ -73,17 +75,24 @@ export class UploadsController {
         return new UploadResource(upload, parts);
     }
 
-    @Post('/:publicId/:part')
+    @Post('/:publicId')
     @HttpCode(200)
     public async uploadPart(
         @Req() request: HasUpload<Request>,
-        @PlainJwtPayload('address') owner: string,
         @Param('publicId', ResolveModelPipe) upload: Upload,
-        @Param('part', new ParsePositiveIntPipe({ allowZero: true })) part: number,
+        @Query('part', new ParsePositiveIntPipe({ allowZero: true })) part: number,
     ) {
         upload = await this.multipartUploader.run(upload, part, request.upload);
         const parts = await this.partsLoader.run(upload);
 
         return new UploadResource(upload, parts);
+    }
+
+    @Post('/:publicId/abort')
+    @HttpCode(200)
+    public async abortMultipartUpload(@Param('publicId', ResolveModelPipe) upload: Upload) {
+        upload = await this.multipartUploadAborted.run(upload);
+
+        return new UploadResource(upload);
     }
 }

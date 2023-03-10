@@ -61,6 +61,12 @@ export class StoreUploadsToDiskMiddleware implements NestMiddleware {
 
         const stat = await fs.promises.stat(filepath);
 
+        if (!stat.size) {
+            await fs.promises.unlink(filepath);
+
+            return next();
+        }
+
         request.upload = {
             path: filepath,
             size: stat.size,

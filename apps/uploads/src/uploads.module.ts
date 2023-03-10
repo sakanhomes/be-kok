@@ -3,7 +3,7 @@ import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { LocalAwsS3Service } from '@app/core/aws/local-s3.service';
 import { CoreModule } from '@app/core/core.module';
 import LoggingModule from '@app/core/logging/logging.module';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UPLOADS_CONFIG, VIDEO_BUCKET } from './constants';
@@ -16,6 +16,7 @@ import { CreateMultipartUploadAction } from './actions/create-multipart-upload.a
 import { UploadPartAction } from './actions/upload-part.action';
 import { UploadPart } from './models/upload-part.model';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
+import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
 
 @Module({
     imports: [
@@ -51,6 +52,7 @@ import { GetUploadPartsAction } from './actions/get-upload-parts.action';
         GetUploadPartsAction,
         CreateMultipartUploadAction,
         UploadPartAction,
+        AbortMultipartUploadAction,
     ],
     controllers: [UploadsController],
 })
@@ -68,6 +70,6 @@ export class UploadsModule implements NestModule {
         consumer.apply(storeUploadsToDisk({
             limit: this.config.get('uploads.multipartUploadMaxSize'),
             dir: uploadsDir,
-        })).forRoutes('/uploads/*/*');
+        })).forRoutes({ path: '/uploads/*', method: RequestMethod.POST });
     }
 }
