@@ -35,16 +35,24 @@ export class UploadPartAction {
     public async run(upload: Upload, partNumber: number, file: UploadedFile): Promise<Upload> {
         await this.performChecks(upload, partNumber, file);
 
-        const part = await this.getPartOrFail(upload, partNumber);
+        let part: UploadPart;
 
-        part.status = UploadPartStatus.uploading;
-        await this.lockPart(part, async (manager, part) => {
-            this.ensurePartCanBeUploaded(part);
-
+        try {
+            part = await this.getPartOrFail(upload, partNumber);
             part.status = UploadPartStatus.uploading;
 
-            await manager.save(part);
-        });
+            await this.lockPart(part, async (manager, part) => {
+                this.ensurePartCanBeUploaded(part);
+
+                part.status = UploadPartStatus.uploading;
+
+                await manager.save(part);
+            });
+        } catch (error) {
+            await this.helper.removeFileOrLog(file.path);
+
+            throw error;
+        }
 
         this.uploadInBackground(upload, part, file.path);
 
