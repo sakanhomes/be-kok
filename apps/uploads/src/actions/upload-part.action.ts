@@ -66,7 +66,7 @@ export class UploadPartAction {
                 Metadata: {
                     owner: upload.owner,
                 },
-            }, Buffer.from(content));
+            }, content);
 
             newPartStatus = PartStatus.uploaded;
         } catch (error) {

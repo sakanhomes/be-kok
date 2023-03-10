@@ -67,7 +67,7 @@ export class UploadSingleFileAction {
                 Metadata: {
                     owner: upload.owner,
                 },
-            }, Buffer.from(content));
+            }, content);
 
             upload.status = UploadStatus.completed;
         } catch (error) {
