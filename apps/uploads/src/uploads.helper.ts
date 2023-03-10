@@ -76,7 +76,7 @@ export class UploadsHelper {
     }
 
     public ensureUploadIsntFinished(upload: Upload): void {
-        if (![UploadStatus.created, UploadStatus.uploading].includes(upload.status)) {
+        if ([UploadStatus.completed, UploadStatus.aborted].includes(upload.status)) {
             throw new UnprocessableException('Upload is already finished');
         }
     }
