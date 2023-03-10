@@ -12,7 +12,6 @@ import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.midd
 import { UploadPart } from '../models/upload-part.model';
 import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
-import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 
 @Injectable()
 export class UploadPartAction {
@@ -29,7 +28,10 @@ export class UploadPartAction {
         @Inject(VIDEO_BUCKET)
         private readonly bucket: string,
     ) {
-        this.helper = new UploadsHelper(this.logger);
+        this.helper = new UploadsHelper({
+            logger: this.logger,
+            parts: this.parts,
+        });
     }
 
     public async run(upload: Upload, partNumber: number, file: UploadedFile): Promise<Upload> {
@@ -41,7 +43,7 @@ export class UploadPartAction {
             part = await this.getPartOrFail(upload, partNumber);
             part.status = UploadPartStatus.uploading;
 
-            await this.lockPart(part, async (manager, part) => {
+            await this.helper.lockPart(part, async (manager, part) => {
                 this.ensurePartCanBeUploaded(part);
 
                 part.status = UploadPartStatus.uploading;
@@ -98,10 +100,6 @@ export class UploadPartAction {
             this.uploads.save(upload),
             this.helper.removeFileOrLog(filepath),
         ]);
-    }
-
-    private async lockPart(part: UploadPart, callback: LockedCallback<UploadPart>): Promise<UploadPart> {
-        return ModelLocker.using(this.parts.manager).lock(part, callback, ['uploadId', 'part']);
     }
 
     private async getPartOrFail(upload: Upload, part: number): Promise<UploadPart> {

@@ -26,7 +26,7 @@ export class ModelLocker {
 
     private makeWhereConditions(entity, keys: string | string[]): Record<string, any> {
         if (typeof keys === 'string') {
-            keys = [];
+            keys = [keys];
         }
 
         if (!keys.length) {
