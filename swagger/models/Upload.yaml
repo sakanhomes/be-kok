@@ -1,0 +1,48 @@
+title: Upload
+type: object
+properties:
+  id:
+    type: string
+    example: mbVteiZHCjMvtIykcEopXYhYoP7N0MRob71xrnJEELR96XkDQtoofrfPan5g3aoc
+  type:
+    type: string
+    enum:
+      - single
+      - multipart
+  status:
+    type: string
+    enum:
+      - created
+      - uploading
+      - uploaded
+      - aborted
+      - completed
+      - failed
+  owner:
+    $ref: ../types/crypto/address.yaml
+  size:
+    type: integer
+    example: 1234567890
+  chunkSize:
+    type: integer
+    example: 1234567890
+    nullable: true
+  createdAt:
+    $ref: ../types/timestamp.yaml
+  updatedAt:
+    $ref: ../types/timestamp.yaml
+  lastChunkAt:
+    allOf:
+      - $ref: ../types/timestamp.yaml
+      - nullable: true
+  parts:
+    type: object
+    nullable: true
+    properties:
+      "0":
+        type: string
+        enum:
+          - created
+          - uploading
+          - uploaded
+          - failed

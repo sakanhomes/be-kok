@@ -1,0 +1,60 @@
+get:
+  summary: Get upload entity
+  tags:
+    - Uploads
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/upload_id.yaml
+  responses:
+    "200":
+      description: Upload entity
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      upload:
+                        $ref: ../../models/Upload.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+post:
+  summary: Upload file part
+  tags:
+    - Uploads
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/upload_id.yaml
+    - in: query
+      name: part
+      required: true
+      schema:
+        type: integer
+        example: 0
+  requestBody:
+    content:
+      application/octet-stream:
+        schema:
+          type: string
+          format: binary
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+    "413":
+      $ref: ../../responses/errors/PayloadTooLargeResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

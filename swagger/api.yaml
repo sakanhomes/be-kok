@@ -4,7 +4,9 @@ info:
   title: KOK API
 servers:
   - url: https://api.kok.dev-page.site
-    description: Dev server
+    description: Main dev server
+  - url: https://api.kok.dev-page.site
+    description: Uploads server
 paths:
   /settings:
     $ref: ./routes/settings/SettingsList.yaml
@@ -30,6 +32,16 @@ paths:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:
     $ref: ./routes/videos/Video.yaml
+  /uploads:
+    $ref: ./routes/uploads/Uploads.yaml
+  /uploads/single:
+    $ref: ./routes/uploads/UploadSingleFile.yaml
+  /uploads/{id}:
+    $ref: ./routes/uploads/UploadEntity.yaml
+  /uploads/{id}/complete:
+    $ref: ./routes/uploads/CompleteMultipartUpload.yaml
+  /uploads/{id}/abort:
+    $ref: ./routes/uploads/AbortMultipartUpload.yaml
 components:
   securitySchemes:
     accessTokenCookie:
@@ -51,3 +63,5 @@ tags:
     description: Users (creators)
   - name: Videos
     description: Videos endpoints
+  - name: Uploads
+    description: Uploads endpoints (NOTE that you should switch to uploads server)

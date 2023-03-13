@@ -1,0 +1,6 @@
+in: path
+name: id
+required: true
+schema:
+  type: string
+  example: b560bm00Mi
