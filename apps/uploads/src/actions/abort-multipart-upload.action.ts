@@ -7,7 +7,7 @@ import { VIDEO_BUCKET } from '../constants';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadPart } from '../models/upload-part.model';
 import { Upload } from '../models/upload.model';
-import { UploadsHelper } from '../uploads.helper';
+import { UploadsHelper } from '../helpers/uploads.helper';
 
 @Injectable()
 export class AbortMultipartUploadAction {

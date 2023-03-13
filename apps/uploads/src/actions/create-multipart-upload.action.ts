@@ -1,4 +1,3 @@
-import { fileExtension } from '@app/core/helpers';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,11 +5,12 @@ import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
 import { Upload } from '../models/upload.model';
 import { CreateMultipartUploadDto } from '../dtos/create-multipart-upload.dto';
-import { UploadsHelper } from '../uploads.helper';
+import { UploadsHelper } from '../helpers/uploads.helper';
 import { UPLOADS_CONFIG } from '../constants';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
+import { FileSize } from '@app/core/enums/filesize.enum';
 
 @Injectable()
 export class CreateMultipartUploadAction {
@@ -25,7 +25,7 @@ export class CreateMultipartUploadAction {
         private readonly config: Record<string, any>,
         private readonly aws: AwsS3Service,
     ) {
-        this.helper = new UploadsHelper;
+        this.helper = new UploadsHelper({ config: this.config });
     }
 
     public async run(owner: string, data: CreateMultipartUploadDto): Promise<Upload> {
@@ -33,21 +33,23 @@ export class CreateMultipartUploadAction {
         this.helper.ensureFileExtensionIsSupported(data.name);
 
         const key = this.helper.generateUploadId();
-        const extension = fileExtension(data.name);
+        const cloudFilePath = this.helper.getCloudFilePath(data.name, key);
+        const mimeType = this.helper.getMimeTypeOrFail(data.name);
+
         const upload = this.uploads.create({
             owner,
             type: UploadType.multipart,
             status: UploadStatus.created,
-            filename: `${key}.${extension}`,
+            filename: cloudFilePath,
             size: data.size,
-            chunkSize: 15 * 2 ** 20, // 15 MiB
+            chunkSize: 15 * FileSize.MB,
         });
 
         try {
             upload.publicId = await this.aws.createUpload({
                 Bucket: this.config.awsBucket,
                 Key: upload.filename,
-                ContentType: 'video/mp4',
+                ContentType: mimeType,
                 Metadata: {
                     owner: upload.owner,
                 },

@@ -1,27 +1,33 @@
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { LoggerService } from '@nestjs/common';
-import { FileExcensionChecker } from './file-extension-checker';
+import { FileExtensionHelper } from './file-extension.helper';
 import * as fs from 'fs';
-import { randomString } from '@app/core/helpers';
-import { Upload } from './models/upload.model';
-import { UploadStatus } from './enums/upload-status.enum';
-import { Upload as UploadedFile } from './middleware/store-uploads-to-disk.middleware';
-import { UploadPart } from './models/upload-part.model';
+import * as path from 'path';
+import { fileExtension, randomString } from '@app/core/helpers';
+import { Upload } from '../models/upload.model';
+import { UploadStatus } from '../enums/upload-status.enum';
+import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
+import { UploadPart } from '../models/upload-part.model';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 import { Repository } from 'typeorm';
-import { UploadPartStatus } from './enums/upload-part-status.enum';
-import { UploadType } from './enums/upload-type.enum';
+import { UploadPartStatus } from '../enums/upload-part-status.enum';
+import { UploadType } from '../enums/upload-type.enum';
+import { lookup } from 'mime-types';
 
 type UploadsHelperOptions = {
     logger?: LoggerService,
     uploads?: Repository<Upload>,
     parts?: Repository<UploadPart>,
+    config?: Record<string, any>,
 }
+
+type FileType = 'image' | 'video';
 
 export class UploadsHelper {
     private readonly logger?: LoggerService;
     private readonly uploads?: Repository<Upload>;
     private readonly parts?: Repository<UploadPart>;
+    private readonly config?: Record<string, any>;
 
     public constructor(options?: UploadsHelperOptions) {
         Object.assign(this, options ?? {});
@@ -33,6 +39,36 @@ export class UploadsHelper {
 
     public getPartsAmount(upload: Upload): number {
         return Math.ceil(upload.size / upload.chunkSize);
+    }
+
+    public getMimeTypeOrFail(name: string): string {
+        const mimeType = lookup(name);
+
+        if (!mimeType) {
+            throw new UnprocessableException(`Unable to lookup mimetype for file ${name}`);
+        }
+
+        return mimeType;
+    }
+
+    public getFileType(name: string): FileType {
+        const extension = fileExtension(name);
+
+        if (extension === 'mp4') {
+            return 'video';
+        } else if (['jpg', 'png'].includes(extension)) {
+            return 'image';
+        }
+
+        throw new UnprocessableException(`Unsupported file type: ${name}`);
+    }
+
+    public getCloudFilePath(name: string, remoteName: string): string {
+        const type = this.getFileType(name);
+        const dir = this.config.directories[type];
+        const extension = path.extname(name);
+
+        return path.join(dir, remoteName + extension);
     }
 
     public async removeFileOrLog(filepath: string): Promise<void> {
@@ -108,7 +144,7 @@ export class UploadsHelper {
     }
 
     public ensureFileExtensionIsSupported(name: string): void {
-        if (!FileExcensionChecker.isVideo(name)) {
+        if (!FileExtensionHelper.isVideo(name) && !FileExtensionHelper.isImage(name)) {
             throw new UnprocessableException('Unsupported file type');
         }
     }

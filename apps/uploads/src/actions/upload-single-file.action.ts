@@ -1,15 +1,14 @@
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
-import { fileExtension } from '@app/core/helpers';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
 import { Upload } from '../models/upload.model';
-import { VIDEO_BUCKET } from '../constants';
+import { UPLOADS_CONFIG } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
-import { UploadsHelper } from '../uploads.helper';
+import { UploadsHelper } from '../helpers/uploads.helper';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
 
 @Injectable()
@@ -22,48 +21,50 @@ export class UploadSingleFileAction {
         @Logger('uploads')
         private readonly logger: LoggerService,
         private readonly aws: AwsS3Service,
-        @Inject(VIDEO_BUCKET)
-        private readonly bucket: string,
+        @Inject(UPLOADS_CONFIG)
+        private readonly config: Record<string, any>,
     ) {
-        this.helper = new UploadsHelper;
+        this.helper = new UploadsHelper({ config: this.config });
     }
 
     public async run(owner: string, name: string, file: UploadedFile): Promise<Upload> {
         try {
             this.helper.ensureContentIsNotEmpty(file);
             this.helper.ensureFileExtensionIsSupported(name);
+
+            const id = this.helper.generateUploadId();
+            const cloudFilePath = this.helper.getCloudFilePath(name, id);
+            const mimeType = this.helper.getMimeTypeOrFail(name);
+
+            const upload = this.uploads.create({
+                publicId: id,
+                owner,
+                type: UploadType.single,
+                status: UploadStatus.created,
+                filename: cloudFilePath,
+                size: file.size,
+            });
+
+            await this.uploads.save(upload);
+
+            this.uploadInBackground(upload, file.path, mimeType);
+
+            return upload;
         } catch (error) {
             await this.helper.removeFileOrLog(file.path);
 
             throw error;
         }
-
-        const id = this.helper.generateUploadId();
-        const extension = fileExtension(name);
-        const upload = this.uploads.create({
-            publicId: id,
-            owner,
-            type: UploadType.single,
-            status: UploadStatus.created,
-            filename: `${id}.${extension}`,
-            size: file.size,
-        });
-
-        await this.uploads.save(upload);
-
-        this.uploadInBackground(upload, file.path);
-
-        return upload;
     }
 
-    private async uploadInBackground(upload: Upload, filepath: string): Promise<void> {
+    private async uploadInBackground(upload: Upload, filepath: string, mimeType: string): Promise<void> {
         try {
             const content = await fs.promises.readFile(filepath);
 
             await this.aws.upload({
-                Bucket: this.bucket,
+                Bucket: this.config.awsBucket,
                 Key: upload.filename,
-                ContentType: 'video/mp4',
+                ContentType: mimeType,
                 Metadata: {
                     owner: upload.owner,
                 },

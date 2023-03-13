@@ -7,7 +7,7 @@ import { Upload } from '../models/upload.model';
 import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
-import { UploadsHelper } from '../uploads.helper';
+import { UploadsHelper } from '../helpers/uploads.helper';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
 import { UploadPart } from '../models/upload-part.model';
 import { UploadPartStatus } from '../enums/upload-part-status.enum';

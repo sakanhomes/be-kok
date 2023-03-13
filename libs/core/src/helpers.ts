@@ -110,6 +110,10 @@ export function startsWith(string: string, prefix: string): boolean {
     return string.substring(0, prefix.length) === prefix;
 }
 
+export function endsWith(string: string, suffix: string): boolean {
+    return string.substring(string.length - suffix.length) === suffix;
+}
+
 export async function sleep(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }

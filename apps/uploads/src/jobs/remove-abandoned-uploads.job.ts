@@ -9,7 +9,7 @@ import { UPLOADS_CONFIG } from '../constants';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadPart } from '../models/upload-part.model';
 import { Upload } from '../models/upload.model';
-import { UploadsHelper } from '../uploads.helper';
+import { UploadsHelper } from '../helpers/uploads.helper';
 import { UploadType } from '../enums/upload-type.enum';
 import { CronJob } from 'cron';
 

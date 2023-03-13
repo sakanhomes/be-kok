@@ -5,6 +5,10 @@ export default () => ({
     awsBucket: process.env.AWS_S3_BUCKET,
     singleUploadMaxSize: 5 * FileSize.MB,
     multipartUploadMaxSize: 50 * FileSize.MB,
+    directories: {
+        image: 'images',
+        video: 'videos',
+    },
     abandonedUploadsTtl: Time.day,
     enableAbandonedUploadsRemover: process.env.ENABLE_ABANDONED_UPLOADS_REMOVER
         ? process.env.ENABLE_ABANDONED_UPLOADS_REMOVER === 'true'
