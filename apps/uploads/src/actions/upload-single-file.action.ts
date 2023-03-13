@@ -41,6 +41,7 @@ export class UploadSingleFileAction {
                 type: UploadType.single,
                 status: UploadStatus.created,
                 filename: cloudFilePath,
+                url: this.helper.getCloudFileUrl(this.config.awsBucket, cloudFilePath),
                 mimetype: this.helper.getMimeTypeOrFail(name),
                 size: file.size,
             });

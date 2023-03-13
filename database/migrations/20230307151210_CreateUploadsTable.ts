@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.tinyint('type').unsigned().notNullable();
         table.tinyint('status').unsigned().notNullable();
         table.string('filename').notNullable();
+        table.string('url').notNullable();
         table.string('mimetype').notNullable();
         table.bigInteger('size').unsigned().notNullable();
         table.bigInteger('chunkSize').unsigned().nullable().defaultTo(null);

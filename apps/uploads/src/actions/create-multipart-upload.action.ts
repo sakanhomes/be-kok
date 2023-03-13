@@ -40,6 +40,7 @@ export class CreateMultipartUploadAction {
             type: UploadType.multipart,
             status: UploadStatus.created,
             filename: cloudFilePath,
+            url: this.helper.getCloudFileUrl(this.config.awsBucket, cloudFilePath),
             mimetype: this.helper.getMimeTypeOrFail(data.name),
             size: data.size,
             chunkSize: 15 * FileSize.MB,
