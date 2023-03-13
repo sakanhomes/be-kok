@@ -34,7 +34,6 @@ export class UploadSingleFileAction {
 
             const id = this.helper.generateUploadId();
             const cloudFilePath = this.helper.getCloudFilePath(name, id);
-            const mimeType = this.helper.getMimeTypeOrFail(name);
 
             const upload = this.uploads.create({
                 publicId: id,
@@ -42,12 +41,13 @@ export class UploadSingleFileAction {
                 type: UploadType.single,
                 status: UploadStatus.created,
                 filename: cloudFilePath,
+                mimetype: this.helper.getMimeTypeOrFail(name),
                 size: file.size,
             });
 
             await this.uploads.save(upload);
 
-            this.uploadInBackground(upload, file.path, mimeType);
+            this.uploadInBackground(upload, file.path);
 
             return upload;
         } catch (error) {
@@ -57,14 +57,14 @@ export class UploadSingleFileAction {
         }
     }
 
-    private async uploadInBackground(upload: Upload, filepath: string, mimeType: string): Promise<void> {
+    private async uploadInBackground(upload: Upload, filepath: string): Promise<void> {
         try {
             const content = await fs.promises.readFile(filepath);
 
             await this.aws.upload({
                 Bucket: this.config.awsBucket,
                 Key: upload.filename,
-                ContentType: mimeType,
+                ContentType: upload.mimetype,
                 Metadata: {
                     owner: upload.owner,
                 },

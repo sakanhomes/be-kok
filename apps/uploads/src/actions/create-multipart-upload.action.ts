@@ -34,13 +34,13 @@ export class CreateMultipartUploadAction {
 
         const key = this.helper.generateUploadId();
         const cloudFilePath = this.helper.getCloudFilePath(data.name, key);
-        const mimeType = this.helper.getMimeTypeOrFail(data.name);
 
         const upload = this.uploads.create({
             owner,
             type: UploadType.multipart,
             status: UploadStatus.created,
             filename: cloudFilePath,
+            mimetype: this.helper.getMimeTypeOrFail(data.name),
             size: data.size,
             chunkSize: 15 * FileSize.MB,
         });
@@ -49,7 +49,7 @@ export class CreateMultipartUploadAction {
             upload.publicId = await this.aws.createUpload({
                 Bucket: this.config.awsBucket,
                 Key: upload.filename,
-                ContentType: mimeType,
+                ContentType: upload.mimetype,
                 Metadata: {
                     owner: upload.owner,
                 },

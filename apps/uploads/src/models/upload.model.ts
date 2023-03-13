@@ -28,6 +28,9 @@ export class Upload {
     filename: string;
 
     @Column()
+    mimetype: string;
+
+    @Column()
     size: number;
 
     @Column()
