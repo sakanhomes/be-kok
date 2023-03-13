@@ -1,13 +1,13 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
+import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { LoggerService } from '@nestjs/common';
 import { FileExtensionHelper } from './file-extension.helper';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileExtension, randomString } from '@app/core/helpers';
-import { Upload } from '../models/upload.model';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
-import { UploadPart } from '../models/upload-part.model';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 import { Repository } from 'typeorm';
 import { UploadPartStatus } from '../enums/upload-part-status.enum';

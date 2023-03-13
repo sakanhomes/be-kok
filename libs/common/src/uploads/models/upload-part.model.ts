@@ -1,6 +1,6 @@
+import { Upload } from '../models/upload.model';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
-import { UploadPartStatus } from '../enums/upload-part-status.enum';
-import { Upload } from './upload.model';
+import { UploadPartStatus } from 'apps/uploads/src/enums/upload-part-status.enum';
 
 @Entity('upload_parts')
 export class UploadPart {

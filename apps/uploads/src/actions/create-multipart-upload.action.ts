@@ -1,9 +1,9 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
-import { Upload } from '../models/upload.model';
 import { CreateMultipartUploadDto } from '../dtos/create-multipart-upload.dto';
 import { UploadsHelper } from '../helpers/uploads.helper';
 import { UPLOADS_CONFIG } from '../constants';

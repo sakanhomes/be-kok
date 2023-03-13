@@ -1,10 +1,10 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
-import { Upload } from '../models/upload.model';
 import { UPLOADS_CONFIG } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';

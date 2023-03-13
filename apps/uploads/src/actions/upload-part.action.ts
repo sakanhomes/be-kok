@@ -1,15 +1,15 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
+import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { UploadStatus } from '../enums/upload-status.enum';
-import { Upload } from '../models/upload.model';
 import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
 import { UploadsHelper } from '../helpers/uploads.helper';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
-import { UploadPart } from '../models/upload-part.model';
 import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 

@@ -1,3 +1,5 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
+import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
@@ -5,8 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VIDEO_BUCKET } from '../constants';
 import { UploadStatus } from '../enums/upload-status.enum';
-import { UploadPart } from '../models/upload-part.model';
-import { Upload } from '../models/upload.model';
 import { UploadsHelper } from '../helpers/uploads.helper';
 
 @Injectable()

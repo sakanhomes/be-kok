@@ -1,10 +1,10 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
+import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { onlyKeys, unixtime } from '@app/core/helpers';
 import { Resource } from '@app/core/http/resources/resource';
 import { UploadPartStatus } from '../enums/upload-part-status.enum';
 import { UploadStatus } from '../enums/upload-status.enum';
 import { UploadType } from '../enums/upload-type.enum';
-import { UploadPart } from '../models/upload-part.model';
-import { Upload } from '../models/upload.model';
 
 export class UploadResource extends Resource {
     public static wrap = 'upload';

@@ -1,3 +1,4 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
 import { PlainJwtPayload } from '@app/core/auth/decorators/plain-jwt-payload.decorator';
 import { PlainJwtGuard } from '@app/core/auth/guards/plain-jwt.guard';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
@@ -14,7 +15,6 @@ import { UploadPartAction } from './actions/upload-part.action';
 import { UploadSingleFileAction } from './actions/upload-single-file.action';
 import { CreateMultipartUploadDto } from './dtos/create-multipart-upload.dto';
 import { HasUpload } from './middleware/store-uploads-to-disk.middleware';
-import { Upload } from './models/upload.model';
 import { UploadResource } from './resources/upload.resource';
 import { CreateMulipartUploadValidator } from './validators/create-multipart-upload.validator';
 import { UploadSingleFileValidator } from './validators/upload-single-file.validator';
