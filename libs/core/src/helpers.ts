@@ -131,3 +131,9 @@ export function keyBy<T = Record<string, any>>(items: T[], key: string): Record<
 export function fileExtension(file: string): string {
     return path.extname(file).replace('.', '').toLowerCase();
 }
+
+export function enumKeys(enumObject: object): string[] {
+    return Object.keys(enumObject).filter(key => {
+        return isNaN(parseInt(key));
+    });
+}

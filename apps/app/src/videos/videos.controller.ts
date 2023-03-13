@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
@@ -15,6 +15,9 @@ import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { ForbiddenException } from '@app/core/exceptions/app/forbidden.exception';
+import { CreateVideoValidator } from './validators/create-video.validator';
+import { CreateVideoDto } from './dtos/create-video.dto';
+import { CreateVideoAction } from './actions/create-video.action';
 
 @Controller('videos')
 export class VideosController {
@@ -22,6 +25,7 @@ export class VideosController {
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         private readonly videosRandomizer: GetRandomVideosAction,
+        private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
     ) {}
 
@@ -31,6 +35,15 @@ export class VideosController {
         const videos = await this.videosRandomizer.run(data.amount);
 
         return VideoResource.collection(videos);
+    }
+
+    @Post('/')
+    @JwtAuth()
+    @UsePipes(CreateVideoValidator)
+    public async createVideo(@CurrentUser() user: User, @Body() data: CreateVideoDto) {
+        const video = await this.videoCreator.run(user, data);
+
+        return new VideoResource(video);
     }
 
     @Get('/:id')

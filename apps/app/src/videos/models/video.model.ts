@@ -3,7 +3,6 @@ import { User } from '../../users/models/user.model';
 
 @Entity('videos')
 export class Video {
-
     @PrimaryGeneratedColumn()
     id: string;
 
