@@ -33,7 +33,7 @@ export class UploadSingleFileAction {
             this.helper.ensureFileExtensionIsSupported(name);
 
             const id = this.helper.generateUploadId();
-            const cloudFilePath = this.helper.getCloudFilePath(name, id);
+            const cloudFilePath = this.helper.getCloudFilePath(owner, name, id);
 
             const upload = this.uploads.create({
                 publicId: id,

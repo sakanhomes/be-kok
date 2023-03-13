@@ -33,7 +33,7 @@ export class CreateMultipartUploadAction {
         this.helper.ensureFileIsVideo(data.name);
 
         const key = this.helper.generateUploadId();
-        const cloudFilePath = this.helper.getCloudFilePath(data.name, key);
+        const cloudFilePath = this.helper.getCloudFilePath(owner, data.name, key);
 
         const upload = this.uploads.create({
             owner,

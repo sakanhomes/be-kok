@@ -63,12 +63,12 @@ export class UploadsHelper {
         throw new UnprocessableException(`Unsupported file type: ${name}`);
     }
 
-    public getCloudFilePath(name: string, remoteName: string): string {
+    public getCloudFilePath(owner: string, name: string, remoteName: string): string {
         const type = this.getFileType(name);
         const dir = this.config.directories[type];
         const extension = path.extname(name);
 
-        return path.join(dir, remoteName + extension);
+        return path.join(owner, dir, remoteName + extension);
     }
 
     public async removeFileOrLog(filepath: string): Promise<void> {
