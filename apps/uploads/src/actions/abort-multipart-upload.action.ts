@@ -6,7 +6,7 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VIDEO_BUCKET } from '../constants';
-import { UploadStatus } from '../enums/upload-status.enum';
+import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { UploadsHelper } from '../helpers/uploads.helper';
 
 @Injectable()

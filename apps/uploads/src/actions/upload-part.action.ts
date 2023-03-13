@@ -4,13 +4,13 @@ import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
-import { UploadStatus } from '../enums/upload-status.enum';
+import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
 import { UploadsHelper } from '../helpers/uploads.helper';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
-import { UploadPartStatus } from '../enums/upload-part-status.enum';
+import { UploadPartStatus } from '@app/common/uploads/enums/upload-part-status.enum';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 
 @Injectable()

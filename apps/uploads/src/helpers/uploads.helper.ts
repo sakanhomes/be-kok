@@ -6,12 +6,12 @@ import { FileExtensionHelper } from './file-extension.helper';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileExtension, randomString } from '@app/core/helpers';
-import { UploadStatus } from '../enums/upload-status.enum';
+import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { Upload as UploadedFile } from '../middleware/store-uploads-to-disk.middleware';
 import { LockedCallback, ModelLocker } from '@app/core/orm/model-locker';
 import { Repository } from 'typeorm';
-import { UploadPartStatus } from '../enums/upload-part-status.enum';
-import { UploadType } from '../enums/upload-type.enum';
+import { UploadPartStatus } from '@app/common/uploads/enums/upload-part-status.enum';
+import { UploadType } from '@app/common/uploads/enums/upload-type.enum';
 import { lookup } from 'mime-types';
 
 type UploadsHelperOptions = {

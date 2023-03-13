@@ -8,9 +8,9 @@ import { CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { UPLOADS_CONFIG } from '../constants';
-import { UploadStatus } from '../enums/upload-status.enum';
+import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { UploadsHelper } from '../helpers/uploads.helper';
-import { UploadType } from '../enums/upload-type.enum';
+import { UploadType } from '@app/common/uploads/enums/upload-type.enum';
 import { CronJob } from 'cron';
 
 @Injectable()
