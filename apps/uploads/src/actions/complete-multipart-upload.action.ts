@@ -59,7 +59,8 @@ export class CompleteMultipartUploadAction {
                 Key: upload.filename,
                 UploadId: upload.publicId,
                 Parts: parts.map(part => ({
-                    PartNumber: part.part,
+                    // AWS start counting from 1, but in our db parts are numbered from 0
+                    PartNumber: part.part + 1,
                     ETag: part.externalId,
                 })),
             });

@@ -33,6 +33,7 @@ export class AbortMultipartUploadAction {
 
     public async run(upload: Upload): Promise<Upload> {
         this.helper.ensureUploadIsMultipart(upload);
+        this.helper.ensureUploadIsntFinished(upload);
 
         await this.markUploadAsAborted(upload);
 

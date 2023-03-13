@@ -34,7 +34,7 @@ export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
             uploads: this.uploads,
             parts: this.parts,
         });
-        this.job = new CronJob(CronExpression.EVERY_SECOND, () => this.run());
+        this.job = new CronJob(CronExpression.EVERY_DAY_AT_MIDNIGHT, () => this.run());
     }
 
     public onApplicationBootstrap() {
@@ -45,7 +45,7 @@ export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
         this.job.start();
     }
 
-    private async run(): Promise<void> {
+    public async run(): Promise<void> {
         await this.chunkAbandonedUploads(25, async (uploads) => {
             for (const upload of uploads) {
                 if (upload.type === UploadType.single) {

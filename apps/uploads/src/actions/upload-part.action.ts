@@ -72,7 +72,8 @@ export class UploadPartAction {
                 Bucket: this.bucket,
                 Key: upload.filename,
                 UploadId: upload.publicId,
-                PartNumber: part.part,
+                // AWS start counting from 1, but in our db parts are numbered from 0
+                PartNumber: part.part + 1,
                 ContentType: 'video/mp4',
                 Metadata: {
                     owner: upload.owner,
