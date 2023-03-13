@@ -149,6 +149,12 @@ export class UploadsHelper {
         }
     }
 
+    public ensureFileIsVideo(name: string): void {
+        if (!FileExtensionHelper.isVideo(name)) {
+            throw new UnprocessableException('File must have a "video" type');
+        }
+    }
+
     public ensureContentIsNotEmpty(file: UploadedFile): void {
         if (!file.size) {
             throw new UnprocessableException('Empty payload');

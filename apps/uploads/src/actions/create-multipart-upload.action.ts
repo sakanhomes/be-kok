@@ -30,7 +30,7 @@ export class CreateMultipartUploadAction {
 
     public async run(owner: string, data: CreateMultipartUploadDto): Promise<Upload> {
         this.ensureSizeSatisfiesMinLimit(data.size);
-        this.helper.ensureFileExtensionIsSupported(data.name);
+        this.helper.ensureFileIsVideo(data.name);
 
         const key = this.helper.generateUploadId();
         const cloudFilePath = this.helper.getCloudFilePath(data.name, key);
