@@ -8,10 +8,11 @@ import { UpdateVideoAction } from './actions/update-video.action';
 import { Video } from './models/video.model';
 import { VideosController } from './videos.controller';
 import { ViewHistory } from './models/view-history.model';
+import { RecordViewAction } from './actions/record-view.action';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Video, ViewHistory, Upload, UploadPart])],
-    providers: [GetRandomVideosAction, CreateVideoAction, UpdateVideoAction],
+    providers: [GetRandomVideosAction, CreateVideoAction, UpdateVideoAction, RecordViewAction],
     controllers: [VideosController],
 })
 export class VideosModule {}
