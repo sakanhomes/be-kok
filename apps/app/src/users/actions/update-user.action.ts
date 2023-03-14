@@ -15,12 +15,19 @@ export class UpdateUserAction {
 
     public async run(user: User, data: UpdateUserDto): Promise<User> {
         this.ensureUserCanBeUpdated(user, data);
+        this.prepareData(data);
 
         Object.assign(user, data);
 
         await this.users.save(user);
 
         return user;
+    }
+
+    private prepareData(data: UpdateUserDto) {
+        if (!data.description) {
+            data.description = null;
+        }
     }
 
     private ensureUserCanBeUpdated(user: User, data: UpdateUserDto) {
