@@ -7,9 +7,10 @@ import { GetRandomVideosAction } from './actions/get-random-videos.action';
 import { UpdateVideoAction } from './actions/update-video.action';
 import { Video } from './models/video.model';
 import { VideosController } from './videos.controller';
+import { ViewHistory } from './models/view-history.model';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Video, Upload, UploadPart])],
+    imports: [TypeOrmModule.forFeature([Video, ViewHistory, Upload, UploadPart])],
     providers: [GetRandomVideosAction, CreateVideoAction, UpdateVideoAction],
     controllers: [VideosController],
 })
