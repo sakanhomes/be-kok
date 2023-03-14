@@ -8,7 +8,7 @@ import { String } from '@app/core/validation/helpers/string.helper';
 export class UpdateUserValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
-            name: Joi.string().optional().trim().max(200),
+            name: Joi.string().optional().trim().min(3).max(30),
             description: Joi.string().optional().trim().max(500),
             profileImage: Joi.string().optional().trim().max(250).custom(String.startsWith(['http://', 'https://'])),
             backgroundImage: Joi.string().optional().trim().max(250).custom(String.startsWith(['http://', 'https://'])),
