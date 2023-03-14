@@ -6,5 +6,6 @@
     "invalid-signature": "Invalid signature",
     "name-already-set": "Name has been already set",
     "insufficient-account-balance": "Insufficient account balance",
-    "invalid-transaction-subtype": "Invalid transaction subtype"
+    "invalid-transaction-subtype": "Invalid transaction subtype",
+    "upload-not-found": "{type} upload not found or has invalid type"
 }

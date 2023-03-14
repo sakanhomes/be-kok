@@ -1,4 +1,5 @@
 import * as util from 'util';
+import * as path from 'path';
 import { TranslateOptions, I18nContext } from 'nestjs-i18n';
 
 /**
@@ -109,6 +110,10 @@ export function startsWith(string: string, prefix: string): boolean {
     return string.substring(0, prefix.length) === prefix;
 }
 
+export function endsWith(string: string, suffix: string): boolean {
+    return string.substring(string.length - suffix.length) === suffix;
+}
+
 export async function sleep(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
@@ -121,4 +126,14 @@ export function keyBy<T = Record<string, any>>(items: T[], key: string): Record<
     }
 
     return map;
+}
+
+export function fileExtension(file: string): string {
+    return path.extname(file).replace('.', '').toLowerCase();
+}
+
+export function enumKeys(enumObject: object): string[] {
+    return Object.keys(enumObject).filter(key => {
+        return isNaN(parseInt(key));
+    });
 }

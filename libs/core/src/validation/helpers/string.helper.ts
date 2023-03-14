@@ -23,4 +23,16 @@ export class String {
             });
         };
     }
+
+    public static filename(): Joi.CustomValidator {
+        return (value: string, helper) => {
+            if (value.match(/^.+\.[a-z0-9]{3,}$/i)) {
+                return value;
+            }
+
+            return helper.message({
+                custom: 'Invalid file type',
+            });
+        };
+    }
 }

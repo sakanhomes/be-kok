@@ -1,0 +1,18 @@
+description: Payload too large response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          $ref: ../../types/http/status.yaml
+        message:
+          type: string
+        data:
+          type: object
+      example:
+        {
+          "status": 413,
+          "message": "Payload Too Large",
+          "data": { "limit": 5242880, "received": null },
+        }
