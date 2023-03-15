@@ -1,7 +1,7 @@
 import { LockService } from '@app/core/support/locker/lock.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateTransactionAction } from '../../accounts/actions/create-transaction.action';
 import { GetUserAccountAction } from '../../accounts/actions/get-user-account.action';
 import { AccountTransaction } from '../../accounts/models/account-transaction.model';
@@ -13,6 +13,7 @@ import { RewardsLimitExceededException } from '../exceptions/rewards-limit-excee
 import { Video } from '../models/video.model';
 import { TransactionSubtype } from '../../accounts/enums/transaction-subtype.enum';
 import { TransactionType } from '../../accounts/enums/transaction-type.enum';
+import { startOfToday } from 'date-fns';
 
 @Injectable()
 export class EnrollCreationRewardAction {
@@ -57,6 +58,7 @@ export class EnrollCreationRewardAction {
             type: TransactionType.REWARD,
             subtype: TransactionSubtype.CREATION,
             accountId: account.id,
+            createdAt: MoreThanOrEqual(startOfToday()),
         });
 
         if (enrolledRewardsAmount >= this.config.rewards.creation.limit) {
