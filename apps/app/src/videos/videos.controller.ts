@@ -20,7 +20,6 @@ import { CreateVideoDto } from './dtos/create-video.dto';
 import { CreateVideoAction } from './actions/create-video.action';
 import { RecordViewAction } from './actions/record-view.action';
 import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
-import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-already-enrolled.exception';
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
@@ -134,22 +133,15 @@ export class VideosController {
     }
 
     @Post('/:publicId/viewed')
-    @JwtAuth()
+    @OptionalJwtAuth()
     public async trackView(
-        @CurrentUser() user: User,
+        @CurrentUser() user: User | null,
         @Param('publicId', ResolveModelPipe) video: Video,
     ) {
         video = await this.viewsRecorder.run(user, video);
 
-        try {
-            await this.viewRewardEnroller.run(user, video);
-        } catch (error) {
-            if (
-                !(error instanceof ViewRewardAlreadyEnrolledException)
-                && !(error instanceof RewardsLimitExceededException)
-            ) {
-                throw error;
-            }
+        if (user) {
+            await this.viewRewardEnroller.runSilent(user, video);
         }
 
         return new VideoResource(video);

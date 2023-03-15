@@ -27,6 +27,21 @@ export class EnrollViewRewardAction {
         private readonly config: Record<string, any>,
     ) {}
 
+    public async runSilent(user: User, video: Video): Promise<AccountTransaction | null> {
+        try {
+            return await this.run(user, video);
+        } catch (error) {
+            if (
+                !(error instanceof ViewRewardAlreadyEnrolledException)
+                && !(error instanceof RewardsLimitExceededException)
+            ) {
+                throw error;
+            }
+
+            return null;
+        }
+    }
+
     public async run(user: User, video: Video): Promise<AccountTransaction> {
         const account = await this.accountGetter.run(user);
 

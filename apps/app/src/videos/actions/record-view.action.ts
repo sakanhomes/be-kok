@@ -15,30 +15,43 @@ export class RecordViewAction {
         private readonly history: Repository<ViewHistory>,
     ) {}
 
-    public async run(user: User, video: Video): Promise<Video> {
-        const historyRecord = this.history.create({
-            userId: user.id,
-            videoId: video.id,
-        });
+    public run(user: User | null, video: Video): Promise<Video> {
+        if (user) {
+            return this.recordUserView(user, video);
+        } else {
+            return this.recordAnonymousView(video);
+        }
+    }
 
-        const updatedVideo = await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
-            const historyRecordExits = await manager.createQueryBuilder(ViewHistory, 'history')
+    private async recordAnonymousView(video: Video): Promise<Video> {
+        return await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
+            video.viewsAmount++;
+
+            await manager.save(video);
+        });
+    }
+
+    private async recordUserView(user: User, video: Video): Promise<Video> {
+        return await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
+            const historyRecordExists = await manager.createQueryBuilder(ViewHistory, 'history')
                 .select('id')
                 .where('history.videoId = :videoId', { videoId: video.id })
                 .andWhere('history.userId = :userId', { userId: user.id })
                 .getExists();
 
-            await manager.save(historyRecord);
-
-            if (historyRecordExits) {
+            if (historyRecordExists) {
                 return;
             }
 
+            const historyRecord = this.history.create({
+                userId: user.id,
+                videoId: video.id,
+            });
+
             video.viewsAmount++;
 
+            await manager.save(historyRecord);
             await manager.save(video);
         });
-
-        return updatedVideo;
     }
 }
