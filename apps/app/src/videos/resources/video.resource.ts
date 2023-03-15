@@ -5,12 +5,21 @@ import { User } from '../../users/models/user.model';
 import { Category } from '../enums/category.enum';
 import { Video } from '../models/video.model';
 
+type VideoFlags ={
+    isLiked: boolean;
+}
+
+type VideoResourceOptions = {
+    creator?: User;
+    flags?: VideoFlags;
+}
+
 export class VideoResource extends Resource {
     public static wrap = 'video';
 
     public constructor(
         private readonly video: Video,
-        private readonly user: User | null = null,
+        private readonly options?: VideoResourceOptions,
     ) {
         super();
     }
@@ -26,7 +35,7 @@ export class VideoResource extends Resource {
             'isPublic',
         ]);
 
-        const user = this.user ?? this.video.user ?? null;
+        const user = this.options?.creator ?? this.video.user ?? null;
 
         Object.assign(resource, {
             id: this.video.publicId,
@@ -35,6 +44,7 @@ export class VideoResource extends Resource {
             video: makeAwsS3FileUrl(this.video.videoBucket, this.video.videoFile),
             createdAt: unixtime(this.video.createdAt),
             user: user ? onlyKeys(user, ['address', 'name', 'profileImage']) : undefined,
+            flags: this.options?.flags ? onlyKeys(this.options.flags, ['isLiked']) : undefined,
         });
 
         return resource;

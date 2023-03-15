@@ -20,13 +20,25 @@ import { DeleteVideoAction } from './actions/delete-video.action';
 import { VideoLike } from './models/video-like.model';
 import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
+import { CreateVideoResourceAction } from './actions/create-video-resource.action';
+import { User } from '../users/models/user.model';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Video, ViewHistory, VideoLike, Upload, UploadPart, Account, AccountTransaction]),
+        TypeOrmModule.forFeature([
+            User,
+            Video,
+            ViewHistory,
+            VideoLike,
+            Upload,
+            UploadPart,
+            Account,
+            AccountTransaction,
+        ]),
         AccountsModule,
     ],
     providers: [
+        CreateVideoResourceAction,
         GetRandomVideosAction,
         CreateVideoAction,
         UpdateVideoAction,

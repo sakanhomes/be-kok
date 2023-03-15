@@ -26,10 +26,12 @@ import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.act
 import { DeleteVideoAction } from './actions/delete-video.action';
 import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
+import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 
 @Controller('videos')
 export class VideosController {
     public constructor(
+        private readonly resouceCreator: CreateVideoResourceAction,
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         private readonly videosRandomizer: GetRandomVideosAction,
@@ -80,7 +82,7 @@ export class VideosController {
             throw new ForbiddenException();
         }
 
-        return new VideoResource(video, video.user);
+        return await this.resouceCreator.run(user, video);
     }
 
     @Patch('/:publicId')
@@ -95,7 +97,7 @@ export class VideosController {
 
         await this.videoUpdater.run(video, data);
 
-        return new VideoResource(video, user);
+        return new VideoResource(video, { creator: user });
     }
 
     @Delete('/:publicId')
