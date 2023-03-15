@@ -33,3 +33,10 @@ properties:
   isPublic:
     type: boolean
     example: true
+  flags:
+    type: object
+    nullable: true
+    properties:
+      isLiked:
+        type: boolean
+        example: true

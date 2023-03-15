@@ -24,16 +24,22 @@ import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-alr
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
+import { AddVideoLikeAction } from './actions/add-video-like.action';
+import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
+import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 
 @Controller('videos')
 export class VideosController {
     public constructor(
+        private readonly resouceCreator: CreateVideoResourceAction,
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         private readonly videosRandomizer: GetRandomVideosAction,
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly videoDeleter: DeleteVideoAction,
+        private readonly likeAdder: AddVideoLikeAction,
+        private readonly likeRemover: RemoveVideoLikeAction,
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
@@ -76,7 +82,7 @@ export class VideosController {
             throw new ForbiddenException();
         }
 
-        return new VideoResource(video, video.user);
+        return await this.resouceCreator.run(user, video);
     }
 
     @Patch('/:publicId')
@@ -91,7 +97,7 @@ export class VideosController {
 
         await this.videoUpdater.run(video, data);
 
-        return new VideoResource(video, user);
+        return new VideoResource(video, { creator: user });
     }
 
     @Delete('/:publicId')
@@ -103,6 +109,28 @@ export class VideosController {
         OwnershipVerifier.verifyOrFail(user, video);
 
         await this.videoDeleter.run(video);
+    }
+
+    @Post('/:publicId/likes')
+    @JwtAuth()
+    public async addLikeToVideo(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
+        video = await this.likeAdder.run(user, video);
+
+        return new VideoResource(video);
+    }
+
+    @Delete('/:publicId/likes')
+    @JwtAuth()
+    public async removeLikeFromVideo(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
+        video = await this.likeRemover.run(user, video);
+
+        return new VideoResource(video);
     }
 
     @Post('/:publicId/viewed')
