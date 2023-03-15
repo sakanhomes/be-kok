@@ -34,9 +34,20 @@ export class VideoResource extends Resource {
             previewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
             video: makeAwsS3FileUrl(this.video.videoBucket, this.video.videoFile),
             createdAt: unixtime(this.video.createdAt),
-            user: user ? onlyKeys(user, ['address', 'name', 'profileImage']) : undefined,
+            user: user ? this.makeUserResource(user) : undefined,
         });
 
         return resource;
+    }
+
+    private makeUserResource(user: User): Record<string, any> {
+        return onlyKeys(user, [
+            'address',
+            'name',
+            'profileImage',
+            'videosAmount',
+            'followersAmount',
+            'followingsAmount',
+        ]);
     }
 }
