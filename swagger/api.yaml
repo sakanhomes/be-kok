@@ -5,7 +5,7 @@ info:
 servers:
   - url: https://api.kok.dev-page.site
     description: Main dev server
-  - url: https://api.kok.dev-page.site
+  - url: https://upload.kok.dev-page.site/
     description: Uploads server
 paths:
   /settings:
