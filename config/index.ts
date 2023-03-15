@@ -5,3 +5,4 @@ export { default as settings } from './settings';
 export { default as auth } from './auth';
 export { default as services } from './services';
 export { default as uploads } from './uploads';
+export { default as videos } from './videos';

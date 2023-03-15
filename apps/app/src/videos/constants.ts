@@ -1,0 +1,1 @@
+export const VIDEOS_CONFIG = 'VIDEOS_CONFIG';

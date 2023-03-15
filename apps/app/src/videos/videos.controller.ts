@@ -19,6 +19,9 @@ import { CreateVideoValidator } from './validators/create-video.validator';
 import { CreateVideoDto } from './dtos/create-video.dto';
 import { CreateVideoAction } from './actions/create-video.action';
 import { RecordViewAction } from './actions/record-view.action';
+import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
+import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-already-enrolled.exception';
+import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 
 @Controller('videos')
 export class VideosController {
@@ -29,6 +32,7 @@ export class VideosController {
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly viewsRecorder: RecordViewAction,
+        private readonly viewRewardEnroller: EnrollViewRewardAction,
     ) {}
 
     @Get('/random')
@@ -85,6 +89,17 @@ export class VideosController {
         @Param('publicId', ResolveModelPipe) video: Video,
     ) {
         video = await this.viewsRecorder.run(user, video);
+
+        try {
+            await this.viewRewardEnroller.run(user, video);
+        } catch (error) {
+            if (
+                !(error instanceof ViewRewardAlreadyEnrolledException)
+                && !(error instanceof RewardsLimitExceededException)
+            ) {
+                throw error;
+            }
+        }
 
         return new VideoResource(video);
     }
