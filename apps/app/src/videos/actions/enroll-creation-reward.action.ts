@@ -45,7 +45,7 @@ export class EnrollCreationRewardAction {
 
     private buildTransaction(account: Account, video: Video): AccountTransaction {
         return AccountTransactionBuilder.build()
-            .reward(TransactionSubtype.UPLOAD)
+            .reward(TransactionSubtype.CREATION)
             .amount(this.config.rewards.creation.amount)
             .to(account)
             .attach(video)
@@ -55,7 +55,7 @@ export class EnrollCreationRewardAction {
     private async ensureRewardsLimitIsNotExceeded(account: Account): Promise<void> {
         const enrolledRewardsAmount = await this.transactions.countBy({
             type: TransactionType.REWARD,
-            subtype: TransactionSubtype.UPLOAD,
+            subtype: TransactionSubtype.CREATION,
             accountId: account.id,
         });
 
