@@ -19,6 +19,7 @@ import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.act
 import { DeleteVideoAction } from './actions/delete-video.action';
 import { VideoLike } from './models/video-like.model';
 import { AddVideoLikeAction } from './actions/add-video-like.action';
+import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { AddVideoLikeAction } from './actions/add-video-like.action';
         UpdateVideoAction,
         DeleteVideoAction,
         AddVideoLikeAction,
+        RemoveVideoLikeAction,
         RecordViewAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,

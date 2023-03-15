@@ -8,5 +8,6 @@
     "insufficient-account-balance": "Insufficient account balance",
     "invalid-transaction-subtype": "Invalid transaction subtype",
     "upload-not-found": "{type} upload not found or has invalid type",
-    "video-already-liked": "Video is already liked"
+    "video-already-liked": "Video is already liked",
+    "video-isnt-liked": "Video is not liked"
 }

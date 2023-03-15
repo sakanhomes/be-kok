@@ -10,7 +10,7 @@ import { VideoLike } from '../models/video-like.model';
 import { Video } from '../models/video.model';
 
 @Injectable()
-export class AddVideoLikeAction {
+export class RemoveVideoLikeAction {
     public constructor(
         private readonly locker: LockService,
         @InjectRepository(Video)
@@ -20,24 +20,22 @@ export class AddVideoLikeAction {
     ) {}
 
     public async run(user: User, video: Video): Promise<Video> {
-        await this.ensureUserDidntLikeVideo(user, video);
-
-        const key = `videos.likes.add.${video.id}.${user.id}`;
+        const key = `videos.likes.remove.${video.id}.${user.id}`;
 
         await this.locker.get(key);
 
         try {
-            return await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
-                await this.ensureUserDidntLikeVideo(user, video);
+            await this.ensureUserLikedVideo(user, video);
 
-                const like = this.likes.create({
+            return await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
+                const like = await manager.getRepository(VideoLike).findOneBy({
                     videoId: video.id,
                     userId: user.id,
                 });
 
-                video.likesAmount++;
+                video.likesAmount = Math.min(video.likesAmount - 1, 0);
 
-                await manager.save(like);
+                await manager.remove(like);
                 await manager.save(video);
             });
         } finally {
@@ -45,7 +43,7 @@ export class AddVideoLikeAction {
         }
     }
 
-    private async ensureUserDidntLikeVideo(user: User, video: Video): Promise<void> {
+    private async ensureUserLikedVideo(user: User, video: Video): Promise<void> {
         const likeRecordExists = await this.likes.exist({
             where: {
                 videoId: video.id,
@@ -53,8 +51,8 @@ export class AddVideoLikeAction {
             },
         });
 
-        if (likeRecordExists) {
-            throw new UnprocessableException(__('errors.video-already-liked'));
+        if (!likeRecordExists) {
+            throw new UnprocessableException(__('errors.video-isnt-liked'));
         }
     }
 }
