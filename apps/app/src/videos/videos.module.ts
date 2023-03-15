@@ -17,10 +17,11 @@ import { ConfigService } from '@nestjs/config';
 import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
+import { VideoLike } from './models/video-like.model';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Video, ViewHistory, Upload, UploadPart, Account, AccountTransaction]),
+        TypeOrmModule.forFeature([Video, ViewHistory, VideoLike, Upload, UploadPart, Account, AccountTransaction]),
         AccountsModule,
     ],
     providers: [
