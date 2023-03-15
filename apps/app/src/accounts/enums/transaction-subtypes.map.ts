@@ -3,7 +3,7 @@ import { TransactionType } from './transaction-type.enum';
 
 export const TransactionSubtypesMap = new Map([
     [TransactionType.REWARD, [
-        TransactionSubtype.UPLOAD,
+        TransactionSubtype.CREATION,
         TransactionSubtype.VIEW,
     ]],
 ]);

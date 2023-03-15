@@ -18,6 +18,11 @@ import { ForbiddenException } from '@app/core/exceptions/app/forbidden.exception
 import { CreateVideoValidator } from './validators/create-video.validator';
 import { CreateVideoDto } from './dtos/create-video.dto';
 import { CreateVideoAction } from './actions/create-video.action';
+import { RecordViewAction } from './actions/record-view.action';
+import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
+import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-already-enrolled.exception';
+import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
+import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 
 @Controller('videos')
 export class VideosController {
@@ -27,6 +32,9 @@ export class VideosController {
         private readonly videosRandomizer: GetRandomVideosAction,
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
+        private readonly viewsRecorder: RecordViewAction,
+        private readonly creationRewardsEnroller: EnrollCreationRewardAction,
+        private readonly viewRewardEnroller: EnrollViewRewardAction,
     ) {}
 
     @Get('/random')
@@ -42,6 +50,14 @@ export class VideosController {
     @UsePipes(CreateVideoValidator)
     public async createVideo(@CurrentUser() user: User, @Body() data: CreateVideoDto) {
         const video = await this.videoCreator.run(user, data);
+
+        try {
+            await this.creationRewardsEnroller.run(user, video);
+        } catch (error) {
+            if (!(error instanceof RewardsLimitExceededException)) {
+                throw error;
+            }
+        }
 
         return new VideoResource(video);
     }
@@ -74,5 +90,27 @@ export class VideosController {
         await this.videoUpdater.run(video, data);
 
         return new VideoResource(video, user);
+    }
+
+    @Post('/:publicId/viewed')
+    @JwtAuth()
+    public async trackView(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
+        video = await this.viewsRecorder.run(user, video);
+
+        try {
+            await this.viewRewardEnroller.run(user, video);
+        } catch (error) {
+            if (
+                !(error instanceof ViewRewardAlreadyEnrolledException)
+                && !(error instanceof RewardsLimitExceededException)
+            ) {
+                throw error;
+            }
+        }
+
+        return new VideoResource(video);
     }
 }

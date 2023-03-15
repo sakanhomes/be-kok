@@ -37,4 +37,12 @@ export class AccountTransactionBuilder {
 
         return this;
     }
+
+    public attach(model: object): AccountTransactionBuilder {
+        const property = model.constructor.name.toLowerCase();
+
+        this.transaction[property] = model;
+
+        return this;
+    }
 }
