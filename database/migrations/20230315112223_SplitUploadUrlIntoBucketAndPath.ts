@@ -18,8 +18,8 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.alterTable('uploads', table => {
+        table.string('url').nullable().defaultTo(null).after('file');
         table.renameColumn('file', 'filename');
-        table.string('url').nullable().defaultTo(null).after('filename');
     });
 
     await knex.table('uploads').update({

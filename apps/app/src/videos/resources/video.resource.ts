@@ -32,7 +32,7 @@ export class VideoResource extends Resource {
             id: this.video.publicId,
             category: Category[this.video.categoryId],
             previewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
-            video: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
+            video: makeAwsS3FileUrl(this.video.videoBucket, this.video.videoFile),
             createdAt: unixtime(this.video.createdAt),
             user: user ? onlyKeys(user, ['address', 'name', 'profileImage']) : undefined,
         });

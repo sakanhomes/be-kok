@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
         previewImageBucket: process.env.AWS_S3_BUCKET,
         previewImageFile: knex.raw('replace(previewImage, "https://kok-dev.s3.amazonaws.com/", "")'),
         videoBucket: process.env.AWS_S3_BUCKET,
-        videoFile: knex.raw('replace(previewImage, "https://kok-dev.s3.amazonaws.com/", "")'),
+        videoFile: knex.raw('replace(video, "https://kok-dev.s3.amazonaws.com/", "")'),
     });
 
     await knex.schema.alterTable('videos', table => {
