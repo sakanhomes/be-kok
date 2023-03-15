@@ -32,6 +32,8 @@ paths:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:
     $ref: ./routes/videos/Video.yaml
+  /videos/{id}/likes:
+    $ref: ./routes/videos/VideoLikes.yaml
   /videos/{id}/viewed:
     $ref: ./routes/videos/TrackVideoView.yaml
   /uploads:
