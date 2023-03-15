@@ -2,6 +2,7 @@ import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { randomString, __ } from '@app/core/helpers';
+import { ModelLocker } from '@app/core/orm/model-locker';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -43,6 +44,12 @@ export class CreateVideoAction {
 
             await manager.remove(previewUpload);
             await manager.remove(videoUpload);
+
+            await ModelLocker.using(manager).lock(user, async (manager, user) => {
+                user.videosAmount++;
+
+                await manager.save(user);
+            });
 
             return createdVideo;
         });
