@@ -15,6 +15,7 @@ import { Account } from '../accounts/models/account.model';
 import { VIDEOS_CONFIG } from './constants';
 import { ConfigService } from '@nestjs/config';
 import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
+import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
         UpdateVideoAction,
         RecordViewAction,
         EnrollViewRewardAction,
+        EnrollCreationRewardAction,
         {
             provide: VIDEOS_CONFIG,
             inject: [ConfigService],

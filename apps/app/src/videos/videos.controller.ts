@@ -22,6 +22,7 @@ import { RecordViewAction } from './actions/record-view.action';
 import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-already-enrolled.exception';
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
+import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 
 @Controller('videos')
 export class VideosController {
@@ -32,6 +33,7 @@ export class VideosController {
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly viewsRecorder: RecordViewAction,
+        private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
     ) {}
 
@@ -48,6 +50,14 @@ export class VideosController {
     @UsePipes(CreateVideoValidator)
     public async createVideo(@CurrentUser() user: User, @Body() data: CreateVideoDto) {
         const video = await this.videoCreator.run(user, data);
+
+        try {
+            await this.creationRewardsEnroller.run(user, video);
+        } catch (error) {
+            if (!(error instanceof RewardsLimitExceededException)) {
+                throw error;
+            }
+        }
 
         return new VideoResource(video);
     }

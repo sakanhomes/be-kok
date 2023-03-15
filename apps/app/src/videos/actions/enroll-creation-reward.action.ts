@@ -10,13 +10,12 @@ import { Account } from '../../accounts/models/account.model';
 import { User } from '../../users/models/user.model';
 import { VIDEOS_CONFIG } from '../constants';
 import { RewardsLimitExceededException } from '../exceptions/rewards-limit-exceeded.exception';
-import { ViewRewardAlreadyEnrolledException } from '../exceptions/view-reward-already-enrolled.exception';
 import { Video } from '../models/video.model';
 import { TransactionSubtype } from '../../accounts/enums/transaction-subtype.enum';
 import { TransactionType } from '../../accounts/enums/transaction-type.enum';
 
 @Injectable()
-export class EnrollViewRewardAction {
+export class EnrollCreationRewardAction {
     public constructor(
         private readonly locker: LockService,
         private readonly accountGetter: GetUserAccountAction,
@@ -29,15 +28,12 @@ export class EnrollViewRewardAction {
 
     public async run(user: User, video: Video): Promise<AccountTransaction> {
         const account = await this.accountGetter.run(user);
-
-        await this.ensureAccountHaventGotRewardForVideo(account, video);
-
-        const key = `videos.rewards-enrolling.view.${video.id}`;
+        const key = `videos.rewards-enrolling.creation.${user.id}`;
 
         await this.locker.get(key);
 
         try {
-            await this.ensureRewardsLimitIsNotExceeded(video);
+            await this.ensureRewardsLimitIsNotExceeded(account);
 
             return await this.transactionCreator.run(
                 this.buildTransaction(account, video),
@@ -49,37 +45,22 @@ export class EnrollViewRewardAction {
 
     private buildTransaction(account: Account, video: Video): AccountTransaction {
         return AccountTransactionBuilder.build()
-            .reward(TransactionSubtype.VIEW)
-            .amount(this.config.rewards.view.amount)
+            .reward(TransactionSubtype.UPLOAD)
+            .amount(this.config.rewards.creation.amount)
             .to(account)
             .attach(video)
             .get();
     }
 
-    private async ensureRewardsLimitIsNotExceeded(video: Video): Promise<void> {
+    private async ensureRewardsLimitIsNotExceeded(account: Account): Promise<void> {
         const enrolledRewardsAmount = await this.transactions.countBy({
             type: TransactionType.REWARD,
-            subtype: TransactionSubtype.VIEW,
-            videoId: video.id,
+            subtype: TransactionSubtype.UPLOAD,
+            accountId: account.id,
         });
 
-        if (enrolledRewardsAmount >= this.config.rewards.view.limit) {
-            throw new RewardsLimitExceededException(video);
-        }
-    }
-
-    private async ensureAccountHaventGotRewardForVideo(account: Account, video: Video): Promise<void> {
-        const rewardTransactionExists = await this.transactions.exist({
-            where: {
-                type: TransactionType.REWARD,
-                subtype: TransactionSubtype.VIEW,
-                accountId: account.id,
-                videoId: video.id,
-            },
-        });
-
-        if (rewardTransactionExists) {
-            throw new ViewRewardAlreadyEnrolledException(account, video);
+        if (enrolledRewardsAmount >= this.config.rewards.creation.limit) {
+            throw new RewardsLimitExceededException;
         }
     }
 }
