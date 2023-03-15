@@ -25,10 +25,16 @@ export class Video {
     description: string | null;
 
     @Column()
-    previewImage: string;
+    previewImageBucket: string;
 
     @Column()
-    video: string;
+    previewImageFile: string;
+
+    @Column()
+    videoBucket: string;
+
+    @Column()
+    videoFile: string;
 
     @Column()
     viewsAmount: number;

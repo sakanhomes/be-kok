@@ -29,8 +29,10 @@ export class CreateVideoAction {
             title: data.title,
             duration: '00:00',
             description: data.description,
-            previewImage: previewUpload.url,
-            video: videoUpload.url,
+            previewImageBucket: previewUpload.bucket,
+            previewImageFile: previewUpload.file,
+            videoBucket: videoUpload.bucket,
+            videoFile: videoUpload.file,
             isPublic: data.isPublic,
         });
 

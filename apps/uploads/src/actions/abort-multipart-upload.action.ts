@@ -2,10 +2,9 @@ import { Upload } from '@app/common/uploads/models/upload.model';
 import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { VIDEO_BUCKET } from '../constants';
 import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { UploadsHelper } from '../helpers/uploads.helper';
 
@@ -21,8 +20,6 @@ export class AbortMultipartUploadAction {
         @Logger('uploads')
         private readonly logger: LoggerService,
         private readonly aws: AwsS3Service,
-        @Inject(VIDEO_BUCKET)
-        private readonly bucket: string,
     ) {
         this.helper = new UploadsHelper({
             logger: this.logger,
@@ -46,8 +43,8 @@ export class AbortMultipartUploadAction {
         try {
             await this.helper.allPartUploadsFinished(upload);
             await this.aws.abortUpload({
-                Bucket: this.bucket,
-                Key: upload.filename,
+                Bucket: upload.bucket,
+                Key: upload.file,
                 UploadId: upload.publicId,
             });
             await Promise.all([

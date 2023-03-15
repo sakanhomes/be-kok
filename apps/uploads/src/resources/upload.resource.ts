@@ -16,7 +16,6 @@ export class UploadResource extends Resource {
     public data(): Record<string, any> {
         const resource = onlyKeys(this.upload, [
             'owner',
-            'filename',
             'size',
             'chunkSize',
         ]);

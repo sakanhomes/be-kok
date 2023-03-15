@@ -40,8 +40,8 @@ export class UploadSingleFileAction {
                 owner,
                 type: UploadType.single,
                 status: UploadStatus.created,
-                filename: cloudFilePath,
-                url: this.helper.getCloudFileUrl(this.config.awsBucket, cloudFilePath),
+                bucket: this.config.awsBucket,
+                file: cloudFilePath,
                 mimetype: this.helper.getMimeTypeOrFail(name),
                 size: file.size,
             });
@@ -63,8 +63,8 @@ export class UploadSingleFileAction {
             const content = await fs.promises.readFile(filepath);
 
             await this.aws.upload({
-                Bucket: this.config.awsBucket,
-                Key: upload.filename,
+                Bucket: upload.bucket,
+                Key: upload.file,
                 ContentType: upload.mimetype,
                 Metadata: {
                     owner: upload.owner,

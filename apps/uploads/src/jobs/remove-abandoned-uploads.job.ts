@@ -60,8 +60,8 @@ export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
     private async removeSingleUpload(upload: Upload): Promise<void> {
         try {
             await this.aws.delete({
-                Bucket: this.config.awsBucket,
-                Key: upload.filename,
+                Bucket: upload.bucket,
+                Key: upload.file,
             });
             await this.uploads.remove(upload);
         } catch (error) {
@@ -74,8 +74,8 @@ export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
         try {
             if (upload.status === UploadStatus.completed) {
                 await this.aws.delete({
-                    Bucket: this.config.awsBucket,
-                    Key: upload.filename,
+                    Bucket: upload.bucket,
+                    Key: upload.file,
                 });
                 await Promise.all([
                     this.parts.delete({
@@ -87,8 +87,8 @@ export class RemoveAbandonedUploadsJob implements OnApplicationBootstrap {
                 await this.markUploadAsFailed(upload);
                 await this.helper.allPartUploadsFinished(upload);
                 await this.aws.abortUpload({
-                    Bucket: this.config.awsBucket,
-                    Key: upload.filename,
+                    Bucket: upload.bucket,
+                    Key: upload.file,
                     UploadId: upload.publicId,
                 });
                 await Promise.all([

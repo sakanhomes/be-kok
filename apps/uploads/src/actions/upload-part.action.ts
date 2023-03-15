@@ -1,11 +1,10 @@
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { UploadPart } from '@app/common/uploads/models/upload-part.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
-import { VIDEO_BUCKET } from '../constants';
 import { Logger } from '@app/core/logging/decorators/logger.decorator';
 import * as fs from 'fs';
 import { UploadsHelper } from '../helpers/uploads.helper';
@@ -25,8 +24,6 @@ export class UploadPartAction {
         @Logger('uploads')
         private readonly logger: LoggerService,
         private readonly aws: AwsS3Service,
-        @Inject(VIDEO_BUCKET)
-        private readonly bucket: string,
     ) {
         this.helper = new UploadsHelper({
             logger: this.logger,
@@ -69,8 +66,8 @@ export class UploadPartAction {
             const content = await fs.promises.readFile(filepath);
 
             eTag = await this.aws.uploadPart({
-                Bucket: this.bucket,
-                Key: upload.filename,
+                Bucket: upload.bucket,
+                Key: upload.file,
                 UploadId: upload.publicId,
                 // AWS start counting from 1, but in our db parts are numbered from 0
                 PartNumber: part.part + 1,

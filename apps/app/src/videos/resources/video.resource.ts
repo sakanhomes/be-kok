@@ -1,3 +1,4 @@
+import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { onlyKeys, unixtime } from '@app/core/helpers';
 import { Resource } from '@app/core/http/resources/resource';
 import { User } from '../../users/models/user.model';
@@ -19,8 +20,6 @@ export class VideoResource extends Resource {
             'title',
             'duration',
             'description',
-            'previewImage',
-            'video',
             'viewsAmount',
             'likesAmount',
             'commentsAmount',
@@ -32,6 +31,8 @@ export class VideoResource extends Resource {
         Object.assign(resource, {
             id: this.video.publicId,
             category: Category[this.video.categoryId],
+            previewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
+            video: makeAwsS3FileUrl(this.video.videoBucket, this.video.videoFile),
             createdAt: unixtime(this.video.createdAt),
             user: user ? onlyKeys(user, ['address', 'name', 'profileImage']) : undefined,
         });

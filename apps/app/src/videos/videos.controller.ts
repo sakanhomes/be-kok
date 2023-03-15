@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
@@ -23,6 +23,7 @@ import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-already-enrolled.exception';
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
+import { DeleteVideoAction } from './actions/delete-video.action';
 
 @Controller('videos')
 export class VideosController {
@@ -32,6 +33,7 @@ export class VideosController {
         private readonly videosRandomizer: GetRandomVideosAction,
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
+        private readonly videoDeleter: DeleteVideoAction,
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
@@ -90,6 +92,17 @@ export class VideosController {
         await this.videoUpdater.run(video, data);
 
         return new VideoResource(video, user);
+    }
+
+    @Delete('/:publicId')
+    @JwtAuth()
+    public async delete(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
+        OwnershipVerifier.verifyOrFail(user, video);
+
+        await this.videoDeleter.run(video);
     }
 
     @Post('/:publicId/viewed')
