@@ -7,6 +7,9 @@ import * as path from 'path';
 import { TimestampsRefresher } from './orm/timestamps-refresher.handler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LockService } from './support/locker/lock.service';
+import { AwsS3Service } from './aws/aws-s3.service';
+import { LocalAwsS3Service } from './aws/local-s3.service';
+import { UPLOADS_CONFIG, VIDEO_BUCKET } from 'apps/uploads/src/constants';
 
 @Global()
 @Module({})
@@ -20,8 +23,12 @@ export class CoreModule {
         return {
             module: CoreModule,
             imports: [config, db, LoggingModule, ScheduleModule.forRoot()],
-            providers: [ConfigService, LockService],
-            exports: [ConfigService, LoggingModule, LockService],
+            providers: [
+                ConfigService,
+                LockService,
+                ...this.registerAwsS3Service(),
+            ],
+            exports: [ConfigService, LoggingModule, LockService, AwsS3Service, UPLOADS_CONFIG, VIDEO_BUCKET],
         };
     }
 
@@ -42,5 +49,35 @@ export class CoreModule {
                 };
             },
         });
+    }
+
+    private static registerAwsS3Service() {
+        return [
+            {
+                provide: AwsS3Service,
+                inject: [ConfigService],
+                useFactory: (config: ConfigService) => {
+                    return config.get('uploads.enableLocalAwsStub')
+                        ? new LocalAwsS3Service(
+                            path.join(process.cwd(), 'storage/aws-local'),
+                        )
+                        : new AwsS3Service(
+                            config.get('services.aws-s3.region'),
+                            config.get('services.aws-s3.key'),
+                            config.get('services.aws-s3.secret'),
+                        );
+                },
+            },
+            {
+                provide: UPLOADS_CONFIG,
+                inject: [ConfigService],
+                useFactory: (config: ConfigService) => config.get('uploads'),
+            },
+            {
+                provide: VIDEO_BUCKET,
+                inject: [ConfigService],
+                useFactory: (config: ConfigService) => config.get('uploads.awsBucket'),
+            },
+        ];
     }
 }
