@@ -24,6 +24,7 @@ import { ViewRewardAlreadyEnrolledException } from './exceptions/view-reward-alr
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
+import { AddVideoLikeAction } from './actions/add-video-like.action';
 
 @Controller('videos')
 export class VideosController {
@@ -34,6 +35,7 @@ export class VideosController {
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly videoDeleter: DeleteVideoAction,
+        private readonly videoLiker: AddVideoLikeAction,
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
@@ -103,6 +105,17 @@ export class VideosController {
         OwnershipVerifier.verifyOrFail(user, video);
 
         await this.videoDeleter.run(video);
+    }
+
+    @Post('/:publicId/likes')
+    @JwtAuth()
+    public async addLikeToVideo(
+        @CurrentUser() user: User,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
+        video = await this.videoLiker.run(user, video);
+
+        return new VideoResource(video);
     }
 
     @Post('/:publicId/viewed')
