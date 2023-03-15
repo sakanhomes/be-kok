@@ -8,13 +8,14 @@ import { GetUserVideos } from './actions/get-user-videos.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { USER_SETTINGS_CONFIG } from './constants';
+import { Subscription } from './models/subscription.model';
 import { UserSetting } from './models/user-setting.model';
 import { User } from './models/user.model';
 import { ProfileController } from './profile.controller';
 import { UsersController } from './users.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, UserSetting, Account, Video])],
+    imports: [TypeOrmModule.forFeature([User, UserSetting, Account, Video, Subscription])],
     providers: [
         UpdateUserAction,
         GetUserSettingsAction,
