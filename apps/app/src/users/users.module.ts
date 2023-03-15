@@ -6,6 +6,7 @@ import { Video } from '../videos/models/video.model';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
+import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action copy';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { USER_SETTINGS_CONFIG } from './constants';
@@ -23,6 +24,7 @@ import { UsersController } from './users.controller';
         UpdateUserSettingsAction,
         GetUserVideos,
         SubscribeToUserAction,
+        UnsubscribeFromUserAction,
         {
             provide: USER_SETTINGS_CONFIG,
             inject: [ConfigService],

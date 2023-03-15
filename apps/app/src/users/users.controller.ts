@@ -2,10 +2,11 @@ import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
+import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action copy';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
 
@@ -14,6 +15,7 @@ export class UsersController {
     public constructor(
         private readonly videosLoader: GetUserVideos,
         private readonly subscriber: SubscribeToUserAction,
+        private readonly unsubscriber: UnsubscribeFromUserAction,
     ) {}
 
     @Get('/:address')
@@ -39,6 +41,17 @@ export class UsersController {
         @Param('address', ResolveModelPipe) creator: User,
     ) {
         creator = await this.subscriber.run(creator, subscriber);
+
+        return new UserResource(creator);
+    }
+
+    @Delete('/:address/subscriptions')
+    @JwtAuth()
+    public async unsubscribe(
+        @CurrentUser() subscriber: User,
+        @Param('address', ResolveModelPipe) creator: User,
+    ) {
+        creator = await this.unsubscriber.run(creator, subscriber);
 
         return new UserResource(creator);
     }

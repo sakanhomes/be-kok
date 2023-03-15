@@ -10,5 +10,6 @@
     "upload-not-found": "{type} upload not found or has invalid type",
     "video-already-liked": "Video is already liked",
     "video-isnt-liked": "Video is not liked",
-    "user-already-subscribed": "User is already subscribed"
+    "user-already-subscribed": "User is already subscribed",
+    "user-isnt-subscribed": "User is not subscribed"
 }
