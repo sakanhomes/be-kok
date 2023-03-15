@@ -71,10 +71,6 @@ export class UploadsHelper {
         return path.join(owner, dir, remoteName + extension);
     }
 
-    public getCloudFileUrl(bucket: string, path: string): string {
-        return `https://${bucket}.s3.amazonaws.com/${path}`;
-    }
-
     public async removeFileOrLog(filepath: string): Promise<void> {
         try {
             await fs.promises.unlink(filepath);

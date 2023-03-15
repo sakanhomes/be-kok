@@ -25,10 +25,10 @@ export class Upload {
     status: UploadStatus;
 
     @Column()
-    filename: string;
+    bucket: string;
 
     @Column()
-    url: string;
+    file: string;
 
     @Column()
     mimetype: string;
