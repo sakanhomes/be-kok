@@ -16,6 +16,7 @@ import { VIDEOS_CONFIG } from './constants';
 import { ConfigService } from '@nestjs/config';
 import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
+import { DeleteVideoAction } from './actions/delete-video.action';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.act
         GetRandomVideosAction,
         CreateVideoAction,
         UpdateVideoAction,
+        DeleteVideoAction,
         RecordViewAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,
