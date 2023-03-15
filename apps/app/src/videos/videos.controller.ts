@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
@@ -53,6 +53,7 @@ export class VideosController {
     }
 
     @Post('/')
+    @HttpCode(200)
     @JwtAuth()
     @UsePipes(CreateVideoValidator)
     public async createVideo(@CurrentUser() user: User, @Body() data: CreateVideoDto) {
