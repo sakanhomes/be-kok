@@ -1,0 +1,58 @@
+post:
+  summary: Subscribe to user
+  tags:
+    - Users
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/address.yaml
+  responses:
+    "200":
+      description: Updated user data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: ../../models/User.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+delete:
+  summary: Unsubscribe from user
+  tags:
+    - Users
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/address.yaml
+  responses:
+    "200":
+      description: Updated user data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: ../../models/User.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
