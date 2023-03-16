@@ -9,7 +9,7 @@ import { GetUserSubscribersAction } from './actions/get-user-subscribers.action'
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
-import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action copy';
+import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { USER_SETTINGS_CONFIG } from './constants';

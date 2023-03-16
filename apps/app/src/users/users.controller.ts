@@ -6,7 +6,7 @@ import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
-import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action copy';
+import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
 
