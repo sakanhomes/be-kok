@@ -51,13 +51,20 @@ export class VideoResource extends Resource {
     }
 
     private makeUserResource(user: User): Record<string, any> {
-        return onlyKeys(user, [
+        const resource = onlyKeys(user, [
             'address',
             'name',
-            'profileImage',
             'videosAmount',
             'followersAmount',
             'followingsAmount',
         ]);
+
+        Object.assign(resource, {
+            profileImage: (user.profileImageBucket && user.profileImageFile)
+                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
+                : null,
+        });
+
+        return resource;
     }
 }

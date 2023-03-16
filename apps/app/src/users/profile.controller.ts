@@ -1,5 +1,6 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
+import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { onlyKeys } from '@app/core/helpers';
 import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,8 +59,6 @@ export class ProfileController {
         const resource = onlyKeys(user, [
             'address',
             'name',
-            'profileImage',
-            'backgroundImage',
             'description',
             'videosAmount',
             'followersAmount',
@@ -71,6 +70,12 @@ export class ProfileController {
             .loadOne();
 
         Object.assign(resource, {
+            profileImage: (user.profileImageBucket && user.profileImageFile)
+                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
+                : null,
+            backgroundImage: (user.backgroundImageBucket && user.backgroundImageFile)
+                ? makeAwsS3FileUrl(user.backgroundImageBucket, user.backgroundImageFile)
+                : null,
             balance: account ? account.balance.toNumber() : 0,
         });
 
