@@ -39,8 +39,8 @@ export class UpdateUserAction {
 
         Object.assign(user, data);
 
-        let profileImageUpdation: SetUserImageResult;
-        let backgroundImageUpdation: SetUserImageResult;
+        let profileImageUpdation: SetUserImageResult = null;
+        let backgroundImageUpdation: SetUserImageResult = null;
 
         if (data.profileImageUploadId) {
             profileImageUpdation = await this.setUserImage(user, data.profileImageUploadId, 'profile');
@@ -82,7 +82,11 @@ export class UpdateUserAction {
         return { upload, oldImage };
     }
 
-    private async handleImageUpdation(updation: SetUserImageResult): Promise<void> {
+    private async handleImageUpdation(updation: SetUserImageResult | null): Promise<void> {
+        if (!updation) {
+            return;
+        }
+
         await this.uploads.remove(updation.upload);
 
         if (!updation.oldImage) {
