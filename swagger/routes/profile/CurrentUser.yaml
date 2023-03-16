@@ -37,14 +37,10 @@ patch:
             description:
               type: string
               exampe: Long profile description
-            profileImage:
+            profileImageUploadId:
               type: string
-              format: uri
-              exampe: https://storage.domain.com/path/to/image.jpg
-            backgroundImage:
+            backgroundImageUploadId:
               type: string
-              format: uri
-              exampe: https://storage.domain.com/path/to/image.jpg
   responses:
     "200":
       description: Current user
