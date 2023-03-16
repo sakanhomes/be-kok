@@ -6,10 +6,12 @@ import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
+import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
+import { UserResource } from './resources/user.resource';
 import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 
@@ -23,6 +25,7 @@ export class ProfileController {
         private readonly updater: UpdateUserAction,
         private readonly settingsGetter: GetUserSettingsAction,
         private readonly settingsUpdater: UpdateUserSettingsAction,
+        private readonly subscribersGetter: GetUserSubscribersAction,
     ) {}
 
     @Get('/')
@@ -53,5 +56,12 @@ export class ProfileController {
         const settings = await this.settingsGetter.run(user);
 
         return { settings };
+    }
+
+    @Get('/subscribers')
+    public async getSubcribers(@CurrentUser() user: User) {
+        const subscribers = await this.subscribersGetter.run(user);
+
+        return UserResource.collection(subscribers);
     }
 }
