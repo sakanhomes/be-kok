@@ -24,10 +24,16 @@ paths:
     $ref: ./routes/profile/CurrentUser.yaml
   /me/settings:
     $ref: ./routes/profile/UserSettings.yaml
+  /me/subscribers:
+    $ref: ./routes/profile/Subs.yaml
+  /me/subscriptions:
+    $ref: ./routes/profile/Subs.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
   /users/{address}/videos:
     $ref: ./routes/users/UserVideos.yaml
+  /users/{address}/subscriptions:
+    $ref: ./routes/users/UserSubscriptions.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:

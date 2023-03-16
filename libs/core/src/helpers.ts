@@ -137,3 +137,9 @@ export function enumKeys(enumObject: object): string[] {
         return isNaN(parseInt(key));
     });
 }
+
+export function escapeLike(string: string): string {
+    return string.replace('\\', '\\\\')
+        .replace('_', '\\_')
+        .replace('%', '\\%');
+}

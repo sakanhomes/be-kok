@@ -1,60 +1,58 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
+import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
-import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
-import { onlyKeys } from '@app/core/helpers';
-import { ParseAddressPipe } from '@app/core/validation/pipes/parse-address.pipe';
-import { Controller, Get, Param } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserVideos } from './actions/get-user-videos.action';
+import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
+import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { User } from './models/user.model';
+import { UserResource } from './resources/user.resource';
 
 @Controller('users')
 export class UsersController {
     public constructor(
-        @InjectRepository(User)
-        private readonly users: Repository<User>,
         private readonly videosLoader: GetUserVideos,
+        private readonly subscriber: SubscribeToUserAction,
+        private readonly unsubscriber: UnsubscribeFromUserAction,
     ) {}
 
     @Get('/:address')
-    public async entity(@Param('address', ParseAddressPipe) address: string) {
-        const user = await this.users.findOneByOrFail({ address });
-
-        return {
-            user: this.userResponse(user),
-        };
+    public async entity(@Param('address', ResolveModelPipe) user: User) {
+        return new UserResource(user);
     }
 
     @Get('/:address/videos')
     @OptionalJwtAuth()
-    public async videos(@CurrentUser() currentUser: User | null, @Param('address', ParseAddressPipe) address: string) {
-        const user = await this.users.findOneByOrFail({ address });
+    public async videos(
+        @CurrentUser() currentUser: User | null,
+        @Param('address', ResolveModelPipe) user: User,
+    ) {
         const videos = await this.videosLoader.run(user, currentUser?.id !== user.id);
 
         return VideoResource.collection(videos);
     }
 
-    private userResponse(user: User) {
-        const resource = onlyKeys(user, [
-            'address',
-            'name',
-            'description',
-            'videosAmount',
-            'followersAmount',
-            'followingsAmount',
-        ]);
+    @Post('/:address/subscriptions')
+    @JwtAuth()
+    public async subscribe(
+        @CurrentUser() subscriber: User,
+        @Param('address', ResolveModelPipe) creator: User,
+    ) {
+        creator = await this.subscriber.run(creator, subscriber);
 
-        Object.assign(resource, {
-            profileImage: (user.profileImageBucket && user.profileImageFile)
-                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
-                : null,
-            backgroundImage: (user.backgroundImageBucket && user.backgroundImageFile)
-                ? makeAwsS3FileUrl(user.backgroundImageBucket, user.backgroundImageFile)
-                : null,
-        });
+        return new UserResource(creator);
+    }
 
-        return resource;
+    @Delete('/:address/subscriptions')
+    @JwtAuth()
+    public async unsubscribe(
+        @CurrentUser() subscriber: User,
+        @Param('address', ResolveModelPipe) creator: User,
+    ) {
+        creator = await this.unsubscriber.run(creator, subscriber);
+
+        return new UserResource(creator);
     }
 }

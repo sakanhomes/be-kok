@@ -1,16 +1,20 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
-import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
-import { onlyKeys } from '@app/core/helpers';
-import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
+import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
+import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
+import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
+import { SubsFiltersDto } from './dtos/subs-filters.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
+import { UserResource } from './resources/user.resource';
+import { SubsFiltersValidator } from './validators/subs-filters.validator';
 import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 
@@ -18,16 +22,19 @@ import { UpdateUserValidator } from './validators/update-user.validator';
 @JwtAuth()
 export class ProfileController {
     public constructor(
+        private readonly resourceCreator: CreateCurrentUserResourceAction,
         @InjectRepository(Account)
         private readonly accounts: Repository<Account>,
         private readonly updater: UpdateUserAction,
         private readonly settingsGetter: GetUserSettingsAction,
         private readonly settingsUpdater: UpdateUserSettingsAction,
+        private readonly subscribersGetter: GetUserSubscribersAction,
+        private readonly subscriptionsGetter: GetUserSubscriptionsAction,
     ) {}
 
     @Get('/')
     public user(@CurrentUser() user: User) {
-        return this.userResponse(user);
+        return this.resourceCreator.run(user);
     }
 
     @Patch('/')
@@ -35,7 +42,7 @@ export class ProfileController {
     public async update(@CurrentUser() user: User, @Body() data: UpdateUserDto) {
         await this.updater.run(user, data);
 
-        return this.userResponse(user);
+        return this.resourceCreator.run(user);
     }
 
     @Get('/settings')
@@ -55,32 +62,19 @@ export class ProfileController {
         return { settings };
     }
 
-    private async userResponse(user: User) {
-        const resource = onlyKeys(user, [
-            'address',
-            'name',
-            'description',
-            'videosAmount',
-            'followersAmount',
-            'followingsAmount',
-        ]);
-        const account: Account | null = await this.accounts.createQueryBuilder()
-            .relation(User, 'accounts')
-            .of(user)
-            .loadOne();
+    @Get('/subscribers')
+    @UsePipes(SubsFiltersValidator)
+    public async getSubcribers(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+        const subscribers = await this.subscribersGetter.run(user, filters);
 
-        Object.assign(resource, {
-            profileImage: (user.profileImageBucket && user.profileImageFile)
-                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
-                : null,
-            backgroundImage: (user.backgroundImageBucket && user.backgroundImageFile)
-                ? makeAwsS3FileUrl(user.backgroundImageBucket, user.backgroundImageFile)
-                : null,
-            balance: account ? account.balance.toNumber() : 0,
-        });
+        return UserResource.collection(subscribers);
+    }
 
-        return {
-            user: resource,
-        };
+    @Get('/subscriptions')
+    @UsePipes(SubsFiltersValidator)
+    public async getSubcriptions(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+        const subscribers = await this.subscriptionsGetter.run(user, filters);
+
+        return UserResource.collection(subscribers);
     }
 }

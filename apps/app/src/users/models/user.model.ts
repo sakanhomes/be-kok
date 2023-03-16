@@ -36,10 +36,10 @@ export class User {
     videosAmount: number;
 
     @Column()
-    followersAmount: number;
+    subscribersAmount: number;
 
     @Column()
-    followingsAmount: number;
+    subscriptionsAmount: number;
 
     @CreateDateColumn()
     createdAt: Date;
