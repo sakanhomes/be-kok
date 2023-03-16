@@ -1,3 +1,4 @@
+import { Upload } from '@app/common/uploads/models/upload.model';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,7 +21,7 @@ import { ProfileController } from './profile.controller';
 import { UsersController } from './users.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, UserSetting, Account, Video, Subscription])],
+    imports: [TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription])],
     providers: [
         UpdateUserAction,
         GetUserSettingsAction,

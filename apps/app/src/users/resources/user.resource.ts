@@ -1,3 +1,4 @@
+import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { onlyKeys } from '@app/core/helpers';
 import { Resource } from '@app/core/http/resources/resource';
 
@@ -9,15 +10,24 @@ export class UserResource extends Resource {
     }
 
     public data(): Record<string, any> {
-        return onlyKeys(this.user, [
+        const resource = onlyKeys(this.user, [
             'address',
             'name',
-            'profileImage',
-            'backgroundImage',
             'description',
             'videosAmount',
             'followersAmount',
             'followingsAmount',
         ]);
+
+        Object.assign(resource, {
+            profileImage: (this.user.profileImageBucket && this.user.profileImageFile)
+                ? makeAwsS3FileUrl(this.user.profileImageBucket, this.user.profileImageFile)
+                : null,
+            backgroundImage: (this.user.backgroundImageBucket && this.user.backgroundImageFile)
+                ? makeAwsS3FileUrl(this.user.backgroundImageBucket, this.user.backgroundImageFile)
+                : null,
+        });
+
+        return resource;
     }
 }

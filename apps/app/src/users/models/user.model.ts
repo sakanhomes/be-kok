@@ -18,10 +18,16 @@ export class User {
     name: string | null;
 
     @Column()
-    profileImage: string | null;
+    profileImageBucket: string | null;
 
     @Column()
-    backgroundImage: string | null;
+    profileImageFile: string | null;
+
+    @Column()
+    backgroundImageBucket: string | null;
+
+    @Column()
+    backgroundImageFile: string | null;
 
     @Column()
     description: string | null;

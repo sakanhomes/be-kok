@@ -1,11 +1,10 @@
-import { UploadStatus } from '@app/common/uploads/enums/upload-status.enum';
 import { Upload } from '@app/common/uploads/models/upload.model';
-import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
-import { randomString, __ } from '@app/core/helpers';
+import { randomString } from '@app/core/helpers';
 import { ModelLocker } from '@app/core/orm/model-locker';
+import { UploadsFinder } from '@app/core/support/uploads/uploads-finder';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../../users/models/user.model';
 import { CreateVideoDto } from '../dtos/create-video.dto';
 import { Category } from '../enums/category.enum';
@@ -13,12 +12,16 @@ import { Video } from '../models/video.model';
 
 @Injectable()
 export class CreateVideoAction {
+    private readonly uploadsFinder: UploadsFinder;
+
     public constructor(
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         @InjectRepository(Upload)
         private readonly uploads: Repository<Upload>,
-    ) {}
+    ) {
+        this.uploadsFinder = new UploadsFinder(this.uploads);
+    }
 
     public async run(user: User, data: CreateVideoDto): Promise<Video> {
         const previewUpload = await this.getPreviewUploadOrFail(user, data.previewUploadId);
@@ -57,37 +60,11 @@ export class CreateVideoAction {
         return video;
     }
 
-    private async getPreviewUploadOrFail(user: User, id: string): Promise<Upload> {
-        const upload = await this.uploads.findOneBy({
-            publicId: id,
-            owner: user.address,
-            mimetype: In(['image/jpeg', 'image/png']),
-            status: UploadStatus.completed,
-        });
-
-        if (!upload) {
-            throw new UnprocessableException(__('errors.upload-not-found', {
-                args: { type: 'Preview' },
-            }));
-        }
-
-        return upload;
+    private getPreviewUploadOrFail(user: User, id: string): Promise<Upload> {
+        return this.uploadsFinder.findUploadOrFail(user, id, ['image/jpeg', 'image/png'], 'Preview');
     }
 
-    private async getVideoUploadOrFail(user: User, id: string): Promise<Upload> {
-        const upload = await this.uploads.findOneBy({
-            publicId: id,
-            owner: user.address,
-            mimetype: 'video/mp4',
-            status: UploadStatus.completed,
-        });
-
-        if (!upload) {
-            throw new UnprocessableException(__('errors.upload-not-found', {
-                args: { type: 'Video' },
-            }));
-        }
-
-        return upload;
+    private getVideoUploadOrFail(user: User, id: string): Promise<Upload> {
+        return this.uploadsFinder.findUploadOrFail(user, id, ['video/mp4'], 'Video');
     }
 }
