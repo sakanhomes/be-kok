@@ -29,6 +29,12 @@ export class SubscribeToUserAction {
             return await ModelLocker.using(this.users.manager).lock(creator, async (manager, creator) => {
                 await this.ensureUserIsntSubscribed(creator, subscriber);
 
+                await ModelLocker.using(manager).lock(subscriber, async (manager, subscriber) => {
+                    subscriber.subscriptionsAmount++;
+
+                    await manager.save(subscriber);
+                });
+
                 const subscription = this.subscriptions.create({
                     userId: creator.id,
                     subscriberId: subscriber.id,

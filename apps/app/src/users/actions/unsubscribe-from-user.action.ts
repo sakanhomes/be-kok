@@ -29,6 +29,12 @@ export class UnsubscribeFromUserAction {
             return await ModelLocker.using(this.users.manager).lock(creator, async (manager, creator) => {
                 await this.ensureUserIsSubscribed(creator, subscriber);
 
+                await ModelLocker.using(manager).lock(subscriber, async (manager, subscriber) => {
+                    subscriber.subscriptionsAmount = Math.max(subscriber.subscriptionsAmount - 1, 0);
+
+                    await manager.save(subscriber);
+                });
+
                 const subscription = await this.subscriptions.findOneBy({
                     userId: creator.id,
                     subscriberId: subscriber.id,
