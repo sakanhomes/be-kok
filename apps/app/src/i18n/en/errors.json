@@ -12,5 +12,6 @@
     "video-already-liked": "Video is already liked",
     "video-isnt-liked": "Video is not liked",
     "user-already-subscribed": "User is already subscribed",
-    "user-isnt-subscribed": "User is not subscribed"
+    "user-isnt-subscribed": "User is not subscribed",
+    "self-subscribing-forbidden": "User cannot be self-subscribed"
 }

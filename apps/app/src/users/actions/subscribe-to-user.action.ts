@@ -19,6 +19,7 @@ export class SubscribeToUserAction {
     ) {}
 
     public async run(creator: User, subscriber: User): Promise<User> {
+        this.ensureUsersAreNotTheSame(creator, subscriber);
         await this.ensureUserIsntSubscribed(creator, subscriber);
 
         const key = `users.subscriptions.add.${creator.id}.${subscriber.id}`;
@@ -59,6 +60,12 @@ export class SubscribeToUserAction {
 
         if (subscribed) {
             throw new UnprocessableException(__('errors.user-already-subscribed'));
+        }
+    }
+
+    private ensureUsersAreNotTheSame(creator: User, subscriber: User): void {
+        if (creator.id === subscriber.id) {
+            throw new UnprocessableException(__('errors.self-subscribing-forbidden'));
         }
     }
 }
