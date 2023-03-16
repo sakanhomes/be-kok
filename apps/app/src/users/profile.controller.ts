@@ -1,6 +1,6 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
-import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
@@ -10,9 +10,11 @@ import { GetUserSubscribersAction } from './actions/get-user-subscribers.action'
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
+import { SubsFiltersDto } from './dtos/subs-filters.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
+import { SubsFiltersValidator } from './validators/subs-filters.validator';
 import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 
@@ -61,15 +63,17 @@ export class ProfileController {
     }
 
     @Get('/subscribers')
-    public async getSubcribers(@CurrentUser() user: User) {
-        const subscribers = await this.subscribersGetter.run(user);
+    @UsePipes(SubsFiltersValidator)
+    public async getSubcribers(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+        const subscribers = await this.subscribersGetter.run(user, filters);
 
         return UserResource.collection(subscribers);
     }
 
     @Get('/subscriptions')
-    public async getSubcriptions(@CurrentUser() user: User) {
-        const subscribers = await this.subscriptionsGetter.run(user);
+    @UsePipes(SubsFiltersValidator)
+    public async getSubcriptions(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+        const subscribers = await this.subscriptionsGetter.run(user, filters);
 
         return UserResource.collection(subscribers);
     }
