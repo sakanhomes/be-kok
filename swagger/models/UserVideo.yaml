@@ -20,11 +20,11 @@ allOf:
             type: integer
             min: 0
             example: 12345
-          followersAmount:
+          subscribersAmount:
             type: integer
             min: 0
             example: 12345
-          followingsAmount:
+          subscriptionsAmount:
             type: integer
             min: 0
             example: 12345

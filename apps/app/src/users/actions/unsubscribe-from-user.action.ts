@@ -33,7 +33,7 @@ export class UnsubscribeFromUserAction {
                     userId: creator.id,
                     subscriberId: subscriber.id,
                 });
-                creator.followersAmount = Math.max(creator.followersAmount - 1, 0);
+                creator.subscribersAmount = Math.max(creator.subscribersAmount - 1, 0);
 
                 await manager.remove(subscription);
                 await manager.save(creator);

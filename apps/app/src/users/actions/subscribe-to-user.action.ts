@@ -33,8 +33,7 @@ export class SubscribeToUserAction {
                     userId: creator.id,
                     subscriberId: subscriber.id,
                 });
-                // TODO Rename followers to subscribers
-                creator.followersAmount++;
+                creator.subscribersAmount++;
 
                 await manager.save(subscription);
                 await manager.save(creator);

@@ -55,8 +55,8 @@ export class VideoResource extends Resource {
             'address',
             'name',
             'videosAmount',
-            'followersAmount',
-            'followingsAmount',
+            'subscribersAmount',
+            'subscriptionsAmount',
         ]);
 
         Object.assign(resource, {

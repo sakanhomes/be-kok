@@ -15,8 +15,8 @@ export class UserResource extends Resource {
             'name',
             'description',
             'videosAmount',
-            'followersAmount',
-            'followingsAmount',
+            'subscribersAmount',
+            'subscriptionsAmount',
         ]);
 
         Object.assign(resource, {
