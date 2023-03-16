@@ -1,6 +1,7 @@
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { PlainJwtPayload } from '@app/core/auth/decorators/plain-jwt-payload.decorator';
 import { PlainJwtGuard } from '@app/core/auth/guards/plain-jwt.guard';
+import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
 import { ParsePositiveIntPipe } from '@app/core/validation/pipes/parse-positive-int.pipe';
 import { Body, Controller, Get, HttpCode, Param, Post, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
@@ -53,6 +54,8 @@ export class UploadsController {
         @PlainJwtPayload('address') owner: string,
         @Query() { name }: { name: string },
     ) {
+        this.ensureUploadExists(request);
+
         const upload = await this.singleUploader.run(owner, name, request.upload);
 
         return new UploadResource(upload);
@@ -84,6 +87,8 @@ export class UploadsController {
         @Param('publicId', ResolveModelPipe) upload: Upload,
         @Query('part', new ParsePositiveIntPipe({ allowZero: true })) part: number,
     ) {
+        this.ensureUploadExists(request);
+
         upload = await this.multipartUploader.run(upload, part, request.upload);
         const parts = await this.partsLoader.run(upload);
 
@@ -104,5 +109,11 @@ export class UploadsController {
         upload = await this.multipartUploadAborted.run(upload);
 
         return new UploadResource(upload);
+    }
+
+    private ensureUploadExists(request: HasUpload<Request>): void {
+        if (!request.upload) {
+            throw new UnprocessableException('File is not uploaded');
+        }
     }
 }
