@@ -1,5 +1,6 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
+import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { onlyKeys } from '@app/core/helpers';
 import { ParseAddressPipe } from '@app/core/validation/pipes/parse-address.pipe';
 import { Controller, Get, Param } from '@nestjs/common';
@@ -36,15 +37,24 @@ export class UsersController {
     }
 
     private userResponse(user: User) {
-        return onlyKeys(user, [
+        const resource = onlyKeys(user, [
             'address',
             'name',
-            'profileImage',
-            'backgroundImage',
             'description',
             'videosAmount',
             'followersAmount',
             'followingsAmount',
         ]);
+
+        Object.assign(resource, {
+            profileImage: (user.profileImageBucket && user.profileImageFile)
+                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
+                : null,
+            backgroundImage: (user.backgroundImageBucket && user.backgroundImageFile)
+                ? makeAwsS3FileUrl(user.backgroundImageBucket, user.backgroundImageFile)
+                : null,
+        });
+
+        return resource;
     }
 }
