@@ -1,10 +1,10 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
-import { onlyKeys } from '@app/core/helpers';
 import { Body, Controller, Get, Patch, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
+import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
@@ -17,6 +17,7 @@ import { UpdateUserValidator } from './validators/update-user.validator';
 @JwtAuth()
 export class ProfileController {
     public constructor(
+        private readonly resourceCreator: CreateCurrentUserResourceAction,
         @InjectRepository(Account)
         private readonly accounts: Repository<Account>,
         private readonly updater: UpdateUserAction,
@@ -26,7 +27,7 @@ export class ProfileController {
 
     @Get('/')
     public user(@CurrentUser() user: User) {
-        return this.userResponse(user);
+        return this.resourceCreator.run(user);
     }
 
     @Patch('/')
@@ -34,7 +35,7 @@ export class ProfileController {
     public async update(@CurrentUser() user: User, @Body() data: UpdateUserDto) {
         await this.updater.run(user, data);
 
-        return this.userResponse(user);
+        return this.resourceCreator.run(user);
     }
 
     @Get('/settings')
@@ -52,30 +53,5 @@ export class ProfileController {
         const settings = await this.settingsGetter.run(user);
 
         return { settings };
-    }
-
-    private async userResponse(user: User) {
-        const resource = onlyKeys(user, [
-            'address',
-            'name',
-            'profileImage',
-            'backgroundImage',
-            'description',
-            'videosAmount',
-            'followersAmount',
-            'followingsAmount',
-        ]);
-        const account: Account | null = await this.accounts.createQueryBuilder()
-            .relation(User, 'accounts')
-            .of(user)
-            .loadOne();
-
-        Object.assign(resource, {
-            balance: account ? account.balance.toNumber() : 0,
-        });
-
-        return {
-            user: resource,
-        };
     }
 }

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from '../accounts/models/account.model';
 import { Video } from '../videos/models/video.model';
+import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
@@ -23,6 +24,7 @@ import { UsersController } from './users.controller';
         GetUserSettingsAction,
         UpdateUserSettingsAction,
         GetUserVideos,
+        CreateCurrentUserResourceAction,
         SubscribeToUserAction,
         UnsubscribeFromUserAction,
         {
