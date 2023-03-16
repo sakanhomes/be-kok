@@ -2,6 +2,7 @@ import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { onlyKeys, unixtime } from '@app/core/helpers';
 import { Resource } from '@app/core/http/resources/resource';
 import { User } from '../../users/models/user.model';
+import { BasicUserResource } from '../../users/resources/basic-user.resource';
 import { Category } from '../enums/category.enum';
 import { Video } from '../models/video.model';
 
@@ -43,26 +44,8 @@ export class VideoResource extends Resource {
             previewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
             video: makeAwsS3FileUrl(this.video.videoBucket, this.video.videoFile),
             createdAt: unixtime(this.video.createdAt),
-            user: user ? this.makeUserResource(user) : undefined,
+            user: user ? new BasicUserResource(user).data() : undefined,
             flags: this.options?.flags ? onlyKeys(this.options.flags, ['isLiked']) : undefined,
-        });
-
-        return resource;
-    }
-
-    private makeUserResource(user: User): Record<string, any> {
-        const resource = onlyKeys(user, [
-            'address',
-            'name',
-            'videosAmount',
-            'subscribersAmount',
-            'subscriptionsAmount',
-        ]);
-
-        Object.assign(resource, {
-            profileImage: (user.profileImageBucket && user.profileImageFile)
-                ? makeAwsS3FileUrl(user.profileImageBucket, user.profileImageFile)
-                : null,
         });
 
         return resource;
