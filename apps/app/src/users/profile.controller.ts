@@ -7,6 +7,7 @@ import { Account } from '../accounts/models/account.model';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
+import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -26,6 +27,7 @@ export class ProfileController {
         private readonly settingsGetter: GetUserSettingsAction,
         private readonly settingsUpdater: UpdateUserSettingsAction,
         private readonly subscribersGetter: GetUserSubscribersAction,
+        private readonly subscriptionsGetter: GetUserSubscriptionsAction,
     ) {}
 
     @Get('/')
@@ -61,6 +63,13 @@ export class ProfileController {
     @Get('/subscribers')
     public async getSubcribers(@CurrentUser() user: User) {
         const subscribers = await this.subscribersGetter.run(user);
+
+        return UserResource.collection(subscribers);
+    }
+
+    @Get('/subscriptions')
+    public async getSubcriptions(@CurrentUser() user: User) {
+        const subscribers = await this.subscriptionsGetter.run(user);
 
         return UserResource.collection(subscribers);
     }
