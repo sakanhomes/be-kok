@@ -1,0 +1,25 @@
+title: BasicUser
+type: object
+properties:
+  address:
+    $ref: ../types/crypto/address.yaml
+  name:
+    type: string
+    nullable: true
+    example: John Smith
+  profileImage:
+    allOf:
+      - $ref: ../types/file_url.yaml
+      - nullable: true
+  videosAmount:
+    type: integer
+    min: 0
+    example: 12345
+  subscribersAmount:
+    type: integer
+    min: 0
+    example: 12345
+  subscriptionsAmount:
+    type: integer
+    min: 0
+    example: 12345
