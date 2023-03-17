@@ -12,6 +12,9 @@ export class Playlist {
     @Column()
     userId: string;
 
+    @Column()
+    isDefault: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 

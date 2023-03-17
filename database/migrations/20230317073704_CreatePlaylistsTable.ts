@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
         table.bigIncrements('id').unsigned().primary().notNullable();
         table.string('publicId').unique().notNullable();
         table.bigInteger('userId').unsigned().notNullable();
+        table.boolean('isDefault').notNullable().defaultTo(false);
         table.timestamp('createdAt').notNullable();
         table.timestamp('updatedAt').notNullable();
     });
