@@ -4,9 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../users/models/user.model';
 import { Video } from '../../videos/models/video.model';
-import { PlaylistVideo } from '../models/playlist-video.model';
 import { Playlist } from '../models/playlist.model';
 import { GetDefaultPlaylistAction } from './get-default-playlist.action';
+import { LoadPlaylistVideosAction } from './load-playlist-videos.actions';
 
 @Injectable()
 export class GetUserPlaylistAction {
@@ -16,6 +16,7 @@ export class GetUserPlaylistAction {
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         private readonly defaultPlaylistGetter: GetDefaultPlaylistAction,
+        private readonly videosLoader: LoadPlaylistVideosAction,
     ) {}
 
     public async run(user: User, publicId: string): Promise<Playlist> {
@@ -26,7 +27,7 @@ export class GetUserPlaylistAction {
             playlist.videos = [];
         } else {
             playlist = await this.getPlaylistOrFail(user, publicId);
-            playlist.videos = await this.getPlaylistVideos(playlist);
+            await this.videosLoader.run(playlist);
         }
 
         return playlist;
@@ -43,13 +44,5 @@ export class GetUserPlaylistAction {
         }
 
         return playlist;
-    }
-
-    private async getPlaylistVideos(playlist: Playlist): Promise<Video[]> {
-        return await this.videos.createQueryBuilder('video')
-            .innerJoin(PlaylistVideo, 'pv', 'pv.videoId = video.id')
-            .where('pv.playlistId = :id', { id: playlist.id })
-            .orderBy('pv.addedAt', 'DESC')
-            .getMany();
     }
 }
