@@ -7,6 +7,14 @@ type ModelResolvingOptions = {
 };
 
 export class ResolveModelUsing implements PipeTransform {
+    public static publicId() {
+        return this.key('publicId');
+    }
+
+    public static key(modelKey: string) {
+        return new this(modelKey);
+    }
+
     public constructor(private readonly modelKey: string) {}
 
     public transform(value: string) {

@@ -5,7 +5,7 @@ import { UserSetting } from './user-setting.model';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string;
 
     @Column()

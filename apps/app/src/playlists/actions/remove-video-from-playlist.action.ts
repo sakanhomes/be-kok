@@ -17,8 +17,9 @@ export class RemoveVideoFromPlaylistAction {
         private readonly playlistVideos: Repository<PlaylistVideo>,
     ) {}
 
-    public async run(playlist: Playlist, videoId: string): Promise<void> {
-        const video = await this.getVideoOrFail(videoId);
+    public async run(playlist: Playlist, video: Video): Promise<void> {
+        this.ensureVideoIsPublic(video);
+
         const key = `playlists.videos.remove.${playlist.id}.${video.id}`;
 
         await this.locker.get(key);
@@ -32,17 +33,10 @@ export class RemoveVideoFromPlaylistAction {
         }
     }
 
-    private async getVideoOrFail(publicId: string): Promise<Video> {
-        const video = await this.videos.findOneBy({
-            publicId,
-            isPublic: true,
-        });
-
-        if (!video) {
+    private ensureVideoIsPublic(video: Video): void {
+        if (!video.isPublic) {
             throw new NotFoundException(__('errors.video-not-found'));
         }
-
-        return video;
     }
 
     private async getPlaylistVideoOrFail(playlist: Playlist, video: Video): Promise<PlaylistVideo> {
