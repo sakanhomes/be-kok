@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from '../accounts/models/account.model';
 import { PlaylistsModule } from '../playlists/playlists.module';
 import { Video } from '../videos/models/video.model';
+import { ViewHistory } from '../videos/models/view-history.model';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
+import { GetViewsHistoryAction } from './actions/get-views-history.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
 import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
@@ -25,7 +27,7 @@ import { UsersController } from './users.controller';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription]),
+        TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription, ViewHistory]),
         PlaylistsModule,
     ],
     providers: [
@@ -39,6 +41,7 @@ import { UsersController } from './users.controller';
         GetUserSubscribersAction,
         GetUserSubscriptionsAction,
         GetFavouriteVideosAction,
+        GetViewsHistoryAction,
         {
             provide: USER_SETTINGS_CONFIG,
             inject: [ConfigService],

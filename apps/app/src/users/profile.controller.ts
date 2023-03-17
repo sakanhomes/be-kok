@@ -10,6 +10,7 @@ import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action'
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
+import { GetViewsHistoryAction } from './actions/get-views-history.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { SubsFiltersDto } from './dtos/subs-filters.dto';
@@ -33,6 +34,7 @@ export class ProfileController {
         private readonly subscribersGetter: GetUserSubscribersAction,
         private readonly subscriptionsGetter: GetUserSubscriptionsAction,
         private readonly favouritesGetter: GetFavouriteVideosAction,
+        private readonly viewHistoryGetter: GetViewsHistoryAction,
     ) {}
 
     @Get('/')
@@ -86,5 +88,12 @@ export class ProfileController {
         const videos = await this.favouritesGetter.run(user);
 
         return VideoResource.collection(videos);
+    }
+
+    @Get('/history')
+    public async getHistory(@CurrentUser() user: User) {
+        const views = await this.viewHistoryGetter.run(user);
+
+        return { views };
     }
 }

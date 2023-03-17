@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Video } from './video.model';
 
 @Entity('views_history')
 export class ViewHistory {
@@ -13,4 +14,7 @@ export class ViewHistory {
 
     @CreateDateColumn()
     viewedAt: Date;
+
+    @ManyToOne(() => Video)
+    video: Video;
 }
