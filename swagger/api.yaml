@@ -36,6 +36,8 @@ paths:
     $ref: ./routes/profile/Playlist.yaml
   /me/playlists/{playlistId}/videos/:id:
     $ref: ./routes/profile/PlaylistVideo.yaml
+  /me/favourites:
+    $ref: ./routes/profile/FavouriteVideos.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
   /users/{address}/videos:

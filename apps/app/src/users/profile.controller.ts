@@ -4,7 +4,9 @@ import { Body, Controller, Get, Patch, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
+import { VideoResource } from '../videos/resources/video.resource';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
+import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
@@ -30,6 +32,7 @@ export class ProfileController {
         private readonly settingsUpdater: UpdateUserSettingsAction,
         private readonly subscribersGetter: GetUserSubscribersAction,
         private readonly subscriptionsGetter: GetUserSubscriptionsAction,
+        private readonly favouritesGetter: GetFavouriteVideosAction,
     ) {}
 
     @Get('/')
@@ -76,5 +79,12 @@ export class ProfileController {
         const subscribers = await this.subscriptionsGetter.run(user, filters);
 
         return UserResource.collection(subscribers);
+    }
+
+    @Get('/favourites')
+    public async getFavourites(@CurrentUser() user: User) {
+        const videos = await this.favouritesGetter.run(user);
+
+        return VideoResource.collection(videos);
     }
 }

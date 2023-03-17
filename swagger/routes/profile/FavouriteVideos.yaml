@@ -1,0 +1,21 @@
+get:
+  summary: Get favourite videos
+  tags:
+    - Profile
+  responses:
+    "200":
+      description: Favourite videos
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: ../../models/Video.yaml
