@@ -12,6 +12,7 @@ export class PlaylistResource extends Resource {
     public data(): Record<string, any> {
         return {
             id: this.playlist.publicId,
+            isDefault: this.playlist.isDefault,
             videos: VideoResource.collection(this.playlist.videos).data(),
         };
     }

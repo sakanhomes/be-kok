@@ -12,11 +12,14 @@ export class Playlist {
     @Column()
     userId: string;
 
+    @Column()
+    isDefault: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
 
-    videos: Video[] | null = null;
+    videos: Video[] = [];
 }
