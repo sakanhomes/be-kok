@@ -1,9 +1,10 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AddVideoToPlaylistAction } from '../playlists/actions/add-video-to-playlist.action';
 import { GetUserPlaylistAction } from '../playlists/actions/get-user-playlist.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
+import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action copy';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { User } from './models/user.model';
 
@@ -14,6 +15,7 @@ export class ProfilePlaylistsController {
         private readonly playlistGetter: GetUserPlaylistAction,
         private readonly videosLoader: LoadPlaylistVideosAction,
         private readonly videoAdder: AddVideoToPlaylistAction,
+        private readonly videoRemover: RemoveVideoFromPlaylistAction,
     ) {}
 
     @Get('/:publicId')
@@ -34,5 +36,16 @@ export class ProfilePlaylistsController {
         const playlist = await this.playlistGetter.run(user, playlistId);
 
         await this.videoAdder.run(playlist, videoId);
+    }
+
+    @Delete('/:playlistId/videos/:videoId')
+    public async removeVideoFromPlaylist(
+        @CurrentUser() user: User,
+        @Param('playlistId') playlistId: string,
+        @Param('videoId') videoId: string,
+    ) {
+        const playlist = await this.playlistGetter.run(user, playlistId);
+
+        await this.videoRemover.run(playlist, videoId);
     }
 }
