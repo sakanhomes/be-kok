@@ -1,3 +1,4 @@
+import { randomString } from '@app/core/helpers';
 import { LockService } from '@app/core/support/locker/lock.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,15 +15,14 @@ export class GetDefaultPlaylistAction {
     ) {}
 
     public async run(user: User): Promise<Playlist> {
-        const publicId = 'default';
-        const key = `playlists.creating.${publicId}`;
+        const key = `playlists.creating.${user.id}.default`;
 
         await this.locker.get(key);
 
         try {
             let playlist = await this.playlists.findOneBy({
-                publicId,
                 userId: user.id,
+                isDefault: true,
             });
 
             if (playlist) {
@@ -30,8 +30,9 @@ export class GetDefaultPlaylistAction {
             }
 
             playlist = this.playlists.create({
-                publicId,
+                publicId: randomString(16),
                 userId: user.id,
+                isDefault: true,
             });
 
             return await this.playlists.save(playlist);

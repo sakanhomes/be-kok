@@ -4,6 +4,7 @@ import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
 import { ResolveModelPipe, ResolveModelUsing } from '@app/core/orm/pipes/resolve-model.pipe';
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AddVideoToPlaylistAction } from '../playlists/actions/add-video-to-playlist.action';
+import { GetUserPlaylistsAction } from '../playlists/actions/get-user-playlists.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
 import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action';
 import { Playlist } from '../playlists/models/playlist.model';
@@ -15,10 +16,18 @@ import { User } from './models/user.model';
 @JwtAuth()
 export class ProfilePlaylistsController {
     public constructor(
+        private readonly playlistsGetter: GetUserPlaylistsAction,
         private readonly videosLoader: LoadPlaylistVideosAction,
         private readonly videoAdder: AddVideoToPlaylistAction,
         private readonly videoRemover: RemoveVideoFromPlaylistAction,
     ) {}
+
+    @Get('/')
+    public async list(@CurrentUser() user: User) {
+        const playlists = await this.playlistsGetter.run(user);
+
+        return PlaylistResource.collection(playlists);
+    }
 
     @Get('/:publicId')
     public async entity(

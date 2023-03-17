@@ -21,5 +21,5 @@ export class Playlist {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    videos: Video[] | null = null;
+    videos: Video[] = [];
 }
