@@ -4,6 +4,9 @@ properties:
   id:
     type: string
     example: qwerty
+  isDefault:
+    type: boolean
+    example: true
   videos:
     type: array
     items:

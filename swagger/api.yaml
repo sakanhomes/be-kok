@@ -30,6 +30,8 @@ paths:
     $ref: ./routes/profile/Subs.yaml
   /me/subscriptions:
     $ref: ./routes/profile/Subs.yaml
+  /me/playlists:
+    $ref: ./routes/profile/PlaylistsList.yaml
   /me/playlists/{playlistId}:
     $ref: ./routes/profile/Playlist.yaml
   /me/playlists/{playlistId}/videos/:id:

@@ -1,11 +1,9 @@
 get:
-  summary: Get user playlist
+  summary: Get user playlists
   tags:
     - Profile
   securitySchemes:
     - accessTokenCookie: []
-  parameters:
-    - $ref: ../../parameters/path/playlist_id.yaml
   responses:
     "200":
       description: Playlists
@@ -19,7 +17,9 @@ get:
                   data:
                     type: object
                     properties:
-                      playlist:
-                        $ref: ../../models/Playlist.yaml
+                      playlists:
+                        type: array
+                        items:
+                          $ref: ../../models/Playlist.yaml
     "401":
       $ref: ../../responses/errors/UnauthorizedResponse.yaml
