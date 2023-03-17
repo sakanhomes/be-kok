@@ -6,6 +6,7 @@ import { Account } from '../accounts/models/account.model';
 import { PlaylistsModule } from '../playlists/playlists.module';
 import { Video } from '../videos/models/video.model';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
+import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
@@ -37,6 +38,7 @@ import { UsersController } from './users.controller';
         UnsubscribeFromUserAction,
         GetUserSubscribersAction,
         GetUserSubscriptionsAction,
+        GetFavouriteVideosAction,
         {
             provide: USER_SETTINGS_CONFIG,
             inject: [ConfigService],
