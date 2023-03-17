@@ -8,6 +8,8 @@ servers:
   - url: https://upload.kok.dev-page.site/
     description: Uploads server
 paths:
+  /common/leaderboard:
+    $ref: ./routes/common/Leaderboard.yaml
   /settings:
     $ref: ./routes/settings/SettingsList.yaml
   /settings/update:
@@ -63,6 +65,8 @@ components:
       in: cookie
       name: refresh_token
 tags:
+  - name: Common
+    description: Common endpoints
   - name: Settings
     description: Global settings
   - name: Auth

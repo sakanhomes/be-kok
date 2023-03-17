@@ -1,0 +1,28 @@
+get:
+  summary: Get leaderboard
+  tags:
+    - Common
+  responses:
+    "200":
+      description: Leaderboard
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      leaderboard:
+                        type: object
+                        properties:
+                          month:
+                            type: array
+                            items:
+                              $ref: ../../common/BasicUser.yaml
+                          year:
+                            type: array
+                            items:
+                              $ref: ../../common/BasicUser.yaml
