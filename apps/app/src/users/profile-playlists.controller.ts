@@ -4,7 +4,7 @@ import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AddVideoToPlaylistAction } from '../playlists/actions/add-video-to-playlist.action';
 import { GetUserPlaylistAction } from '../playlists/actions/get-user-playlist.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
-import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action copy';
+import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { User } from './models/user.model';
 
