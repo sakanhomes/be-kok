@@ -30,12 +30,18 @@ paths:
     $ref: ./routes/profile/Subs.yaml
   /me/subscriptions:
     $ref: ./routes/profile/Subs.yaml
+  /me/playlists/{playlistId}:
+    $ref: ./routes/profile/Playlist.yaml
+  /me/playlists/{playlistId}/videos/:id:
+    $ref: ./routes/profile/PlaylistVideo.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
   /users/{address}/videos:
     $ref: ./routes/users/UserVideos.yaml
   /users/{address}/subscriptions:
     $ref: ./routes/users/UserSubscriptions.yaml
+  /users/{address}/playlists:
+    $ref: ./routes/users/UserPlaylists.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:
