@@ -4,6 +4,7 @@ import { Body, Controller, Get, Patch, Query, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from '../accounts/models/account.model';
+import { Video } from '../videos/models/video.model';
 import { VideoResource } from '../videos/resources/video.resource';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
@@ -93,6 +94,10 @@ export class ProfileController {
     @Get('/history')
     public async getHistory(@CurrentUser() user: User) {
         const views = await this.viewHistoryGetter.run(user);
+
+        for (const day in views) {
+            views[day] = VideoResource.collection(views[day]).data() as Video[];
+        }
 
         return { views };
     }

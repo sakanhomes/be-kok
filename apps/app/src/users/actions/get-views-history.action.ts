@@ -42,7 +42,11 @@ export class GetViewsHistoryAction {
             order: {
                 viewedAt: 'desc',
             },
-            relations: ['video'],
+            relations: {
+                video: {
+                    user: true,
+                },
+            },
         });
     }
 }
