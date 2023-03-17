@@ -43,6 +43,7 @@ export default class ExceptionFilter implements FilterContract<Error> {
         LimitExceededException,
         PayloadTooLargeException,
         BadRequestException,
+        NotFoundException,
     ];
 
     public constructor(private readonly logger: LoggerService) {}
