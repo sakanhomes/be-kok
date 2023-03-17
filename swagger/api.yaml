@@ -44,6 +44,8 @@ paths:
     $ref: ./routes/users/UserSubscriptions.yaml
   /users/{address}/playlists:
     $ref: ./routes/users/UserPlaylists.yaml
+  /users/{address}/playlists/{playlistId}:
+    $ref: ./routes/users/UserPlaylist.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/{id}:

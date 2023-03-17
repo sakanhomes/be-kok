@@ -1,10 +1,13 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
-import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
+import { NotFoundException } from '@app/core/exceptions/app/not-found.exception';
+import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
+import { ResolveModelPipe, ResolveModelUsing } from '@app/core/orm/pipes/resolve-model.pipe';
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { GetUserPlaylistsAction } from '../playlists/actions/get-user-playlists.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
+import { Playlist } from '../playlists/models/playlist.model';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserVideos } from './actions/get-user-videos.action';
@@ -65,10 +68,20 @@ export class UsersController {
     public async playlists(@Param('address', ResolveModelPipe) user: User) {
         const playlists = await this.playlistsGetter.run(user);
 
-        for (const playlist of playlists) {
-            await this.playlistVideosLoader.run(playlist);
+        return PlaylistResource.collection(playlists);
+    }
+
+    @Get('/:address/playlists/:playlistId')
+    public async playlist(
+        @Param('address', ResolveModelPipe) user: User,
+        @Param('playlistId', ResolveModelUsing.publicId(), ResolveModelPipe) playlist: Playlist,
+    ) {
+        if (!OwnershipVerifier.verify(user, playlist)) {
+            throw new NotFoundException();
         }
 
-        return PlaylistResource.collection(playlists);
+        await this.playlistVideosLoader.run(playlist);
+
+        return new PlaylistResource(playlist);
     }
 }
