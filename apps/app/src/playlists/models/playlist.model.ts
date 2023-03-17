@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Video } from '../../videos/models/video.model';
 
 @Entity('playlists')
 export class Playlist {
@@ -16,4 +17,6 @@ export class Playlist {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    videos: Video[] | null = null;
 }

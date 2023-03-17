@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from '../accounts/models/account.model';
+import { PlaylistsModule } from '../playlists/playlists.module';
 import { Video } from '../videos/models/video.model';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetUserSettingsAction } from './actions/get-user-settings.action';
@@ -17,11 +18,15 @@ import { USER_SETTINGS_CONFIG } from './constants';
 import { Subscription } from './models/subscription.model';
 import { UserSetting } from './models/user-setting.model';
 import { User } from './models/user.model';
+import { ProfilePlaylistsController } from './profile-playlists.controller';
 import { ProfileController } from './profile.controller';
 import { UsersController } from './users.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription])],
+    imports: [
+        TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription]),
+        PlaylistsModule,
+    ],
     providers: [
         UpdateUserAction,
         GetUserSettingsAction,
@@ -38,6 +43,10 @@ import { UsersController } from './users.controller';
             useFactory: (config: ConfigService) => config.get('settings.userSettings'),
         },
     ],
-    controllers: [ProfileController, UsersController],
+    controllers: [
+        ProfileController,
+        ProfilePlaylistsController,
+        UsersController,
+    ],
 })
 export class UsersModule {}
