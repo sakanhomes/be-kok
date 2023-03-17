@@ -1,0 +1,6 @@
+in: path
+name: playlistId
+required: true
+schema:
+  type: string
+  example: qwerty

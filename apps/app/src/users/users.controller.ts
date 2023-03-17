@@ -3,6 +3,9 @@ import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { GetUserPlaylistAction } from '../playlists/actions/get-user-playlist.action';
+import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
+import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
@@ -16,6 +19,8 @@ export class UsersController {
         private readonly videosLoader: GetUserVideos,
         private readonly subscriber: SubscribeToUserAction,
         private readonly unsubscriber: UnsubscribeFromUserAction,
+        private readonly playlistGetter: GetUserPlaylistAction,
+        private readonly playlistVideosLoader: LoadPlaylistVideosAction,
     ) {}
 
     @Get('/:address')
@@ -54,5 +59,14 @@ export class UsersController {
         creator = await this.unsubscriber.run(creator, subscriber);
 
         return new UserResource(creator);
+    }
+
+    @Get('/:address/playlists')
+    public async playlists(@Param('address', ResolveModelPipe) user: User) {
+        const playlist = await this.playlistGetter.run(user, 'default');
+
+        await this.playlistVideosLoader.run(playlist);
+
+        return PlaylistResource.collection([playlist]);
     }
 }

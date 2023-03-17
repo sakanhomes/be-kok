@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { VideosModule } from './videos/videos.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { CommonModule } from './common/common.module';
+import { PlaylistsModule } from './playlists/playlists.module';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { CommonModule } from './common/common.module';
         VideosModule,
         AccountsModule,
         CommonModule,
+        PlaylistsModule,
     ],
     controllers: [],
     providers: [

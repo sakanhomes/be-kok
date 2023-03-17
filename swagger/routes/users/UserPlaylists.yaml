@@ -1,0 +1,25 @@
+get:
+  summary: Get user playlists
+  tags:
+    - Users
+  securitySchemes:
+    - accessTokenCookie: []
+  responses:
+    "200":
+      description: Playlists
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      playlists:
+                        type: array
+                        items:
+                          $ref: ../../models/Playlist.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml

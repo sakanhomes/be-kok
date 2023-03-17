@@ -1,0 +1,36 @@
+post:
+  summary: Add video to playlist
+  tags:
+    - Profile
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/playlist_id.yaml
+    - $ref: ../../parameters/path/video_id.yaml
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+delete:
+  summary: Remove video from playlist
+  tags:
+    - Profile
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/playlist_id.yaml
+    - $ref: ../../parameters/path/video_id.yaml
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml

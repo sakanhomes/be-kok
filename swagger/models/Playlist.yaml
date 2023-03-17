@@ -1,0 +1,10 @@
+title: Playlist
+type: object
+properties:
+  id:
+    type: string
+    example: qwerty
+  videos:
+    type: array
+    items:
+      $ref: ./Video.yaml
