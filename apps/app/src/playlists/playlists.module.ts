@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Video } from '../videos/models/video.model';
+import { AddVideoToPlaylistAction } from './actions/add-video-to-playlist.action';
 import { GetDefaultPlaylistAction } from './actions/get-default-playlist.action';
 import { GetUserPlaylistAction } from './actions/get-user-playlist.action';
 import { LoadPlaylistVideosAction } from './actions/load-playlist-videos.actions';
@@ -13,10 +14,12 @@ import { Playlist } from './models/playlist.model';
         GetDefaultPlaylistAction,
         GetUserPlaylistAction,
         LoadPlaylistVideosAction,
+        AddVideoToPlaylistAction,
     ],
     exports: [
         GetUserPlaylistAction,
         LoadPlaylistVideosAction,
+        AddVideoToPlaylistAction,
     ],
 })
 export class PlaylistsModule {}
