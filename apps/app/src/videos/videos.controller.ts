@@ -119,7 +119,7 @@ export class VideosController {
     ) {
         video = await this.likeAdder.run(user, video);
 
-        return new VideoResource(video);
+        return await this.resouceCreator.run(user, video);
     }
 
     @Delete('/:publicId/likes')
@@ -130,7 +130,7 @@ export class VideosController {
     ) {
         video = await this.likeRemover.run(user, video);
 
-        return new VideoResource(video);
+        return await this.resouceCreator.run(user, video);
     }
 
     @Post('/:publicId/viewed')
