@@ -112,6 +112,7 @@ export class VideosController {
     }
 
     @Post('/:publicId/likes')
+    @HttpCode(200)
     @JwtAuth()
     public async addLikeToVideo(
         @CurrentUser() user: User,
@@ -134,6 +135,7 @@ export class VideosController {
     }
 
     @Post('/:publicId/viewed')
+    @HttpCode(200)
     @OptionalJwtAuth()
     public async trackView(
         @CurrentUser() user: User | null,

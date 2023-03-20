@@ -11,14 +11,10 @@ export class LockService {
     }
 
     public async get(key: string, attempts = 5): Promise<void> {
-        if (!this.entries.has(key)) {
-            return;
-        }
-
         for (let iterations = 0; iterations < attempts; iterations++) {
-            await sleep(500);
-
             if (this.entries.has(key)) {
+                await sleep(500);
+
                 continue;
             }
 

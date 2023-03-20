@@ -33,7 +33,7 @@ export class RemoveVideoLikeAction {
                     userId: user.id,
                 });
 
-                video.likesAmount = Math.min(video.likesAmount - 1, 0);
+                video.likesAmount = Math.max(video.likesAmount - 1, 0);
 
                 await manager.remove(like);
                 await manager.save(video);
