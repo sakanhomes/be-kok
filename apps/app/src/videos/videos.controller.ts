@@ -145,6 +145,6 @@ export class VideosController {
             await this.viewRewardEnroller.runSilent(user, video);
         }
 
-        return new VideoResource(video);
+        return await this.resouceCreator.run(user, video);
     }
 }
