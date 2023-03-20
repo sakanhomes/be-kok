@@ -14,11 +14,11 @@ import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.act
 import { GetViewsHistoryAction } from './actions/get-views-history.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
-import { SubsFiltersDto } from './dtos/subs-filters.dto';
+import { FiltersDto } from './dtos/filters.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
-import { SubsFiltersValidator } from './validators/subs-filters.validator';
+import { FiltersValidator } from './validators/filters.validator';
 import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 
@@ -69,16 +69,16 @@ export class ProfileController {
     }
 
     @Get('/subscribers')
-    @UsePipes(SubsFiltersValidator)
-    public async getSubcribers(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+    @UsePipes(FiltersValidator)
+    public async getSubcribers(@CurrentUser() user: User, @Query() filters: FiltersDto) {
         const subscribers = await this.subscribersGetter.run(user, filters);
 
         return UserResource.collection(subscribers);
     }
 
     @Get('/subscriptions')
-    @UsePipes(SubsFiltersValidator)
-    public async getSubcriptions(@CurrentUser() user: User, @Query() filters: SubsFiltersDto) {
+    @UsePipes(FiltersValidator)
+    public async getSubcriptions(@CurrentUser() user: User, @Query() filters: FiltersDto) {
         const subscribers = await this.subscriptionsGetter.run(user, filters);
 
         return UserResource.collection(subscribers);
