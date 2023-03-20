@@ -85,8 +85,9 @@ export class ProfileController {
     }
 
     @Get('/favourites')
-    public async getFavourites(@CurrentUser() user: User) {
-        const videos = await this.favouritesGetter.run(user);
+    @UsePipes(FiltersValidator)
+    public async getFavourites(@CurrentUser() user: User, @Query() filters: FiltersDto) {
+        const videos = await this.favouritesGetter.run(user, filters);
 
         return VideoResource.collection(videos);
     }

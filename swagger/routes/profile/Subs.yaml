@@ -5,12 +5,7 @@ get:
   securitySchemes:
     - accessTokenCookie: []
   parameters:
-    - in: query
-      name: search
-      required: false
-      schema:
-        type: string
-        example: John Wick
+    - $ref: ../../parameters/query/search.yaml
   responses:
     "200":
       description: Subs list
