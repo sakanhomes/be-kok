@@ -14,6 +14,8 @@ import { ViewRewardAlreadyEnrolledException } from '../exceptions/view-reward-al
 import { Video } from '../models/video.model';
 import { TransactionSubtype } from '../../accounts/enums/transaction-subtype.enum';
 import { TransactionType } from '../../accounts/enums/transaction-type.enum';
+import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
+import { RewardNotAllowedException } from '../exceptions/reward-not-allowed.exception';
 
 @Injectable()
 export class EnrollViewRewardAction {
@@ -34,6 +36,7 @@ export class EnrollViewRewardAction {
             if (
                 !(error instanceof ViewRewardAlreadyEnrolledException)
                 && !(error instanceof RewardsLimitExceededException)
+                && !(error instanceof RewardNotAllowedException)
             ) {
                 throw error;
             }
@@ -43,6 +46,8 @@ export class EnrollViewRewardAction {
     }
 
     public async run(user: User, video: Video): Promise<AccountTransaction> {
+        this.ensureUserCanReceiveRewardForViewingVideo(user, video);
+
         const account = await this.accountGetter.run(user);
 
         await this.ensureAccountHaventGotRewardForVideo(account, video);
@@ -95,6 +100,12 @@ export class EnrollViewRewardAction {
 
         if (rewardTransactionExists) {
             throw new ViewRewardAlreadyEnrolledException(account, video);
+        }
+    }
+
+    private ensureUserCanReceiveRewardForViewingVideo(user: User, video: Video): void {
+        if (!OwnershipVerifier.verify(user, video)) {
+            throw new RewardNotAllowedException();
         }
     }
 }
