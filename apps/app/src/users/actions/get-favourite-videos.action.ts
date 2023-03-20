@@ -15,7 +15,7 @@ export class GetFavouriteVideosAction {
     public async run(user: User): Promise<Video[]> {
         return await this.videos.createQueryBuilder('video')
             .innerJoin(VideoLike, 'like', 'like.videoId = video.id')
-            .where('video.userId = :id', { id: user.id })
+            .where('like.userId = :id', { id: user.id })
             .orderBy('like.likedAt', 'DESC')
             .getMany();
     }
