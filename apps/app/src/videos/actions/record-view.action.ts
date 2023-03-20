@@ -39,19 +39,18 @@ export class RecordViewAction {
                 .andWhere('history.userId = :userId', { userId: user.id })
                 .getExists();
 
-            if (historyRecordExists) {
-                return;
-            }
-
             const historyRecord = this.history.create({
                 userId: user.id,
                 videoId: video.id,
             });
 
-            video.viewsAmount++;
-
             await manager.save(historyRecord);
-            await manager.save(video);
+
+            if (historyRecordExists) {
+                video.viewsAmount++;
+
+                await manager.save(video);
+            }
         });
     }
 }
