@@ -93,8 +93,9 @@ export class ProfileController {
     }
 
     @Get('/history')
-    public async getHistory(@CurrentUser() user: User) {
-        const views = await this.viewHistoryGetter.run(user);
+    @UsePipes(FiltersValidator)
+    public async getHistory(@CurrentUser() user: User, @Query() filters: FiltersDto) {
+        const views = await this.viewHistoryGetter.run(user, filters);
 
         for (const day in views) {
             views[day] = VideoResource.collection(views[day]).data() as Video[];
