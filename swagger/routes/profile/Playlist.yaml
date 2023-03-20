@@ -6,6 +6,7 @@ get:
     - accessTokenCookie: []
   parameters:
     - $ref: ../../parameters/path/playlist_id.yaml
+    - $ref: ../../parameters/query/search.yaml
   responses:
     "200":
       description: Playlists
