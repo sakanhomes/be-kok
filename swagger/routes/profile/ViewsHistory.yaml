@@ -4,6 +4,8 @@ get:
     - Profile
   securitySchemes:
     - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/query/search.yaml
   responses:
     "200":
       description: Views history, groupped by day

@@ -1,0 +1,7 @@
+description: Search string
+name: search
+in: query
+required: false
+schema:
+  type: string
+  example: qwerty

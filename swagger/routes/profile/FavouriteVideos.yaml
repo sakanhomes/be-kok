@@ -2,6 +2,8 @@ get:
   summary: Get favourite videos
   tags:
     - Profile
+  parameters:
+    - $ref: ../../parameters/query/search.yaml
   responses:
     "200":
       description: Favourite videos

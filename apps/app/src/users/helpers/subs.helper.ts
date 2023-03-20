@@ -1,9 +1,9 @@
 import { escapeLike } from '@app/core/helpers';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
-import { SubsFiltersDto } from '../dtos/subs-filters.dto';
+import { FiltersDto } from '../dtos/filters.dto';
 
 export class SubsHelper {
-    public static applyFilters<T = any>(query: SelectQueryBuilder<T>, filters: SubsFiltersDto): SelectQueryBuilder<T> {
+    public static applyFilters<T = any>(query: SelectQueryBuilder<T>, filters: FiltersDto): SelectQueryBuilder<T> {
         if (filters.search && filters.search.length) {
             const search = '%' + escapeLike(filters.search.toLowerCase()) + '%';
 
