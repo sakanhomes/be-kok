@@ -1,8 +1,8 @@
-import { escapeLike } from '@app/core/helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FiltersDto } from '../../users/dtos/filters.dto';
+import { SearchHelper } from '../../users/helpers/search.helper';
 import { Video } from '../../videos/models/video.model';
 import { PlaylistVideo } from '../models/playlist-video.model';
 import { Playlist } from '../models/playlist.model';
@@ -28,12 +28,7 @@ export class LoadPlaylistVideosAction {
 
     private applyFilters(query: SelectQueryBuilder<Video>, filters: FiltersDto): SelectQueryBuilder<Video> {
         if (filters.search) {
-            query.andWhere(new Brackets(query => {
-                const search = '%' + escapeLike(filters.search.toLowerCase()) + '%';
-
-                query.where('lower(video.title) like :search', { search })
-                    .orWhere('lower(video.description) like :search', { search });
-            }));
+            SearchHelper.applyVideoSearchFilters(query, filters.search);
         }
 
         return query;

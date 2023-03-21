@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { VideoLike } from '../../videos/models/video-like.model';
 import { Video } from '../../videos/models/video.model';
 import { FiltersDto } from '../dtos/filters.dto';
 import { User } from '../models/user.model';
-import { escapeLike } from '@app/core/helpers';
+import { SearchHelper } from '../helpers/search.helper';
 
 @Injectable()
 export class GetFavouriteVideosAction {
@@ -26,12 +26,7 @@ export class GetFavouriteVideosAction {
 
     private applyFilters(query: SelectQueryBuilder<Video>, filters: FiltersDto): SelectQueryBuilder<Video> {
         if (filters.search) {
-            query.andWhere(new Brackets(query => {
-                const search = '%' + escapeLike(filters.search.toLowerCase()) + '%';
-
-                query.where('lower(video.title) like :search', { search })
-                    .orWhere('lower(video.description) like :search', { search });
-            }));
+            SearchHelper.applyVideoSearchFilters(query, filters.search);
         }
 
         return query;

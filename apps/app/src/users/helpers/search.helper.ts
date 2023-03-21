@@ -1,5 +1,6 @@
 import { escapeLike } from '@app/core/helpers';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
+import { Brackets, FindOptionsWhere, Raw, SelectQueryBuilder } from 'typeorm';
+import { Video } from '../../videos/models/video.model';
 import { FiltersDto } from '../dtos/filters.dto';
 
 export class SearchHelper {
@@ -18,5 +19,29 @@ export class SearchHelper {
         }
 
         return query;
+    }
+
+    public static applyVideoSearchFilters<T = any>(
+        query: SelectQueryBuilder<T>,
+        search: string,
+        alias = 'video',
+    ): SelectQueryBuilder<T> {
+        search = '%' + escapeLike(search.toLowerCase()) + '%';
+
+        query.andWhere(new Brackets(query => {
+            query.where(`lower(${alias}.title) like :search`, { search })
+                .orWhere(`lower(${alias}.description) like :search`, { search });
+        }));
+
+        return query;
+    }
+
+    public static makeVideoSearchConditions(search: string): FindOptionsWhere<Video>[] {
+        search = escapeLike(search.toLowerCase());
+
+        return [
+            { title: Raw(alias => `${alias} like '%${search}%'`) },
+            { description: Raw(alias => `${alias} like '%${search}%'`) },
+        ];
     }
 }
