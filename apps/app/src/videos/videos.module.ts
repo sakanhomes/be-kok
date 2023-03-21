@@ -27,6 +27,7 @@ import { VideoTrandingActivityHistory } from './models/video-tranding-activity-h
 import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
 import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity-record.action';
 import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
+import { CommonController } from './common.controller';
 
 @Module({
     imports: [
@@ -64,6 +65,6 @@ import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
-    controllers: [VideosController],
+    controllers: [CommonController, VideosController],
 })
 export class VideosModule {}
