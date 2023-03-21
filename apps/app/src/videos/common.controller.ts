@@ -5,13 +5,24 @@ import { VideoResource } from './resources/video.resource';
 import { GetTrendingVideosAction } from './actions/get-trending-videos.action';
 import { CommonVideosFiltersDto } from './dtos/common-videos-filters.dto';
 import { CommonVideosFiltersValidator } from './validators/common-videos-filters.validator';
+import { SearchVideosValidator } from './validators/search-videos.validator';
+import { SearchVideosAction } from './actions/search-videos.action';
 
 @Controller('/videos')
 export class CommonController {
     public constructor(
+        private readonly videoSearcher: SearchVideosAction,
         private readonly videosRandomizer: GetRandomVideosAction,
         private readonly trendingVideosGetter: GetTrendingVideosAction,
     ) {}
+
+    @Get('/')
+    @UsePipes(SearchVideosValidator)
+    public async videos(@Query() { search }: {search?: string}) {
+        const videos = await this.videoSearcher.run(search);
+
+        return VideoResource.collection(videos);
+    }
 
     @Get('/random')
     @UsePipes(GetRandomVideosValidator)
