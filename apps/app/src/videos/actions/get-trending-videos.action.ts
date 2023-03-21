@@ -3,22 +3,22 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { startOfToday, subDays } from 'date-fns';
 import { In, Repository } from 'typeorm';
-import { VideoTrandingActivity } from '../models/video-tranding-activity.model';
+import { VideoTrendingActivity } from '../models/video-trending-activity.model';
 import { Video } from '../models/video.model';
 
 @Injectable()
-export class GetTrandingVideosAction {
+export class GetTrendingVideosAction {
     private readonly DAYS_LIMIT = 4;
 
     public constructor(
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
-        @InjectRepository(VideoTrandingActivity)
-        private readonly trands: Repository<VideoTrandingActivity>,
+        @InjectRepository(VideoTrendingActivity)
+        private readonly trends: Repository<VideoTrendingActivity>,
     ) {}
 
     public async run(amount = 8): Promise<Video[]> {
-        const ids = await this.getTrandingVideoIds(amount);
+        const ids = await this.getTrendingVideoIds(amount);
         const videos = await this.videos.find({
             where: {
                 id: In(ids),
@@ -29,15 +29,15 @@ export class GetTrandingVideosAction {
         return ids.map(id => videos[id]);
     }
 
-    private async getTrandingVideoIds(amount): Promise<string[]> {
-        const records = await this.trands.createQueryBuilder('trand')
+    private async getTrendingVideoIds(amount): Promise<string[]> {
+        const records = await this.trends.createQueryBuilder('trend')
             .select([])
-            .addSelect('trand.videoId', 'videoId')
-            .addSelect('sum(trand.actionsAmount)', 'total')
-            .innerJoin(Video, 'video', 'trand.videoId = video.id')
+            .addSelect('trend.videoId', 'videoId')
+            .addSelect('sum(trend.actionsAmount)', 'total')
+            .innerJoin(Video, 'video', 'trend.videoId = video.id')
             .where('video.isPublic = 1')
-            .andWhere('trand.day >= :deadline', { deadline: subDays(startOfToday(), this.DAYS_LIMIT) })
-            .groupBy('trand.videoId')
+            .andWhere('trend.day >= :deadline', { deadline: subDays(startOfToday(), this.DAYS_LIMIT) })
+            .groupBy('trend.videoId')
             .orderBy('total', 'DESC')
             .take(amount)
             .getRawMany();

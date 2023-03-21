@@ -24,7 +24,7 @@ import { DeleteVideoAction } from './actions/delete-video.action';
 import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
-import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
+import { RecordTrendingActivityAction } from './actions/record-trending-activity.action';
 
 @Controller('/videos')
 export class VideosController {
@@ -40,7 +40,7 @@ export class VideosController {
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
-        private readonly trandingActivityRecorder: RecordTrandingActivityAction,
+        private readonly trendingActivityRecorder: RecordTrendingActivityAction,
     ) {}
 
     @Post('/')
@@ -132,7 +132,7 @@ export class VideosController {
     ) {
         video = await this.viewsRecorder.run(user, video);
 
-        await this.trandingActivityRecorder.run(user, video);
+        await this.trendingActivityRecorder.run(user, video);
 
         if (user) {
             await this.viewRewardEnroller.runSilent(user, video);

@@ -2,8 +2,8 @@ import { decimal } from '@app/core/orm/transformers/decimal.transformer';
 import Decimal from 'decimal.js';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('video_tranding_activity')
-export class VideoTrandingActivity {
+@Entity('video_trending_activity')
+export class VideoTrendingActivity {
     @PrimaryGeneratedColumn()
     id: string;
 
