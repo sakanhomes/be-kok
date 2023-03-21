@@ -13,6 +13,7 @@ import { GetUserSubscribersAction } from './actions/get-user-subscribers.action'
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { GetViewsHistoryAction } from './actions/get-views-history.action';
+import { SearchUsersAction } from './actions/search-users.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
 import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
@@ -42,6 +43,7 @@ import { UsersController } from './users.controller';
         GetUserSubscriptionsAction,
         GetFavouriteVideosAction,
         GetViewsHistoryAction,
+        SearchUsersAction,
         {
             provide: USER_SETTINGS_CONFIG,
             inject: [ConfigService],
