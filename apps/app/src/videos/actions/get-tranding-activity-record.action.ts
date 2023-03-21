@@ -23,7 +23,7 @@ export class GetTrandingActivityRecordAction {
             videoId: video.id,
             day,
         };
-        const key = `video.tranding.creating.${video.id}.${unixtime(day)}`;
+        const key = `videos.tranding.creating.${video.id}.${unixtime(day)}`;
 
         await this.locker.get(key);
 
