@@ -15,8 +15,8 @@ export class CommonController {
 
     @Get('/random')
     @UsePipes(GetRandomVideosValidator)
-    public async random(@Query() data: { amount: number }) {
-        const videos = await this.videosRandomizer.run(data.amount);
+    public async random(@Query() filters: CommonVideosFiltersDto & { amount: number }) {
+        const videos = await this.videosRandomizer.run(filters.amount, filters);
 
         return VideoResource.collection(videos);
     }
