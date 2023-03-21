@@ -42,6 +42,8 @@ paths:
     $ref: ./routes/profile/ViewsHistory.yaml
   /me/videos:
     $ref: ./routes/profile/Videos.yaml
+  /users:
+    $ref: ./routes/users/SearchUsers.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
   /users/{address}/videos:
@@ -52,6 +54,8 @@ paths:
     $ref: ./routes/users/UserPlaylists.yaml
   /users/{address}/playlists/{playlistId}:
     $ref: ./routes/users/UserPlaylist.yaml
+  /videos:
+    $ref: ./routes/videos/SearchVideos.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/trending:
