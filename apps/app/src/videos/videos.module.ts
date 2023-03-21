@@ -22,6 +22,12 @@ import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 import { User } from '../users/models/user.model';
+import { VideoTrandingActivity } from './models/video-tranding-activity.model';
+import { VideoTrandingActivityHistory } from './models/video-tranding-activity-history.model';
+import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
+import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity-record.action';
+import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
+import { CommonController } from './common.controller';
 
 @Module({
     imports: [
@@ -30,6 +36,8 @@ import { User } from '../users/models/user.model';
             Video,
             ViewHistory,
             VideoLike,
+            VideoTrandingActivity,
+            VideoTrandingActivityHistory,
             Upload,
             UploadPart,
             Account,
@@ -40,12 +48,15 @@ import { User } from '../users/models/user.model';
     providers: [
         CreateVideoResourceAction,
         GetRandomVideosAction,
+        GetTrandingVideosAction,
         CreateVideoAction,
         UpdateVideoAction,
         DeleteVideoAction,
         AddVideoLikeAction,
         RemoveVideoLikeAction,
         RecordViewAction,
+        GetTrandingActivityRecordAction,
+        RecordTrandingActivityAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,
         {
@@ -54,6 +65,6 @@ import { User } from '../users/models/user.model';
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
-    controllers: [VideosController],
+    controllers: [CommonController, VideosController],
 })
 export class VideosModule {}

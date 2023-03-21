@@ -118,11 +118,11 @@ export async function sleep(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-export function keyBy<T = Record<string, any>>(items: T[], key: string): Record<string, T> {
+export function keyBy<T = Record<string, any>>(items: T[], key: keyof T): Record<string, T> {
     const map: Record<string, T> = {};
 
     for (const item of items) {
-        map[item[key]] = item;
+        map[item[key] as string] = item;
     }
 
     return map;

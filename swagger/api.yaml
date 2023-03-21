@@ -52,6 +52,8 @@ paths:
     $ref: ./routes/users/UserPlaylist.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
+  /videos/tranding:
+    $ref: ./routes/videos/GetTrandingVideos.yaml
   /videos/{id}:
     $ref: ./routes/videos/Video.yaml
   /videos/{id}/likes:

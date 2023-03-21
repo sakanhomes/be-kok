@@ -1,8 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UsePipes } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetRandomVideosAction } from './actions/get-random-videos.action';
-import { GetRandomVideosValidator } from './validators/get-random-videos.validator';
 import { Video } from './models/video.model';
 import { VideoResource } from './resources/video.resource';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
@@ -26,14 +24,14 @@ import { DeleteVideoAction } from './actions/delete-video.action';
 import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
+import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
 
-@Controller('videos')
+@Controller('/videos')
 export class VideosController {
     public constructor(
         private readonly resouceCreator: CreateVideoResourceAction,
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
-        private readonly videosRandomizer: GetRandomVideosAction,
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly videoDeleter: DeleteVideoAction,
@@ -42,15 +40,8 @@ export class VideosController {
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
+        private readonly trandingActivityRecorder: RecordTrandingActivityAction,
     ) {}
-
-    @Get('/random')
-    @UsePipes(GetRandomVideosValidator)
-    public async random(@Query() data: { amount: number }) {
-        const videos = await this.videosRandomizer.run(data.amount);
-
-        return VideoResource.collection(videos);
-    }
 
     @Post('/')
     @HttpCode(200)
@@ -142,6 +133,8 @@ export class VideosController {
         @Param('publicId', ResolveModelPipe) video: Video,
     ) {
         video = await this.viewsRecorder.run(user, video);
+
+        await this.trandingActivityRecorder.run(user, video);
 
         if (user) {
             await this.viewRewardEnroller.runSilent(user, video);
