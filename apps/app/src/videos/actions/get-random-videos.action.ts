@@ -13,7 +13,9 @@ export class GetRandomVideosAction {
     ) {}
 
     public run(amount: number, filters?: CommonVideosFiltersDto): Promise<Video[]> {
-        const query = this.getRandomVideosQuery(amount);
+        const query = this.getRandomVideosQuery();
+
+        query.limit(amount);
 
         if (filters) {
             this.applyFilters(query, filters);
@@ -28,13 +30,12 @@ export class GetRandomVideosAction {
         }
     }
 
-    private getRandomVideosQuery(amount: number): SelectQueryBuilder<Video> {
+    private getRandomVideosQuery(): SelectQueryBuilder<Video> {
         return this.videos
             .createQueryBuilder('video')
             .select()
             .leftJoinAndSelect('video.user', 'user')
             .orderBy('RAND()')
-            .limit(amount)
             .where('video.isPublic = 1');
     }
 }
