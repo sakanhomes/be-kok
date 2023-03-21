@@ -3,10 +3,11 @@ import { ObjectSchema } from 'joi';
 import * as Joi from 'joi';
 import { CommonRules } from '@app/common/validation/rules/common.rules';
 
-export class FiltersValidator extends Validator {
+export class SearchUsersValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
-            search: CommonRules.getSearchRules(),
+            search: CommonRules.getSearchRules(true),
+            limit: CommonRules.getResultsLimitRules(),
         });
     }
 }

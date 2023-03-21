@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FiltersDto } from '../dtos/filters.dto';
-import { SubsHelper } from '../helpers/subs.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 import { Subscription } from '../models/subscription.model';
 import { User } from '../models/user.model';
 
@@ -20,7 +20,7 @@ export class GetUserSubscriptionsAction {
             .where('sub.subscriberId = :id', { id: user.id });
 
         if (filters) {
-            SubsHelper.applyFilters(query, filters);
+            SearchHelper.applyUserSearchFilters(query, filters);
         }
 
         return await query.getMany();

@@ -1,13 +1,13 @@
-import { escapeLike } from '@app/core/helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { format } from 'date-fns';
-import { Raw, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Video } from '../../videos/models/video.model';
 import { ViewHistory } from '../../videos/models/view-history.model';
 import { FiltersDto } from '../dtos/filters.dto';
 import { User } from '../models/user.model';
 import { FindOptionsWhere } from 'typeorm';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 
 type ViewsHistory = {
     [key: string]: Video[]
@@ -38,15 +38,10 @@ export class GetViewsHistoryAction {
     }
 
     private getViewsWithVideos(user: User, filters?: FiltersDto): Promise<ViewHistory[]> {
-        let videoFilters: FindOptionsWhere<Video> | FindOptionsWhere<Video>[];
+        let videoFilters: FindOptionsWhere<Video>[];
 
         if (filters && filters.search) {
-            const search = escapeLike(filters.search.toLowerCase());
-
-            videoFilters = [
-                { title: Raw(alias => `${alias} like '%${search}%'`) },
-                { description: Raw(alias => `${alias} like '%${search}%'`) },
-            ];
+            videoFilters = SearchHelper.makeVideoSearchConditions(filters.search);
         }
 
         return this.history.find({
