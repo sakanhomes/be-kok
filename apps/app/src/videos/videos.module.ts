@@ -24,6 +24,8 @@ import { CreateVideoResourceAction } from './actions/create-video-resource.actio
 import { User } from '../users/models/user.model';
 import { VideoTrandingActivity } from './models/video-tranding-activity.model';
 import { VideoTrandingActivityHistory } from './models/video-tranding-activity-history.model';
+import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
+import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity-record.action';
 
 @Module({
     imports: [
@@ -50,6 +52,8 @@ import { VideoTrandingActivityHistory } from './models/video-tranding-activity-h
         AddVideoLikeAction,
         RemoveVideoLikeAction,
         RecordViewAction,
+        GetTrandingActivityRecordAction,
+        RecordTrandingActivityAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,
         {
