@@ -28,6 +28,7 @@ import { RecordTrendingActivityAction } from './actions/record-trending-activity
 import { GetTrendingActivityRecordAction } from './actions/get-trending-activity-record.action';
 import { GetTrendingVideosAction } from './actions/get-trending-videos.action';
 import { CommonController } from './common.controller';
+import { ClearTrendingVideosActivityJob } from './jobs/clear-trending-videos-activity.job';
 
 @Module({
     imports: [
@@ -59,6 +60,7 @@ import { CommonController } from './common.controller';
         RecordTrendingActivityAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,
+        ClearTrendingVideosActivityJob,
         {
             provide: VIDEOS_CONFIG,
             inject: [ConfigService],
