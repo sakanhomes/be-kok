@@ -3,6 +3,8 @@ import { GetRandomVideosAction } from './actions/get-random-videos.action';
 import { GetRandomVideosValidator } from './validators/get-random-videos.validator';
 import { VideoResource } from './resources/video.resource';
 import { GetTrendingVideosAction } from './actions/get-trending-videos.action';
+import { CommonVideosFiltersDto } from './dtos/common-videos-filters.dto';
+import { CommonVideosFiltersValidator } from './validators/common-videos-filters.validator';
 
 @Controller('/videos')
 export class CommonController {
@@ -20,8 +22,9 @@ export class CommonController {
     }
 
     @Get('/trending')
-    public async trending() {
-        const videos = await this.trendingVideosGetter.run();
+    @UsePipes(CommonVideosFiltersValidator)
+    public async trending(@Query() filters: CommonVideosFiltersDto) {
+        const videos = await this.trendingVideosGetter.run(8, filters);
 
         return VideoResource.collection(videos);
     }
