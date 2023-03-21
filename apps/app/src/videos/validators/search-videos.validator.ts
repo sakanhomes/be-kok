@@ -7,6 +7,7 @@ export class SearchVideosValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
             search: CommonRules.getSearchRules(true),
+            limit: CommonRules.getResultsLimitRules(),
         });
     }
 }

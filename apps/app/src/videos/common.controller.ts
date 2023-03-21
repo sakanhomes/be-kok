@@ -7,6 +7,7 @@ import { CommonVideosFiltersDto } from './dtos/common-videos-filters.dto';
 import { CommonVideosFiltersValidator } from './validators/common-videos-filters.validator';
 import { SearchVideosValidator } from './validators/search-videos.validator';
 import { SearchVideosAction } from './actions/search-videos.action';
+import { FiltersDto } from './dtos/filters.dto';
 
 @Controller('/videos')
 export class CommonController {
@@ -18,8 +19,8 @@ export class CommonController {
 
     @Get('/')
     @UsePipes(SearchVideosValidator)
-    public async videos(@Query() { search }: {search?: string}) {
-        const videos = await this.videoSearcher.run(search);
+    public async videos(@Query() filters: FiltersDto) {
+        const videos = await this.videoSearcher.run(filters);
 
         return VideoResource.collection(videos);
     }

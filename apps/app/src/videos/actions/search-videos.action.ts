@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SearchHelper } from '../../users/helpers/search.helper';
+import { FiltersDto } from '../dtos/filters.dto';
 import { Video } from '../models/video.model';
 
 @Injectable()
@@ -11,14 +12,14 @@ export class SearchVideosAction {
         private readonly videos: Repository<Video>,
     ) {}
 
-    public run(search?: string, limit = 25): Promise<Video[]> {
+    public run(filters: FiltersDto): Promise<Video[]> {
         const query = this.videos.createQueryBuilder('video')
             .leftJoinAndSelect('video.user', 'user')
-            .take(limit)
+            .take(filters.limit ?? 10)
             .orderBy('video.createdAt', 'DESC');
 
-        if (search) {
-            SearchHelper.applyVideoSearchFilters(query, search);
+        if (filters.search && filters.search.length) {
+            SearchHelper.applyVideoSearchFilters(query, filters.search);
         }
 
         return query.getMany();
