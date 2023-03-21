@@ -3,17 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../users/models/user.model';
-import { VideoTrandingActivityHistory } from '../models/video-tranding-activity-history.model';
-import { VideoTrandingActivity } from '../models/video-tranding-activity.model';
+import { VideoTrendingActivityHistory } from '../models/video-trending-activity-history.model';
+import { VideoTrendingActivity } from '../models/video-trending-activity.model';
 import { Video } from '../models/video.model';
-import { GetTrandingActivityRecordAction } from './get-tranding-activity-record.action';
+import { GetTrendingActivityRecordAction } from './get-trending-activity-record.action';
 
 @Injectable()
-export class RecordTrandingActivityAction {
+export class RecordTrendingActivityAction {
     public constructor(
-        @InjectRepository(VideoTrandingActivity)
-        private readonly activity: Repository<VideoTrandingActivity>,
-        private readonly activityCreator: GetTrandingActivityRecordAction,
+        @InjectRepository(VideoTrendingActivity)
+        private readonly activity: Repository<VideoTrendingActivity>,
+        private readonly activityCreator: GetTrendingActivityRecordAction,
     ) {}
 
     public async run(user: User | null, video: Video): Promise<void> {
@@ -26,7 +26,7 @@ export class RecordTrandingActivityAction {
         }
     }
 
-    private async recordAnonymousActivity(activity: VideoTrandingActivity): Promise<void> {
+    private async recordAnonymousActivity(activity: VideoTrendingActivity): Promise<void> {
         await ModelLocker.using(this.activity.manager).lock(activity, async (manager, activity) => {
             activity.actionsAmount = activity.actionsAmount.add(1);
 
@@ -34,9 +34,9 @@ export class RecordTrandingActivityAction {
         });
     }
 
-    private async recordUserActivity(activity: VideoTrandingActivity, user: User, video: Video): Promise<void> {
+    private async recordUserActivity(activity: VideoTrendingActivity, user: User, video: Video): Promise<void> {
         await ModelLocker.using(this.activity.manager).lock(activity, async (manager, activity) => {
-            const historyRepository = manager.getRepository(VideoTrandingActivityHistory);
+            const historyRepository = manager.getRepository(VideoTrendingActivityHistory);
 
             const historyAttributes = {
                 videoId: video.id,

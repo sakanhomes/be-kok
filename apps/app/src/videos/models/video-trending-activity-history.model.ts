@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('video_tranding_activity_history')
-export class VideoTrandingActivityHistory {
+@Entity('video_trending_activity_history')
+export class VideoTrendingActivityHistory {
     @PrimaryGeneratedColumn()
     id: string;
 

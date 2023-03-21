@@ -5,25 +5,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { startOfDay } from 'date-fns';
 import Decimal from 'decimal.js';
 import { Repository } from 'typeorm';
-import { VideoTrandingActivity } from '../models/video-tranding-activity.model';
+import { VideoTrendingActivity } from '../models/video-trending-activity.model';
 import { Video } from '../models/video.model';
 
 @Injectable()
-export class GetTrandingActivityRecordAction {
+export class GetTrendingActivityRecordAction {
     public constructor(
         private readonly locker: LockService,
-        @InjectRepository(VideoTrandingActivity)
-        private readonly activities: Repository<VideoTrandingActivity>,
+        @InjectRepository(VideoTrendingActivity)
+        private readonly activities: Repository<VideoTrendingActivity>,
     ) {}
 
-    public async run(video: Video, day: Date): Promise<VideoTrandingActivity> {
+    public async run(video: Video, day: Date): Promise<VideoTrendingActivity> {
         day = startOfDay(day);
 
         const attributes = {
             videoId: video.id,
             day,
         };
-        const key = `videos.tranding.creating.${video.id}.${unixtime(day)}`;
+        const key = `videos.trending.creating.${video.id}.${unixtime(day)}`;
 
         await this.locker.get(key);
 

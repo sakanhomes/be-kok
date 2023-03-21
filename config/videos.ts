@@ -1,4 +1,7 @@
 export default () => ({
+    trends: {
+        lastDaysRange: 4, // Plus current day
+    },
     rewards: {
         creation: {
             amount: 1,

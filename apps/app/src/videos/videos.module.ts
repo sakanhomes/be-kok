@@ -22,12 +22,13 @@ import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 import { User } from '../users/models/user.model';
-import { VideoTrandingActivity } from './models/video-tranding-activity.model';
-import { VideoTrandingActivityHistory } from './models/video-tranding-activity-history.model';
-import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
-import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity-record.action';
-import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
+import { VideoTrendingActivity } from './models/video-trending-activity.model';
+import { VideoTrendingActivityHistory } from './models/video-trending-activity-history.model';
+import { RecordTrendingActivityAction } from './actions/record-trending-activity.action';
+import { GetTrendingActivityRecordAction } from './actions/get-trending-activity-record.action';
+import { GetTrendingVideosAction } from './actions/get-trending-videos.action';
 import { CommonController } from './common.controller';
+import { ClearTrendingVideosActivityJob } from './jobs/clear-trending-videos-activity.job';
 
 @Module({
     imports: [
@@ -36,8 +37,8 @@ import { CommonController } from './common.controller';
             Video,
             ViewHistory,
             VideoLike,
-            VideoTrandingActivity,
-            VideoTrandingActivityHistory,
+            VideoTrendingActivity,
+            VideoTrendingActivityHistory,
             Upload,
             UploadPart,
             Account,
@@ -48,17 +49,18 @@ import { CommonController } from './common.controller';
     providers: [
         CreateVideoResourceAction,
         GetRandomVideosAction,
-        GetTrandingVideosAction,
+        GetTrendingVideosAction,
         CreateVideoAction,
         UpdateVideoAction,
         DeleteVideoAction,
         AddVideoLikeAction,
         RemoveVideoLikeAction,
         RecordViewAction,
-        GetTrandingActivityRecordAction,
-        RecordTrandingActivityAction,
+        GetTrendingActivityRecordAction,
+        RecordTrendingActivityAction,
         EnrollViewRewardAction,
         EnrollCreationRewardAction,
+        ClearTrendingVideosActivityJob,
         {
             provide: VIDEOS_CONFIG,
             inject: [ConfigService],
