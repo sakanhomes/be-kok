@@ -1,8 +1,7 @@
-import { sleep } from '@app/core/helpers';
 import { ModelLocker } from '@app/core/orm/model-locker';
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
-import { DataSource, EntityManager } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Account } from '../models/account.model';
 
 @Injectable()
