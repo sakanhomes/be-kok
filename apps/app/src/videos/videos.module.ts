@@ -26,6 +26,7 @@ import { VideoTrandingActivity } from './models/video-tranding-activity.model';
 import { VideoTrandingActivityHistory } from './models/video-tranding-activity-history.model';
 import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
 import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity-record.action';
+import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
 
 @Module({
     imports: [
@@ -46,6 +47,7 @@ import { GetTrandingActivityRecordAction } from './actions/get-tranding-activity
     providers: [
         CreateVideoResourceAction,
         GetRandomVideosAction,
+        GetTrandingVideosAction,
         CreateVideoAction,
         UpdateVideoAction,
         DeleteVideoAction,

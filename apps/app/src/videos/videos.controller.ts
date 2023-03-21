@@ -27,6 +27,7 @@ import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 import { RecordTrandingActivityAction } from './actions/record-tranding-activity.action';
+import { GetTrandingVideosAction } from './actions/get-tranding-videos.action';
 
 @Controller('videos')
 export class VideosController {
@@ -44,12 +45,20 @@ export class VideosController {
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
         private readonly trandingActivityRecorder: RecordTrandingActivityAction,
+        private readonly trandingVideosGetter: GetTrandingVideosAction,
     ) {}
 
     @Get('/random')
     @UsePipes(GetRandomVideosValidator)
     public async random(@Query() data: { amount: number }) {
         const videos = await this.videosRandomizer.run(data.amount);
+
+        return VideoResource.collection(videos);
+    }
+
+    @Get('/tranding')
+    public async trands() {
+        const videos = await this.trandingVideosGetter.run();
 
         return VideoResource.collection(videos);
     }
