@@ -40,6 +40,8 @@ paths:
     $ref: ./routes/profile/FavouriteVideos.yaml
   /me/history:
     $ref: ./routes/profile/ViewsHistory.yaml
+  /me/videos:
+    $ref: ./routes/profile/Videos.yaml
   /users/{address}:
     $ref: ./routes/users/User.yaml
   /users/{address}/videos:

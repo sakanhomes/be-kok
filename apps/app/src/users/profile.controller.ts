@@ -1,9 +1,6 @@
 import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { Body, Controller, Get, Patch, Query, UsePipes } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Account } from '../accounts/models/account.model';
 import { Video } from '../videos/models/video.model';
 import { VideoResource } from '../videos/resources/video.resource';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
@@ -21,14 +18,13 @@ import { UserResource } from './resources/user.resource';
 import { FiltersValidator } from './validators/filters.validator';
 import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
+import { GetUserVideos } from './actions/get-user-videos.action';
 
 @Controller('/me')
 @JwtAuth()
 export class ProfileController {
     public constructor(
         private readonly resourceCreator: CreateCurrentUserResourceAction,
-        @InjectRepository(Account)
-        private readonly accounts: Repository<Account>,
         private readonly updater: UpdateUserAction,
         private readonly settingsGetter: GetUserSettingsAction,
         private readonly settingsUpdater: UpdateUserSettingsAction,
@@ -36,6 +32,7 @@ export class ProfileController {
         private readonly subscriptionsGetter: GetUserSubscriptionsAction,
         private readonly favouritesGetter: GetFavouriteVideosAction,
         private readonly viewHistoryGetter: GetViewsHistoryAction,
+        private readonly videosGetter: GetUserVideos,
     ) {}
 
     @Get('/')
@@ -102,5 +99,12 @@ export class ProfileController {
         }
 
         return { views };
+    }
+
+    @Get('/videos')
+    public async getVideos(@CurrentUser() user: User) {
+        const videos = await this.videosGetter.run(user, false);
+
+        return VideoResource.collection(videos);
     }
 }

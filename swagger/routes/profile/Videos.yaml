@@ -1,0 +1,25 @@
+get:
+  summary: Get user videos
+  tags:
+    - Profile
+  securitySchemes:
+    - accessTokenCookie: []
+  responses:
+    "200":
+      description: User videos
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: ../../models/Video.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
