@@ -30,6 +30,8 @@ import { GetTrendingVideosAction } from './actions/get-trending-videos.action';
 import { CommonController } from './common.controller';
 import { ClearTrendingVideosActivityJob } from './jobs/clear-trending-videos-activity.job';
 import { SearchVideosAction } from './actions/search-videos.action';
+import { CommentsModule } from '../comments/comments.module';
+import { VideoCommentsController } from './video-comments.controller';
 
 @Module({
     imports: [
@@ -46,6 +48,7 @@ import { SearchVideosAction } from './actions/search-videos.action';
             AccountTransaction,
         ]),
         AccountsModule,
+        CommentsModule,
     ],
     providers: [
         CreateVideoResourceAction,
@@ -69,6 +72,6 @@ import { SearchVideosAction } from './actions/search-videos.action';
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
-    controllers: [CommonController, VideosController],
+    controllers: [CommonController, VideosController, VideoCommentsController],
 })
 export class VideosModule {}

@@ -1,6 +1,7 @@
 import { decimal } from '@app/core/orm/transformers/decimal.transformer';
 import Decimal from 'decimal.js';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { User } from '../../users/models/user.model';
 
 @Entity('comments')
 export class Comment {
@@ -45,4 +46,7 @@ export class Comment {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToOne(() => User)
+    user: User;
 }
