@@ -1,0 +1,6 @@
+description: Category filter
+name: category
+in: query
+required: false
+schema:
+  $ref: ../../types/category.yaml
