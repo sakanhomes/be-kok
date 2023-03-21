@@ -1,16 +1,7 @@
 get:
-  summary: Get random videos
+  summary: Get tranding videos
   tags:
     - Videos
-  parameters:
-    - in: query
-      name: amount
-      description: Amount of videos
-      schema:
-        type: integer
-        min: 1
-        max: 25
-        exampe: 10
   responses:
     "200":
       description: Videos list
@@ -28,5 +19,3 @@ get:
                         type: array
                         items:
                           $ref: ../../models/UserVideo.yaml
-    "422":
-      $ref: ../../responses/errors/ValidationErrorsResponse.yaml
