@@ -1,7 +1,7 @@
 import { escapeLike } from '@app/core/helpers';
+import { Video } from 'apps/app/src/videos/models/video.model';
 import { Brackets, FindOptionsWhere, Raw, SelectQueryBuilder } from 'typeorm';
-import { Video } from '../../videos/models/video.model';
-import { FiltersDto as UserFilters } from '../dtos/filters.dto';
+import { FiltersDto as UserFilters } from 'apps/app/src/users/dtos/filters.dto';
 
 export class SearchHelper {
     public static applyUserSearchFilters<T = any>(

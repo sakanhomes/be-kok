@@ -7,7 +7,7 @@ import { ViewHistory } from '../../videos/models/view-history.model';
 import { FiltersDto } from '../dtos/filters.dto';
 import { User } from '../models/user.model';
 import { FindOptionsWhere } from 'typeorm';
-import { SearchHelper } from '../helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 
 type ViewsHistory = {
     [key: string]: Video[]

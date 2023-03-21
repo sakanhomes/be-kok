@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FiltersDto } from '../../users/dtos/filters.dto';
-import { SearchHelper } from '../../users/helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 import { Video } from '../../videos/models/video.model';
 import { PlaylistVideo } from '../models/playlist-video.model';
 import { Playlist } from '../models/playlist.model';

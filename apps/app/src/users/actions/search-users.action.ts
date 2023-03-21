@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../models/user.model';
-import { SearchHelper } from '../helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FiltersDto } from '../dtos/filters.dto';
 

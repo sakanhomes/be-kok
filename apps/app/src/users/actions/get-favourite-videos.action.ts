@@ -5,7 +5,7 @@ import { VideoLike } from '../../videos/models/video-like.model';
 import { Video } from '../../videos/models/video.model';
 import { FiltersDto } from '../dtos/filters.dto';
 import { User } from '../models/user.model';
-import { SearchHelper } from '../helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 
 @Injectable()
 export class GetFavouriteVideosAction {

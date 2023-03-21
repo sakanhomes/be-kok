@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FiltersDto } from '../dtos/filters.dto';
-import { SearchHelper } from '../helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 import { Subscription } from '../models/subscription.model';
 import { User } from '../models/user.model';
 

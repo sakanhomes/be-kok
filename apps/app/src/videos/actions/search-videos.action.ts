@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SearchHelper } from '../../users/helpers/search.helper';
+import { SearchHelper } from '@app/common/helpers/search.helper';
 import { FiltersDto } from '../dtos/filters.dto';
 import { Video } from '../models/video.model';
 
