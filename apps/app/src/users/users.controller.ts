@@ -14,6 +14,7 @@ import { GetUserVideos } from './actions/get-user-videos.action';
 import { SearchUsersAction } from './actions/search-users.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
 import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
+import { FiltersDto } from './dtos/filters.dto';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
 import { SearchUsersValidator } from './validators/search-users.validator';
@@ -31,8 +32,8 @@ export class UsersController {
 
     @Get('/')
     @UsePipes(SearchUsersValidator)
-    public async users(@Query() { search }: {search?: string}) {
-        const users = await this.usersSearcher.run(search);
+    public async users(@Query() filters: FiltersDto) {
+        const users = await this.usersSearcher.run(filters);
 
         return UserResource.collection(users);
     }

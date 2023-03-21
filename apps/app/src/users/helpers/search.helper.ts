@@ -1,12 +1,12 @@
 import { escapeLike } from '@app/core/helpers';
 import { Brackets, FindOptionsWhere, Raw, SelectQueryBuilder } from 'typeorm';
 import { Video } from '../../videos/models/video.model';
-import { FiltersDto } from '../dtos/filters.dto';
+import { FiltersDto as UserFilters } from '../dtos/filters.dto';
 
 export class SearchHelper {
     public static applyUserSearchFilters<T = any>(
         query: SelectQueryBuilder<T>,
-        filters: FiltersDto,
+        filters: UserFilters,
         alias = 'user',
     ): SelectQueryBuilder<T> {
         if (filters.search && filters.search.length) {

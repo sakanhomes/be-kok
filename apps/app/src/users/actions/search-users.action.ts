@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { SearchHelper } from '../helpers/search.helper';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FiltersDto } from '../dtos/filters.dto';
 
 @Injectable()
 export class SearchUsersAction {
@@ -11,13 +12,13 @@ export class SearchUsersAction {
         private readonly users: Repository<User>,
     ) {}
 
-    public run(search?: string, limit = 2): Promise<User[]> {
+    public run(filters: FiltersDto): Promise<User[]> {
         const query = this.users.createQueryBuilder('user')
-            .take(limit)
+            .take(filters.limit ?? 10)
             .orderBy('createdAt', 'DESC');
 
-        if (search) {
-            SearchHelper.applyUserSearchFilters(query, { search });
+        if (filters.search && filters.search.length) {
+            SearchHelper.applyUserSearchFilters(query, filters);
         }
 
         return query.getMany();
