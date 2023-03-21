@@ -2,8 +2,10 @@ import { keyBy } from '@app/core/helpers';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { startOfToday, subDays } from 'date-fns';
-import { In, Repository } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { VIDEOS_CONFIG } from '../constants';
+import { CommonVideosFiltersDto } from '../dtos/common-videos-filters.dto';
+import { Category } from '../enums/category.enum';
 import { VideoTrendingActivity } from '../models/video-trending-activity.model';
 import { Video } from '../models/video.model';
 
@@ -18,8 +20,8 @@ export class GetTrendingVideosAction {
         private readonly config: Record<string, any>,
     ) {}
 
-    public async run(amount = 8): Promise<Video[]> {
-        const ids = await this.getTrendingVideoIds(amount);
+    public async run(amount: number, filters?: CommonVideosFiltersDto): Promise<Video[]> {
+        const ids = await this.getTrendingVideoIds(amount, filters);
         const videos = await this.videos.find({
             where: {
                 id: In(ids),
@@ -30,21 +32,35 @@ export class GetTrendingVideosAction {
         return ids.map(id => videos[id]);
     }
 
-    private async getTrendingVideoIds(amount): Promise<string[]> {
+    private async getTrendingVideoIds(amount: number, filters?: CommonVideosFiltersDto): Promise<string[]> {
+        const query = this.getTrendingVideoIdsQuery();
         const deadline = subDays(startOfToday(), this.config.trends.lastDaysRange);
 
-        const records = await this.trends.createQueryBuilder('trend')
+        query.andWhere('trend.day >= :deadline', { deadline }).take(amount);
+
+        if (filters) {
+            this.applyFilters(query, filters);
+        }
+
+        const records = await query.getRawMany();
+
+        return records.map(record => record.videoId);
+    }
+
+    private applyFilters(query: SelectQueryBuilder<VideoTrendingActivity>, filters: CommonVideosFiltersDto): void {
+        if (filters.category) {
+            query.andWhere('video.categoryId = :category', { category: Category[filters.category] });
+        }
+    }
+
+    private getTrendingVideoIdsQuery(): SelectQueryBuilder<VideoTrendingActivity> {
+        return this.trends.createQueryBuilder('trend')
             .select([])
             .addSelect('trend.videoId', 'videoId')
             .addSelect('sum(trend.actionsAmount)', 'total')
             .innerJoin(Video, 'video', 'trend.videoId = video.id')
             .where('video.isPublic = 1')
-            .andWhere('trend.day >= :deadline', { deadline })
             .groupBy('trend.videoId')
-            .orderBy('total', 'DESC')
-            .take(amount)
-            .getRawMany();
-
-        return records.map(record => record.videoId);
+            .orderBy('total', 'DESC');
     }
 }

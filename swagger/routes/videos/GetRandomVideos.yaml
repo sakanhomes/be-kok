@@ -6,11 +6,13 @@ get:
     - in: query
       name: amount
       description: Amount of videos
+      required: true
       schema:
         type: integer
         min: 1
         max: 25
         exampe: 10
+    - $ref: ../../parameters/query/category.yaml
   responses:
     "200":
       description: Videos list

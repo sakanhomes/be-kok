@@ -2,6 +2,8 @@ get:
   summary: Get trending videos
   tags:
     - Videos
+  parameters:
+    - $ref: ../../parameters/query/category.yaml
   responses:
     "200":
       description: Videos list
