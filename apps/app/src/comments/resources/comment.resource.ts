@@ -3,7 +3,7 @@ import { User } from '../../users/models/user.model';
 import { BasicUserResource } from '../../users/resources/basic-user.resource';
 import { Comment } from '../models/comment.model';
 
-type CommentFlags = {
+export type CommentFlags = {
     isLiked: boolean,
     isDisliked: boolean,
 }
