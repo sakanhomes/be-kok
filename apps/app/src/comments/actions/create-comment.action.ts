@@ -1,6 +1,7 @@
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { randomString, __ } from '@app/core/helpers';
 import { ModelLocker } from '@app/core/orm/model-locker';
+import { LockService } from '@app/core/support/locker/lock.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
@@ -13,6 +14,7 @@ import { Comment } from '../models/comment.model';
 @Injectable()
 export class CreateCommentAction {
     public constructor(
+        private readonly locker: LockService,
         @InjectRepository(Video)
         private readonly videos: Repository<Video>,
         @InjectRepository(Comment)
@@ -35,21 +37,35 @@ export class CreateCommentAction {
             repliedComment,
         });
 
-        await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
-            comment = await manager.save(comment);
+        let key: string;
 
-            video.commentsAmount++;
+        if (repliedComment) {
+            key = `comments.reply.${repliedComment.id}`;
 
-            await manager.save(video);
+            await this.locker.get(key);
+        }
 
-            if (repliedComment) {
-                repliedComment.repliesAmount = repliedComment.repliesAmount.add(1);
+        try {
+            await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
+                comment = await manager.save(comment);
 
-                await manager.save(repliedComment);
+                video.commentsAmount++;
+
+                await manager.save(video);
+
+                if (repliedComment) {
+                    repliedComment.repliesAmount = repliedComment.repliesAmount.add(1);
+
+                    await manager.save(repliedComment);
+                }
+            });
+
+            return comment;
+        } finally {
+            if (key) {
+                this.locker.release(key);
             }
-        });
-
-        return comment;
+        }
     }
 
     private async getRepliedCommentOrFail(publicId: string) {
