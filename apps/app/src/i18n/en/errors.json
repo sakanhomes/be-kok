@@ -18,5 +18,6 @@
     "video-already-in-playlist": "Video is already added to playlist",
     "video-isnt-in-playlist": "Video is not added to playlist",
     "comment-reaction-already-added": "Reaction to comment already added",
-    "comment-reaction-isnt-added": "Reaction to comment is not added"
+    "comment-reaction-isnt-added": "Reaction to comment is not added",
+    "replied-comment-not-found": "Replied comment not found"
 }

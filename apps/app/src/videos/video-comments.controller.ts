@@ -18,6 +18,7 @@ import { User } from '../users/models/user.model';
 import { Video } from './models/video.model';
 import { CommentReaction } from '../comments/enums/comment-reaction.enum';
 import { RemoveReactionFromCommentAction } from '../comments/actions/remove-reaction-from-comment.action';
+import { CreateCommentDto } from '../comments/dtos/create-comment.dto';
 
 @Controller('/videos/:publicId/comments')
 export class VideoCommentsController {
@@ -51,9 +52,9 @@ export class VideoCommentsController {
     public async create(
         @CurrentUser() user: User,
         @Param('publicId', ResolveModelPipe) video: Video,
-        @Body() { content }: {content: string},
+        @Body() data: CreateCommentDto,
     ) {
-        const comment = await this.commentCreator.run(user, video, content);
+        const comment = await this.commentCreator.run(user, video, data);
 
         return new CommentResource(comment, {
             user,

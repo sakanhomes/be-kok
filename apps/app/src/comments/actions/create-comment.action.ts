@@ -1,4 +1,5 @@
-import { randomString } from '@app/core/helpers';
+import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
+import { randomString, __ } from '@app/core/helpers';
 import { ModelLocker } from '@app/core/orm/model-locker';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +7,7 @@ import Decimal from 'decimal.js';
 import { Repository } from 'typeorm';
 import { User } from '../../users/models/user.model';
 import { Video } from '../../videos/models/video.model';
+import { CreateCommentDto } from '../dtos/create-comment.dto';
 import { Comment } from '../models/comment.model';
 
 @Injectable()
@@ -17,15 +19,20 @@ export class CreateCommentAction {
         private readonly comments: Repository<Comment>,
     ) {}
 
-    public async run(user: User, video: Video, content: string): Promise<Comment> {
+    public async run(user: User, video: Video, data: CreateCommentDto): Promise<Comment> {
+        const repliedComment = data.repliedCommentId
+            ? await this.getRepliedCommentOrFail(data.repliedCommentId)
+            : null;
+
         let comment = this.comments.create({
             publicId: randomString(16),
             videoId: video.id,
             userId: user.id,
-            content,
+            content: data.content,
             likesAmount: new Decimal(0),
             dislikesAmount: new Decimal(0),
             repliesAmount: new Decimal(0),
+            repliedComment,
         });
 
         await ModelLocker.using(this.videos.manager).lock(video, async (manager, video) => {
@@ -34,8 +41,24 @@ export class CreateCommentAction {
             video.commentsAmount++;
 
             await manager.save(video);
+
+            if (repliedComment) {
+                repliedComment.repliesAmount = repliedComment.repliesAmount.add(1);
+
+                await manager.save(repliedComment);
+            }
         });
 
         return comment;
+    }
+
+    private async getRepliedCommentOrFail(publicId: string) {
+        const comment = await this.comments.findOneBy({ publicId });
+
+        if (comment) {
+            return comment;
+        }
+
+        throw new UnprocessableException(__('errors.replied-comment-not-found'));
     }
 }
