@@ -1,0 +1,37 @@
+get:
+  summary: Get video comments list
+  tags:
+    - Videos
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+    - name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - latest
+          - top
+  responses:
+    "200":
+      description: Comments list
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          $ref: ../../models/Comment.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

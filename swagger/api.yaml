@@ -66,6 +66,8 @@ paths:
     $ref: ./routes/videos/VideoLikes.yaml
   /videos/{id}/viewed:
     $ref: ./routes/videos/TrackVideoView.yaml
+  /videos/{id}/comments:
+    $ref: ./routes/videos/VideoComments.yaml
   /uploads:
     $ref: ./routes/uploads/Uploads.yaml
   /uploads/single:
