@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('comment_likes')
+@Entity('comment_dislikes')
 export class CommentDislike {
     @PrimaryGeneratedColumn()
     id: string;
@@ -12,5 +12,5 @@ export class CommentDislike {
     userId: string;
 
     @CreateDateColumn()
-    likedAt: Date;
+    dislikedAt: Date;
 }
