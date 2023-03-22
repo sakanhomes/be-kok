@@ -12,6 +12,8 @@ export class CreateCommentResourceAction {
     public constructor(
         @InjectRepository(User)
         private readonly users: Repository<User>,
+        @InjectRepository(Comment)
+        private readonly comments: Repository<Comment>,
         @InjectRepository(CommentLike)
         private readonly likes: Repository<CommentLike>,
         @InjectRepository(CommentDislike)
@@ -21,18 +23,32 @@ export class CreateCommentResourceAction {
     public async run(user: User | null, comment: Comment): Promise<CommentResource> {
         const author = comment.user
             ? comment.user
-            : await this.getCommentAuthor(comment);
+            : await this.getUser(comment.userId);
         const flags = user
             ? await this.getCommentFlagsForUser(user, comment)
             : this.getDefaultFlags();
+        let repliedComment: Comment;
 
-        return new CommentResource(comment, { user: author, flags });
+        if (comment.repliedCommentId) {
+            if (!comment.repliedComment) {
+                repliedComment = await this.getRepliedComment(comment.repliedCommentId);
+            }else if (!comment.repliedComment.user) {
+                comment.repliedComment.user = await this.getUser(comment.repliedComment.userId);
+            }
+        }
+
+        return new CommentResource(comment, { user: author, flags, repliedComment });
     }
 
-    private getCommentAuthor(comment: Comment): Promise<User> {
-        return this.users.findOneBy({
-            id: comment.userId,
+    private getRepliedComment(id: string): Promise<Comment> {
+        return this.comments.findOne({
+            where: { id },
+            relations: ['user'],
         });
+    }
+
+    private getUser(id: string): Promise<User> {
+        return this.users.findOneBy({ id });
     }
 
     private async getCommentFlagsForUser(user: User, comment: Comment): Promise<CommentFlags> {

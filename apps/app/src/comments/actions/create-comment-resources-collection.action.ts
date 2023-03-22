@@ -12,6 +12,8 @@ import { CommentResourceOptions } from '../resources/comment.resource';
 @Injectable()
 export class CreateCommentResourcesCollectionAction {
     public constructor(
+        @InjectRepository(Comment)
+        private readonly comments: Repository<Comment>,
         @InjectRepository(CommentLike)
         private readonly likes: Repository<CommentLike>,
         @InjectRepository(CommentDislike)
@@ -27,7 +29,17 @@ export class CreateCommentResourcesCollectionAction {
     }
 
     private async getCommentsOptionsForUser(user: User, comments: Comment[]): Promise<CommentResourceOptions[]> {
-        const commentIds = comments.map(comment => comment.id);
+        const commentIds: string[] = [];
+        const repliedCommentIds: Set<string> = new Set<string>();
+
+        for (const comment of comments) {
+            commentIds.push(comment.id);
+
+            if (comment.repliedCommentId) {
+                repliedCommentIds.add(comment.repliedCommentId);
+            }
+        }
+
         const search = {
             userId: user.id,
             commentId: In(commentIds),
@@ -35,12 +47,19 @@ export class CreateCommentResourcesCollectionAction {
 
         const likes = await this.likes.findBy(search).then(likes => keyBy(likes, 'commentId'));
         const dislikes = await this.dislikes.findBy(search).then(dislikes => keyBy(dislikes, 'commentId'));
+        const repliedComments = await this.comments.find({
+            where: {
+                id: In([...repliedCommentIds.values()]),
+            },
+            relations: ['user'],
+        }).then(comments => keyBy(comments, 'id'));
 
         const options = comments.map(comment => ({
             flags: {
                 isLiked: Boolean(likes[comment.id]),
                 isDisliked: Boolean(dislikes[comment.id]),
             },
+            repliedComment: comment.repliedCommentId ? repliedComments[comment.repliedCommentId] : null,
         }));
 
         return options;

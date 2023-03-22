@@ -11,7 +11,6 @@ import { AddReactionToCommentAction } from '../comments/actions/add-reaction-to-
 import { CommentsFiltersDto } from '../comments/dtos/comments-filters.dto';
 import { CommentsSort } from '../comments/enums/comments-sort.enum';
 import { Comment } from '../comments/models/comment.model';
-import { CommentResource } from '../comments/resources/comment.resource';
 import { CommentsListValidator } from '../comments/validators/comments-list.validator';
 import { CreateCommentValdiator } from '../comments/validators/create-comment.validator';
 import { User } from '../users/models/user.model';
@@ -56,13 +55,7 @@ export class VideoCommentsController {
     ) {
         const comment = await this.commentCreator.run(user, video, data);
 
-        return new CommentResource(comment, {
-            user,
-            flags: {
-                isLiked: false,
-                isDisliked: false,
-            },
-        });
+        return this.resourceCreator.run(user, comment);
     }
 
     @Post('/:commentId/likes')

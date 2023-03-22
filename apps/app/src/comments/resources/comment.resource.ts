@@ -11,6 +11,7 @@ export type CommentFlags = {
 export type CommentResourceOptions = {
     user?: User,
     flags?: CommentFlags,
+    repliedComment?: Comment,
 }
 
 export class CommentResource extends Resource {
@@ -22,6 +23,7 @@ export class CommentResource extends Resource {
 
     public data(): Record<string, any> {
         const user = this.options?.user ?? this.comment.user ?? null;
+        const repliedComment = this.options?.repliedComment ?? this.comment.repliedComment ?? null;
 
         return {
             id: this.comment.publicId,
@@ -31,6 +33,7 @@ export class CommentResource extends Resource {
             repliesAmount: this.comment.repliesAmount.toNumber(),
             user: user ? new BasicUserResource(user).data() : undefined,
             flags: this.options?.flags ? this.options.flags : undefined,
+            repliedComment: repliedComment ? new CommentResource(repliedComment).data() : undefined,
         };
     }
 }
