@@ -50,6 +50,9 @@ post:
             content:
               type: string
               exampe: Very cool video
+            repliedCommentId:
+              type: string
+              example: qwerty
           required:
             - content
   responses:

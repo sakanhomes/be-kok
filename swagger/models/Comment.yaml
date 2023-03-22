@@ -1,30 +1,20 @@
-title: Comment
-type: object
-properties:
-  id:
-    type: string
-    example: qwerty
-  content:
-    type: string
-    example: Very cool video
-  likesAmount:
-    type: number
-    example: 12345
-  dislikesAmount:
-    type: number
-    example: 12345
-  repliesAmount:
-    type: number
-    example: 12345
-  user:
-    $ref: ../common/BasicUser.yaml
-  flags:
-    type: object
-    nullable: true
+allOf:
+  - $ref: ../common/BaseComment.yaml
+  - type: object
     properties:
-      isLiked:
-        type: boolean
-        example: true
-      isDisliked:
-        type: boolean
-        example: false
+      flags:
+        type: object
+        nullable: true
+        properties:
+          isLiked:
+            type: boolean
+            example: true
+          isDisliked:
+            type: boolean
+            example: false
+  - type: object
+    properties:
+      repliedComment:
+        allOf:
+          - $ref: ../common/BaseComment.yaml
+          - nullable: true
