@@ -2,7 +2,7 @@ import { CurrentUser } from '@app/core/auth/decorators/current-user.decorator';
 import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { ResolveModelPipe, ResolveModelUsing } from '@app/core/orm/pipes/resolve-model.pipe';
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Query, UsePipes } from '@nestjs/common';
 import { CreateCommentResourceAction } from '../comments/actions/create-comment-resource.action';
 import { CreateCommentResourcesCollectionAction } from '../comments/actions/create-comment-resources-collection.action';
 import { CreateCommentAction } from '../comments/actions/create-comment.action';
@@ -17,6 +17,7 @@ import { CreateCommentValdiator } from '../comments/validators/create-comment.va
 import { User } from '../users/models/user.model';
 import { Video } from './models/video.model';
 import { CommentReaction } from '../comments/enums/comment-reaction.enum';
+import { RemoveReactionFromCommentAction } from '../comments/actions/remove-reaction-from-comment.action';
 
 @Controller('/videos/:publicId/comments')
 export class VideoCommentsController {
@@ -26,6 +27,7 @@ export class VideoCommentsController {
         private readonly commentsCollectionCreator: CreateCommentResourcesCollectionAction,
         private readonly commentCreator: CreateCommentAction,
         private readonly commentReactionAdder: AddReactionToCommentAction,
+        private readonly commentReactionRemover: RemoveReactionFromCommentAction,
     ) {}
 
     @Get('/')
@@ -74,6 +76,17 @@ export class VideoCommentsController {
         return this.resourceCreator.run(user, comment);
     }
 
+    @Delete('/:commentId/likes')
+    @JwtAuth()
+    public async unlikeComment(
+        @CurrentUser() user: User,
+        @Param('commentId', ResolveModelUsing.publicId(), ResolveModelPipe) comment: Comment,
+    ) {
+        comment = await this.commentReactionRemover.run(user, comment, CommentReaction.LIKE);
+
+        return this.resourceCreator.run(user, comment);
+    }
+
     @Post('/:commentId/dislikes')
     @HttpCode(200)
     @JwtAuth()
@@ -82,6 +95,17 @@ export class VideoCommentsController {
         @Param('commentId', ResolveModelUsing.publicId(), ResolveModelPipe) comment: Comment,
     ) {
         comment = await this.commentReactionAdder.run(user, comment, CommentReaction.DISLIKE);
+
+        return this.resourceCreator.run(user, comment);
+    }
+
+    @Delete('/:commentId/dislikes')
+    @JwtAuth()
+    public async undislikeComment(
+        @CurrentUser() user: User,
+        @Param('commentId', ResolveModelUsing.publicId(), ResolveModelPipe) comment: Comment,
+    ) {
+        comment = await this.commentReactionRemover.run(user, comment, CommentReaction.DISLIKE);
 
         return this.resourceCreator.run(user, comment);
     }

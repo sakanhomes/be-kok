@@ -12,50 +12,38 @@ import { getReactionCounterProperty } from '../helpers';
 import { Comment } from '../models/comment.model';
 
 @Injectable()
-export class AddReactionToCommentAction {
+export class RemoveReactionFromCommentAction {
     public constructor(
         private readonly locker: LockService,
         private readonly manager: EntityManager,
     ) {}
 
     public async run(user: User, comment: Comment, reaction: CommentReaction): Promise<Comment> {
-        await this.ensureCommentDoesntHaveReaction(comment, user, reaction);
+        await this.ensureReactionExists(comment, user, reaction);
 
-        const key = `comments.${reaction}.add.${comment.id}.${user.id}`;
+        const key = `comments.${reaction}.remove.${comment.id}.${user.id}`;
 
         await this.locker.get(key);
 
-        const oppositeReaction = reaction === CommentReaction.LIKE ? CommentReaction.DISLIKE : CommentReaction.LIKE;
         const reactionCounterProperty = getReactionCounterProperty(reaction);
-        const oppositeReactionCounterProperty = getReactionCounterProperty(oppositeReaction);
 
         try {
             return await ModelLocker.using(this.manager).lock(comment, async (manager, comment) => {
-                await this.ensureCommentDoesntHaveReaction(comment, user, reaction);
-
-                const reactionModel = manager.getRepository(CommentReactionModels[reaction]).create({
+                const reactionModel = await manager.getRepository(CommentReactionModels[reaction]).findOneBy({
                     commentId: comment.id,
                     userId: user.id,
                 });
 
-                const oppositeReactionModel = await manager.getRepository(CommentReactionModels[oppositeReaction])
-                    .findOneBy({
-                        commentId: comment.id,
-                        userId: user.id,
-                    });
-
-                comment[reactionCounterProperty] = comment[reactionCounterProperty].add(1);
-
-                if (oppositeReactionModel) {
-                    comment[oppositeReactionCounterProperty] = maxDecimal(
-                        comment[oppositeReactionCounterProperty].sub(1),
-                        new Decimal(0),
-                    );
-
-                    await manager.remove(oppositeReactionModel);
+                if (!reactionModel) {
+                    throw new UnprocessableException(__('erros.comment-reaction-isnt-added'));
                 }
 
-                await manager.save(reactionModel);
+                comment[reactionCounterProperty] = maxDecimal(
+                    comment[reactionCounterProperty].sub(1),
+                    new Decimal(0),
+                );
+
+                await manager.remove(reactionModel);
                 await manager.save(comment);
             });
         } finally {
@@ -63,11 +51,7 @@ export class AddReactionToCommentAction {
         }
     }
 
-    private async ensureCommentDoesntHaveReaction(
-        comment: Comment,
-        user: User,
-        reaction: CommentReaction,
-    ): Promise<void> {
+    private async ensureReactionExists(comment: Comment, user: User, reaction: CommentReaction): Promise<void> {
         const exists = await this.manager.getRepository(CommentReactionModels[reaction]).exist({
             where: {
                 commentId: comment.id,
@@ -75,8 +59,8 @@ export class AddReactionToCommentAction {
             },
         });
 
-        if (exists) {
-            throw new UnprocessableException(__('errors.comment-reaction-already-added'));
+        if (!exists) {
+            throw new UnprocessableException(__('errors.comment-reaction-isnt-added'));
         }
     }
 }

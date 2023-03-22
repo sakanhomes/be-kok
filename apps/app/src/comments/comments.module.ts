@@ -10,6 +10,7 @@ import { AddReactionToCommentAction } from './actions/add-reaction-to-comment.ac
 import { CommentDislike } from './models/comment-dislike.model';
 import { CommentLike } from './models/comment-like.model';
 import { Comment } from './models/comment.model';
+import { RemoveReactionFromCommentAction } from './actions/remove-reaction-from-comment.action';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Comment, CommentLike, CommentDislike, User, Video])],
@@ -19,6 +20,7 @@ import { Comment } from './models/comment.model';
         CreateCommentAction,
         CreateCommentResourceAction,
         AddReactionToCommentAction,
+        RemoveReactionFromCommentAction,
     ],
     exports: [
         GetVideoCommentsAction,
@@ -26,6 +28,7 @@ import { Comment } from './models/comment.model';
         CreateCommentAction,
         CreateCommentResourceAction,
         AddReactionToCommentAction,
+        RemoveReactionFromCommentAction,
     ],
 })
 export class CommentsModule {}
