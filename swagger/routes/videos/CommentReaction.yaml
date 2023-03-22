@@ -1,5 +1,5 @@
 post:
-  summary: Add video reaction
+  summary: Add comment reaction
   tags:
     - Videos
   parameters:
@@ -25,7 +25,7 @@ post:
     "404":
       $ref: ../../responses/errors/NotFoundResponse.yaml
 delete:
-  summary: Remove video reaction
+  summary: Remove comment reaction
   tags:
     - Videos
   parameters:

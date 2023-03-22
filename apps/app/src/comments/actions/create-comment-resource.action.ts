@@ -32,7 +32,7 @@ export class CreateCommentResourceAction {
         if (comment.repliedCommentId) {
             if (!comment.repliedComment) {
                 repliedComment = await this.getRepliedComment(comment.repliedCommentId);
-            }else if (!comment.repliedComment.user) {
+            } else if (!comment.repliedComment.user) {
                 comment.repliedComment.user = await this.getUser(comment.repliedComment.userId);
             }
         }
