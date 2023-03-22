@@ -1,11 +1,11 @@
 import { Response } from '../response';
-import { ResouceCollection } from './resource-collection';
+import { ResourceCollection } from './resource-collection';
 
 export abstract class Resource {
     public static wrap: string | null = null;
 
     public static collection(items: Array<any>, ...extra: any[]) {
-        return new ResouceCollection(this, items, ...extra);
+        return new ResourceCollection(this, items, ...extra);
     }
 
     public abstract data(): Record<string, any>

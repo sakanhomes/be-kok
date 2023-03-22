@@ -1,7 +1,7 @@
 import { plural } from 'pluralize';
 import { Response } from '../response';
 
-export class ResouceCollection {
+export class ResourceCollection {
     public wrap: string | null = null;
     private extra: any[];
 
