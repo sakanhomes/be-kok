@@ -68,6 +68,10 @@ paths:
     $ref: ./routes/videos/TrackVideoView.yaml
   /videos/{id}/comments:
     $ref: ./routes/videos/VideoComments.yaml
+  /videos/{id}/comments/{commentId}/likes:
+    $ref: ./routes/videos/VideoReaction.yaml
+  /videos/{id}/comments/{commentId}/dislikes:
+    $ref: ./routes/videos/VideoReaction.yaml
   /uploads:
     $ref: ./routes/uploads/Uploads.yaml
   /uploads/single:
