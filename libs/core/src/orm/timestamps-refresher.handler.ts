@@ -1,4 +1,4 @@
-import { EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
+import { EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata';
 
 @EventSubscriber()
@@ -8,7 +8,7 @@ export class TimestampsRefresher implements EntitySubscriberInterface {
         this.refreshTimestamp(event.entity, event.metadata.updateDateColumn);
     }
 
-    public beforeUpdate(event: InsertEvent<any>): void | Promise<any> {
+    public beforeUpdate(event: UpdateEvent<any>): void | Promise<any> {
         this.refreshTimestamp(event.entity, event.metadata.updateDateColumn);
     }
 

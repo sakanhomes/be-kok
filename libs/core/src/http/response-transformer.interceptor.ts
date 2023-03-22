@@ -2,10 +2,10 @@ import { ExecutionContext, Injectable, NestInterceptor, CallHandler, HttpStatus 
 import { Response as HttpResponse } from 'express';
 import { map, Observable } from 'rxjs';
 import { Resource } from './resources/resource';
-import { ResouceCollection } from './resources/resource-collection';
+import { ResourceCollection } from './resources/resource-collection';
 import { Cookie, Response } from './response';
 
-type Responsable = ResouceCollection | Resource | Response | object | undefined;
+type Responsable = ResourceCollection | Resource | Response | object | undefined;
 
 @Injectable()
 export class ResponseTransformerInterceptor implements NestInterceptor<any, any> {
@@ -43,7 +43,7 @@ export class ResponseTransformerInterceptor implements NestInterceptor<any, any>
     private prepareResponse(responsable: Responsable): Response {
         if (responsable instanceof Response) {
             return responsable;
-        } else if (responsable instanceof Resource || responsable instanceof ResouceCollection) {
+        } else if (responsable instanceof Resource || responsable instanceof ResourceCollection) {
             return responsable.toResponse();
         }
 

@@ -1,13 +1,13 @@
 import { plural } from 'pluralize';
 import { Response } from '../response';
 
-export class ResouceCollection {
+export class ResourceCollection {
     public wrap: string | null = null;
-    private extra: any[];
+    protected extra: any[];
 
     public constructor(
-        private readonly resource,
-        private readonly items: Array<any>,
+        protected readonly resource,
+        protected readonly items: Array<any> = [],
         ...extra: any[]
     ) {
         this.wrap = plural(resource.wrap);

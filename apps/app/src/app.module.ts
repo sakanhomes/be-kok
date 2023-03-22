@@ -14,6 +14,7 @@ import { VideosModule } from './videos/videos.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { CommonModule } from './common/common.module';
 import { PlaylistsModule } from './playlists/playlists.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
         AccountsModule,
         CommonModule,
         PlaylistsModule,
+        CommentsModule,
     ],
     controllers: [],
     providers: [

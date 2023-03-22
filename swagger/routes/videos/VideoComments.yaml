@@ -1,0 +1,78 @@
+get:
+  summary: Get video comments list
+  tags:
+    - Videos
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+    - name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - latest
+          - top
+  responses:
+    "200":
+      description: Comments list
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          $ref: ../../models/Comment.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml
+post:
+  summary: Add comment to video
+  tags:
+    - Videos
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              exampe: Very cool video
+            repliedCommentId:
+              type: string
+              example: qwerty
+          required:
+            - content
+  responses:
+    "200":
+      description: Created comment
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      comment:
+                        $ref: ../../models/Comment.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

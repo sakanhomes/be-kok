@@ -1,0 +1,20 @@
+allOf:
+  - $ref: ../common/BaseComment.yaml
+  - type: object
+    properties:
+      flags:
+        type: object
+        nullable: true
+        properties:
+          isLiked:
+            type: boolean
+            example: true
+          isDisliked:
+            type: boolean
+            example: false
+  - type: object
+    properties:
+      repliedComment:
+        allOf:
+          - $ref: ../common/BaseComment.yaml
+          - nullable: true

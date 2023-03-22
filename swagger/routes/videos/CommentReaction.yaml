@@ -1,0 +1,52 @@
+post:
+  summary: Add comment reaction
+  tags:
+    - Videos
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+    - $ref: ../../parameters/path/comment_id.yaml
+  responses:
+    "200":
+      description: Updated comment
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      comment:
+                        $ref: ../../models/Comment.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
+delete:
+  summary: Remove comment reaction
+  tags:
+    - Videos
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+    - $ref: ../../parameters/path/comment_id.yaml
+  responses:
+    "200":
+      description: Updated comment
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      comment:
+                        $ref: ../../models/Comment.yaml
+    "400":
+      $ref: ../../responses/errors/BadRequestResponse.yaml
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml

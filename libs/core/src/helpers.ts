@@ -1,6 +1,7 @@
 import * as util from 'util';
 import * as path from 'path';
 import { TranslateOptions, I18nContext } from 'nestjs-i18n';
+import Decimal from 'decimal.js';
 
 /**
  * Dump method to print out passed variables.
@@ -142,4 +143,12 @@ export function escapeLike(string: string): string {
     return string.replace('\\', '\\\\')
         .replace('_', '\\_')
         .replace('%', '\\%');
+}
+
+export function minDecimal(a: Decimal, b: Decimal): Decimal {
+    return a.lessThan(b) ? a : b;
+}
+
+export function maxDecimal(a: Decimal, b: Decimal): Decimal {
+    return a.greaterThan(b) ? a : b;
 }
