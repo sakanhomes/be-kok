@@ -55,7 +55,7 @@ paths:
   /users/{address}/playlists/{playlistId}:
     $ref: ./routes/users/UserPlaylist.yaml
   /videos:
-    $ref: ./routes/videos/SearchVideos.yaml
+    $ref: ./routes/videos/Videos.yaml
   /videos/random:
     $ref: ./routes/videos/GetRandomVideos.yaml
   /videos/trending:
