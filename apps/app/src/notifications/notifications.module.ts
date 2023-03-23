@@ -6,6 +6,7 @@ import { GetUserNotifications } from './actions/get-user-notifications.action';
 import { MarkNotificationsAsReadAction } from './actions/mark-notifications-as-read.action';
 import { NotifyUserAction } from './actions/notify-user.action';
 import { BaseNotification } from './base.notification';
+import { ClearNotificationsJob } from './jobs/clear-notifications.job';
 import { Notification } from './models/notification.model';
 
 @Module({
@@ -17,6 +18,7 @@ import { Notification } from './models/notification.model';
         GetUserNotifications,
         MarkNotificationsAsReadAction,
         NotifyUserAction,
+        ClearNotificationsJob,
     ],
     exports: [
         GetUserNotifications,
