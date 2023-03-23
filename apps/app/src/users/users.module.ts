@@ -52,6 +52,10 @@ import { UsersController } from './users.controller';
             useFactory: (config: ConfigService) => config.get('settings.userSettings'),
         },
     ],
+    exports: [
+        GetUserSettingAction,
+        GetUserSettingsAction,
+    ],
     controllers: [
         ProfileController,
         ProfilePlaylistsController,

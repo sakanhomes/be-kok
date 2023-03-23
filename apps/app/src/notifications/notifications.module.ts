@@ -1,6 +1,7 @@
 import { Class } from '@app/core/types/class.type';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from '../users/users.module';
 import { GetUserNotifications } from './actions/get-user-notifications.action';
 import { MarkNotificationsAsReadAction } from './actions/mark-notifications-as-read.action';
 import { NotifyUserAction } from './actions/notify-user.action';
@@ -8,7 +9,10 @@ import { BaseNotification } from './base.notification';
 import { Notification } from './models/notification.model';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Notification])],
+    imports: [
+        TypeOrmModule.forFeature([Notification]),
+        forwardRef(() => UsersModule),
+    ],
     providers: [
         GetUserNotifications,
         MarkNotificationsAsReadAction,
