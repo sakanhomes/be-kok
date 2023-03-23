@@ -6,7 +6,8 @@ import { In, Repository } from 'typeorm';
 import { USER_SETTINGS_CONFIG } from '../constants';
 import { UserSetting } from '../models/user-setting.model';
 import { User } from '../models/user.model';
-import { PlainSettingValue, SettingConfig, Settings, SettingType, SettingValue } from '../types';
+import { SettingCaster } from '../setting-caster';
+import { SettingConfig, Settings } from '../types';
 
 @Injectable()
 export class UpdateUserSettingsAction {
@@ -28,7 +29,7 @@ export class UpdateUserSettingsAction {
 
         // eslint-disable-next-line prefer-const
         for (let [key, value] of Object.entries(settings)) {
-            value = this.castFrom(this.config[key].type, value);
+            value = SettingCaster.from(this.config[key].type, value);
 
             if (existedModels[key]) {
                 existedModels[key].value = value;
@@ -65,18 +66,6 @@ export class UpdateUserSettingsAction {
         }
 
         await Promise.all(promises);
-    }
-
-    private castFrom(type: SettingType, value: SettingValue): PlainSettingValue {
-        if (type === 'object') {
-            return JSON.stringify(value);
-        } else if (type === 'boolean') {
-            const number = Number(value);
-
-            return isNaN(number) ? '0' : String(Number(Boolean(number)));
-        } else {
-            return String(value);
-        }
     }
 
     private validateSettingKeys(settings: Settings): void {

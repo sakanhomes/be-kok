@@ -5,7 +5,8 @@ import { Repository } from 'typeorm';
 import { USER_SETTINGS_CONFIG } from '../constants';
 import { UserSetting } from '../models/user-setting.model';
 import { User } from '../models/user.model';
-import { PlainSettingValue, SettingConfig, Settings, SettingType, SettingValue } from '../types';
+import { SettingCaster } from '../setting-caster';
+import { SettingConfig, Settings } from '../types';
 
 @Injectable()
 export class GetUserSettingsAction {
@@ -26,28 +27,12 @@ export class GetUserSettingsAction {
 
         for (const [key, config] of Object.entries(this.config)) {
             if (models[key]) {
-                settings[key] = this.castTo(config.type, models[key].value);
+                settings[key] = SettingCaster.to(config.type, models[key].value);
             } else {
                 settings[key] = config.default;
             }
         }
 
         return settings;
-    }
-
-    private castTo(type: SettingType, value: PlainSettingValue): SettingValue {
-        if (value === null) {
-            return value;
-        } else if (type === 'number') {
-            return Number(value);
-        } else if (type === 'boolean') {
-            const number = Number(value);
-
-            return isNaN(number) ? false : Boolean(number);
-        } else if (type === 'object') {
-            return JSON.parse(value);
-        } else {
-            throw new Error(`Unsupported type [${type}]`);
-        }
     }
 }
