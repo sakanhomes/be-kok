@@ -31,7 +31,7 @@ export class CreateVideoAction {
             publicId: randomString(16),
             categoryId: Category[data.category],
             title: data.title,
-            duration: '00:00',
+            duration: this.makeDurationString(data.duration),
             description: data.description,
             previewImageBucket: previewUpload.bucket,
             previewImageFile: previewUpload.file,
@@ -58,6 +58,29 @@ export class CreateVideoAction {
         });
 
         return video;
+    }
+
+    private makeDurationString(duration: number) {
+        const parts: string[] = [];
+        let part: number;
+
+        for (let i = 0; i < 2 && duration; i++) {
+            part = duration % 60;
+
+            duration = Math.trunc(duration / 60);
+
+            parts.push(part >= 10 ? String(part) : '0' + part);
+        }
+
+        if (duration) {
+            parts.push(String(duration));
+        }
+
+        if (parts.length < 2) {
+            parts.push('00');
+        }
+
+        return parts.reverse().join(':');
     }
 
     private getPreviewUploadOrFail(user: User, id: string): Promise<Upload> {

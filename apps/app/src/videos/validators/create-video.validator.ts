@@ -12,6 +12,7 @@ export class CreateVideoValidator extends Validator {
             title: Joi.string().trim().min(3).max(50).required(),
             description: Joi.string().trim().min(3).max(500).required(),
             category: Joi.string().allow(...enumKeys(Category)).required(),
+            duration: Joi.number().positive().min(1).required(),
             isPublic: Joi.boolean().required(),
             videoUploadId: Joi.string().required(),
             previewUploadId: Joi.string().required(),
