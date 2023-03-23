@@ -1,6 +1,7 @@
 import { Class } from '@app/core/types/class.type';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GetUserNotifications } from './actions/get-user-notifications.action';
 import { NotifyUserAction } from './actions/notify-user.action';
 import { BaseNotification } from './base.notification';
 import { Notification } from './models/notification.model';
@@ -8,9 +9,11 @@ import { Notification } from './models/notification.model';
 @Module({
     imports: [TypeOrmModule.forFeature([Notification])],
     providers: [
+        GetUserNotifications,
         NotifyUserAction,
     ],
     exports: [
+        GetUserNotifications,
         NotifyUserAction,
     ],
 })
