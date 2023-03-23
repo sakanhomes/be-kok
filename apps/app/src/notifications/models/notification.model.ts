@@ -1,5 +1,10 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+export type NotificationData = {
+    data?: Record<string, any>,
+    params?: Record<string, any>,
+};
+
 @Entity('notifications')
 export class Notification {
     @PrimaryGeneratedColumn()
@@ -17,7 +22,7 @@ export class Notification {
     @Column({
         type: 'json',
     })
-    data: Record<string, any>;
+    data: NotificationData;
 
     @CreateDateColumn()
     createdAt: Date;
