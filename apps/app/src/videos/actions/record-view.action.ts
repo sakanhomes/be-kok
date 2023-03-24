@@ -46,7 +46,7 @@ export class RecordViewAction {
 
             await manager.save(historyRecord);
 
-            if (historyRecordExists) {
+            if (!historyRecordExists) {
                 video.viewsAmount++;
 
                 await manager.save(video);
