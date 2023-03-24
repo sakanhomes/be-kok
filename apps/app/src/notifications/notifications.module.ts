@@ -8,6 +8,7 @@ import { NotifyUserAction } from './actions/notify-user.action';
 import { BaseNotification } from './base.notification';
 import { ClearNotificationsJob } from './jobs/clear-notifications.job';
 import { Notification } from './models/notification.model';
+import { NotificationsController } from './notifications.controller';
 
 @Module({
     imports: [
@@ -21,10 +22,9 @@ import { Notification } from './models/notification.model';
         ClearNotificationsJob,
     ],
     exports: [
-        GetUserNotifications,
-        MarkNotificationsAsReadAction,
         NotifyUserAction,
     ],
+    controllers: [NotificationsController],
 })
 export class NotificationsModule {
     private static notifications: Map<string, Class<BaseNotification>> = new Map();
