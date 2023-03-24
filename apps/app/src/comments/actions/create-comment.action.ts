@@ -23,7 +23,7 @@ export class CreateCommentAction {
 
     public async run(user: User, video: Video, data: CreateCommentDto): Promise<Comment> {
         const repliedComment = data.repliedCommentId
-            ? await this.getRepliedCommentOrFail(data.repliedCommentId)
+            ? await this.getRepliedCommentOrFail(video, data.repliedCommentId)
             : null;
 
         let comment = this.comments.create({
@@ -68,8 +68,11 @@ export class CreateCommentAction {
         }
     }
 
-    private async getRepliedCommentOrFail(publicId: string) {
-        const comment = await this.comments.findOneBy({ publicId });
+    private async getRepliedCommentOrFail(video: Video, publicId: string) {
+        const comment = await this.comments.findOneBy({
+            publicId,
+            videoId: video.id,
+        });
 
         if (comment) {
             return comment;
