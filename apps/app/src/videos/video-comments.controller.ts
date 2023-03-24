@@ -18,6 +18,7 @@ import { Video } from './models/video.model';
 import { CommentReaction } from '../comments/enums/comment-reaction.enum';
 import { RemoveReactionFromCommentAction } from '../comments/actions/remove-reaction-from-comment.action';
 import { CreateCommentDto } from '../comments/dtos/create-comment.dto';
+import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comment-author.action';
 
 @Controller('/videos/:publicId/comments')
 export class VideoCommentsController {
@@ -28,6 +29,7 @@ export class VideoCommentsController {
         private readonly commentCreator: CreateCommentAction,
         private readonly commentReactionAdder: AddReactionToCommentAction,
         private readonly commentReactionRemover: RemoveReactionFromCommentAction,
+        private readonly repliedCommentAuthorNotifier: NotifyRepliedCommentAuthorAction,
     ) {}
 
     @Get('/')
@@ -54,6 +56,10 @@ export class VideoCommentsController {
         @Body() data: CreateCommentDto,
     ) {
         const comment = await this.commentCreator.run(user, video, data);
+
+        if (comment.repliedCommentId) {
+            this.repliedCommentAuthorNotifier.run(comment, video, user);
+        }
 
         return this.resourceCreator.run(user, comment);
     }

@@ -1,3 +1,4 @@
 {
-    "user.subscription": "Subscription: {subscriberName} followed you"
+    "user.subscription": "Subscription: {subscriberName} followed you",
+    "user.mention": "New mention: {mentionerName} mentioned you in the comment"
 }

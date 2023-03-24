@@ -1,6 +1,6 @@
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { UploadPart } from '@app/common/uploads/models/upload-part.model';
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateVideoAction } from './actions/create-video.action';
 import { GetRandomVideosAction } from './actions/get-random-videos.action';
@@ -32,6 +32,9 @@ import { ClearTrendingVideosActivityJob } from './jobs/clear-trending-videos-act
 import { SearchVideosAction } from './actions/search-videos.action';
 import { CommentsModule } from '../comments/comments.module';
 import { VideoCommentsController } from './video-comments.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { MentionNotification } from './notifications/mention.notification';
+import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comment-author.action';
 
 @Module({
     imports: [
@@ -49,6 +52,7 @@ import { VideoCommentsController } from './video-comments.controller';
         ]),
         AccountsModule,
         CommentsModule,
+        NotificationsModule,
     ],
     providers: [
         CreateVideoResourceAction,
@@ -66,6 +70,7 @@ import { VideoCommentsController } from './video-comments.controller';
         EnrollCreationRewardAction,
         ClearTrendingVideosActivityJob,
         SearchVideosAction,
+        NotifyRepliedCommentAuthorAction,
         {
             provide: VIDEOS_CONFIG,
             inject: [ConfigService],
@@ -74,4 +79,10 @@ import { VideoCommentsController } from './video-comments.controller';
     ],
     controllers: [CommonController, VideosController, VideoCommentsController],
 })
-export class VideosModule {}
+export class VideosModule implements OnModuleInit {
+    onModuleInit() {
+        NotificationsModule.registerNotifications([
+            MentionNotification,
+        ]);
+    }
+}
