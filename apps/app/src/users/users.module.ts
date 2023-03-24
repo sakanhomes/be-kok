@@ -7,6 +7,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { PlaylistsModule } from '../playlists/playlists.module';
 import { Video } from '../videos/models/video.model';
 import { ViewHistory } from '../videos/models/view-history.model';
+import { VideosModule } from '../videos/videos.module';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
 import { GetUserSettingAction } from './actions/get-user-setting.action';
@@ -34,6 +35,7 @@ import { UsersController } from './users.controller';
         TypeOrmModule.forFeature([User, UserSetting, Account, Video, Upload, Subscription, ViewHistory]),
         PlaylistsModule,
         forwardRef(() => NotificationsModule),
+        VideosModule,
     ],
     providers: [
         UpdateUserAction,

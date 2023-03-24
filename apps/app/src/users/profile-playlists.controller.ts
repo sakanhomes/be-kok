@@ -9,6 +9,8 @@ import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-vid
 import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action';
 import { Playlist } from '../playlists/models/playlist.model';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
+import { NotifyCreatorAboutVideoActivityAction } from '../videos/actions/notify-creator-about-video-activity.action';
+import { VideoActivity } from '../videos/enums/video-activity.enum';
 import { Video } from '../videos/models/video.model';
 import { FiltersDto } from './dtos/filters.dto';
 import { User } from './models/user.model';
@@ -22,6 +24,7 @@ export class ProfilePlaylistsController {
         private readonly videosLoader: LoadPlaylistVideosAction,
         private readonly videoAdder: AddVideoToPlaylistAction,
         private readonly videoRemover: RemoveVideoFromPlaylistAction,
+        private readonly creatorNotifier: NotifyCreatorAboutVideoActivityAction,
     ) {}
 
     @Get('/')
@@ -54,6 +57,8 @@ export class ProfilePlaylistsController {
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videoAdder.run(playlist, video);
+
+        this.creatorNotifier.run(video, user, VideoActivity.COLLECTION);
     }
 
     @Delete('/:playlistId/videos/:videoId')

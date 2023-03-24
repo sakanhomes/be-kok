@@ -80,6 +80,9 @@ import { VideoActivityNotification } from './notifications/video-activity.notifi
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
+    exports: [
+        NotifyCreatorAboutVideoActivityAction,
+    ],
     controllers: [CommonController, VideosController, VideoCommentsController],
 })
 export class VideosModule implements OnModuleInit {
