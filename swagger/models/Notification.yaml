@@ -1,0 +1,26 @@
+title: Notification
+type: object
+properties:
+  id:
+    $ref: ../types/public_id.yaml
+  type:
+    type: string
+    enum:
+      - user.subscription
+      - user.mention
+      - video.activity
+  message:
+    type: string
+    example: User johnwick followed you
+  params:
+    type: object
+    properties:
+      key:
+        type: string
+        exampe: value
+  createdAt:
+    $ref: ../types/timestamp.yaml
+  readAt:
+    allOf:
+      - $ref: ../types/timestamp.yaml
+      - nullable: true
