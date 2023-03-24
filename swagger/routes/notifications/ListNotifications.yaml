@@ -1,0 +1,29 @@
+get:
+  summary: Get notifications list
+  tags:
+    - Notifications
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/query/pagination/limit.yaml
+  responses:
+    "200":
+      description: Notifications list
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: ../../models/Notification.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

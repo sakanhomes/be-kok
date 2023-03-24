@@ -51,8 +51,7 @@ post:
               type: string
               exampe: Very cool video
             repliedCommentId:
-              type: string
-              example: qwerty
+              $ref: ../../types/public_id.yaml
           required:
             - content
   responses:

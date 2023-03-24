@@ -2,13 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 import { CookieOptions } from 'express';
 import { plural } from 'pluralize';
 import { ObjectLiteral } from 'typeorm';
+import { Class } from '../types/class.type';
 
 interface EntityFormatter<T = ObjectLiteral> {
     (entity: T): Record<string, any>;
-}
-
-interface Class {
-    new ();
 }
 
 export class Cookie {

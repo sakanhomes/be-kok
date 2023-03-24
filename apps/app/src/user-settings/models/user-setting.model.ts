@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './user.model';
+import { User } from '../../users/models/user.model';
 
 @Entity('user_settings')
 export class UserSetting {

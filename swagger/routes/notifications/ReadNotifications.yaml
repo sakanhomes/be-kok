@@ -1,0 +1,23 @@
+post:
+  summary: Mark notifications as read
+  tags:
+    - Notifications
+  securitySchemes:
+    - accessTokenCookie: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            notifications:
+              type: array
+              items:
+                $ref: ../../types/public_id.yaml
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml

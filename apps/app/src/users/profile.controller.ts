@@ -5,18 +5,15 @@ import { Video } from '../videos/models/video.model';
 import { VideoResource } from '../videos/resources/video.resource';
 import { CreateCurrentUserResourceAction } from './actions/create-current-user-resource.action';
 import { GetFavouriteVideosAction } from './actions/get-favourite-videos.action';
-import { GetUserSettingsAction } from './actions/get-user-settings.action';
 import { GetUserSubscribersAction } from './actions/get-user-subscribers.action';
 import { GetUserSubscriptionsAction } from './actions/get-user-subscriptions.action';
 import { GetViewsHistoryAction } from './actions/get-views-history.action';
-import { UpdateUserSettingsAction } from './actions/update-user-settings.action';
 import { UpdateUserAction } from './actions/update-user.action';
 import { FiltersDto } from './dtos/filters.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './models/user.model';
 import { UserResource } from './resources/user.resource';
 import { FiltersValidator } from './validators/filters.validator';
-import { UpdateUserSettingsValidator } from './validators/update-user-settings.validator';
 import { UpdateUserValidator } from './validators/update-user.validator';
 import { GetUserVideos } from './actions/get-user-videos.action';
 
@@ -26,8 +23,6 @@ export class ProfileController {
     public constructor(
         private readonly resourceCreator: CreateCurrentUserResourceAction,
         private readonly updater: UpdateUserAction,
-        private readonly settingsGetter: GetUserSettingsAction,
-        private readonly settingsUpdater: UpdateUserSettingsAction,
         private readonly subscribersGetter: GetUserSubscribersAction,
         private readonly subscriptionsGetter: GetUserSubscriptionsAction,
         private readonly favouritesGetter: GetFavouriteVideosAction,
@@ -46,23 +41,6 @@ export class ProfileController {
         await this.updater.run(user, data);
 
         return this.resourceCreator.run(user);
-    }
-
-    @Get('/settings')
-    public async getSettings(@CurrentUser() user: User) {
-        const settings = await this.settingsGetter.run(user);
-
-        return { settings };
-    }
-
-    @Patch('/settings')
-    @UsePipes(UpdateUserSettingsValidator)
-    public async updateSettings(@CurrentUser() user: User, @Body() data) {
-        await this.settingsUpdater.run(user, data);
-
-        const settings = await this.settingsGetter.run(user);
-
-        return { settings };
     }
 
     @Get('/subscribers')

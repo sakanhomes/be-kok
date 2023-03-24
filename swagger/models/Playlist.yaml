@@ -2,8 +2,7 @@ title: Playlist
 type: object
 properties:
   id:
-    type: string
-    example: qwerty
+    $ref: ../types/public_id.yaml
   isDefault:
     type: boolean
     example: true

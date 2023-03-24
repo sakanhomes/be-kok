@@ -2,8 +2,7 @@ title: Video
 type: object
 properties:
   id:
-    type: string
-    example: b560bm00Mi
+    $ref: ../types/public_id.yaml
   category:
     $ref: ../types/category.yaml
   title:

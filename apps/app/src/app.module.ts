@@ -15,6 +15,8 @@ import { AccountsModule } from './accounts/accounts.module';
 import { CommonModule } from './common/common.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { CommentsModule } from './comments/comments.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
     imports: [
@@ -34,11 +36,13 @@ import { CommentsModule } from './comments/comments.module';
         SettingsModule,
         AuthModule,
         UsersModule,
+        UserSettingsModule,
         VideosModule,
         AccountsModule,
         CommonModule,
         PlaylistsModule,
         CommentsModule,
+        NotificationsModule,
     ],
     controllers: [],
     providers: [
