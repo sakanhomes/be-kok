@@ -66,7 +66,7 @@ post:
           - previewUploadId
   responses:
     "200":
-      description: Videos list
+      description: Created video
       content:
         application/json:
           schema:
@@ -77,10 +77,8 @@ post:
                   data:
                     type: object
                     properties:
-                      videos:
-                        type: array
-                        items:
-                          $ref: ../../models/UserVideo.yaml
+                      video:
+                        $ref: ../../models/UserVideo.yaml
     "400":
       $ref: ../../responses/errors/BadRequestResponse.yaml
     "401":
