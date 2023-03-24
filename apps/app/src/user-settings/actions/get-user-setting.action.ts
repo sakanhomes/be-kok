@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { USER_SETTINGS_CONFIG } from '../constants';
 import { UserSetting } from '../models/user-setting.model';
-import { User } from '../models/user.model';
+import { User } from '../../users/models/user.model';
 import { SettingCaster } from '../setting-caster';
 import { SettingConfig, SettingValue } from '../types';
 

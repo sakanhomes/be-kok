@@ -16,6 +16,7 @@ import { CommonModule } from './common/common.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { CommentsModule } from './comments/comments.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { NotificationsModule } from './notifications/notifications.module';
         SettingsModule,
         AuthModule,
         UsersModule,
+        UserSettingsModule,
         VideosModule,
         AccountsModule,
         CommonModule,

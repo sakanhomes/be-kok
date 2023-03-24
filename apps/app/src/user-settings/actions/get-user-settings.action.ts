@@ -2,9 +2,9 @@ import { keyBy } from '@app/core/helpers';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../../users/models/user.model';
 import { USER_SETTINGS_CONFIG } from '../constants';
 import { UserSetting } from '../models/user-setting.model';
-import { User } from '../models/user.model';
 import { SettingCaster } from '../setting-caster';
 import { SettingConfig, Settings } from '../types';
 

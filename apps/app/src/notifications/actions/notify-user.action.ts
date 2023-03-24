@@ -1,7 +1,7 @@
 import { randomString } from '@app/core/helpers';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetUserSettingAction } from '../../users/actions/get-user-setting.action';
+import { GetUserSettingAction } from '../../user-settings/actions/get-user-setting.action';
 import { User } from '../../users/models/user.model';
 import { BaseNotification } from '../base.notification';
 import { CanBeDisabled } from '../interfaces/can-be-disabled.interface';

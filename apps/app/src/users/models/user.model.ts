@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Account } from '../../accounts/models/account.model';
 import { Video } from '../../videos/models/video.model';
-import { UserSetting } from './user-setting.model';
+import { UserSetting } from '../../user-settings/models/user-setting.model';
 
 @Entity('users')
 export class User {
