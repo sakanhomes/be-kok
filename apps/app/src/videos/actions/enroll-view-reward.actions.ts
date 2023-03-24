@@ -104,7 +104,7 @@ export class EnrollViewRewardAction {
     }
 
     private ensureUserCanReceiveRewardForViewingVideo(user: User, video: Video): void {
-        if (!OwnershipVerifier.verify(user, video)) {
+        if (OwnershipVerifier.verify(user, video)) {
             throw new RewardNotAllowedException();
         }
     }
