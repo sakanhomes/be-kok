@@ -12,7 +12,7 @@ export class NotificationResource extends Resource {
 
     public data(): Record<string, any> {
         const notificationClass = NotificationsModule.getNotificationOrFail(this.notification.type);
-        const message = (notificationClass as any).toMessage(this.notification.data);
+        const message = (notificationClass as any).toMessage(this.notification.data.data);
 
         return {
             id: this.notification.publicId,

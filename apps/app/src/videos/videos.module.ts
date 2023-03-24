@@ -35,6 +35,8 @@ import { VideoCommentsController } from './video-comments.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { MentionNotification } from './notifications/mention.notification';
 import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comment-author.action';
+import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
+import { VideoActivityNotification } from './notifications/video-activity.notification';
 
 @Module({
     imports: [
@@ -71,6 +73,7 @@ import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comme
         ClearTrendingVideosActivityJob,
         SearchVideosAction,
         NotifyRepliedCommentAuthorAction,
+        NotifyCreatorAboutVideoActivityAction,
         {
             provide: VIDEOS_CONFIG,
             inject: [ConfigService],
@@ -83,6 +86,7 @@ export class VideosModule implements OnModuleInit {
     onModuleInit() {
         NotificationsModule.registerNotifications([
             MentionNotification,
+            VideoActivityNotification,
         ]);
     }
 }

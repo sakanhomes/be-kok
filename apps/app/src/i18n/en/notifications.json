@@ -1,4 +1,10 @@
 {
     "user.subscription": "Subscription: {subscriberName} followed you",
-    "user.mention": "New mention: {mentionerName} mentioned you in the comment"
+    "user.mention": "New mention: {mentionerName} mentioned you in the comment",
+    "video.activity": "New activity: {userName} {activity} your video",
+    "video.activities": {
+        "like": "liked",
+        "comment": "commented",
+        "collection": "collected"
+    }
 }

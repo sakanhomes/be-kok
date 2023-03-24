@@ -25,6 +25,8 @@ import { AddVideoLikeAction } from './actions/add-video-like.action';
 import { RemoveVideoLikeAction } from './actions/remove-video-like.action';
 import { CreateVideoResourceAction } from './actions/create-video-resource.action';
 import { RecordTrendingActivityAction } from './actions/record-trending-activity.action';
+import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
+import { VideoActivity } from './enums/video-activity.enum';
 
 @Controller('/videos')
 export class VideosController {
@@ -41,6 +43,7 @@ export class VideosController {
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
         private readonly trendingActivityRecorder: RecordTrendingActivityAction,
+        private readonly creatorNotifier: NotifyCreatorAboutVideoActivityAction,
     ) {}
 
     @Post('/')
@@ -110,6 +113,8 @@ export class VideosController {
         @Param('publicId', ResolveModelPipe) video: Video,
     ) {
         video = await this.likeAdder.run(user, video);
+
+        this.creatorNotifier.run(video, user, VideoActivity.LIKE);
 
         return await this.resouceCreator.run(user, video);
     }
