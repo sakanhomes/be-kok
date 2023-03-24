@@ -11,6 +11,7 @@ import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-vid
 import { Playlist } from '../playlists/models/playlist.model';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { VideoResource } from '../videos/resources/video.resource';
+import { GetUserFlagsAction } from './actions/get-user-flags.action';
 import { GetUserVideos } from './actions/get-user-videos.action';
 import { SearchUsersAction } from './actions/search-users.action';
 import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
@@ -31,6 +32,7 @@ export class UsersController {
         private readonly playlistVideosLoader: LoadPlaylistVideosAction,
         private readonly usersSearcher: SearchUsersAction,
         private readonly notifier: NotifyUserAction,
+        private readonly creatorFlagsGetter: GetUserFlagsAction,
     ) {}
 
     @Get('/')
@@ -44,6 +46,14 @@ export class UsersController {
     @Get('/:address')
     public async entity(@Param('address', ResolveModelPipe) user: User) {
         return new UserResource(user);
+    }
+
+    @Get('/:address/flags')
+    @OptionalJwtAuth()
+    public async flags(@CurrentUser() user: User | null, @Param('address', ResolveModelPipe) creator: User) {
+        const flags = await this.creatorFlagsGetter.run(user, creator);
+
+        return { flags };
     }
 
     @Get('/:address/videos')

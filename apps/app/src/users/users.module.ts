@@ -24,6 +24,7 @@ import { SubscriptionNotification } from './notifications/subscription.notificat
 import { ProfilePlaylistsController } from './profile-playlists.controller';
 import { ProfileController } from './profile.controller';
 import { UsersController } from './users.controller';
+import { GetUserFlagsAction } from './actions/get-user-flags.action';
 
 @Module({
     imports: [
@@ -43,6 +44,7 @@ import { UsersController } from './users.controller';
         GetFavouriteVideosAction,
         GetViewsHistoryAction,
         SearchUsersAction,
+        GetUserFlagsAction,
     ],
     controllers: [
         ProfileController,

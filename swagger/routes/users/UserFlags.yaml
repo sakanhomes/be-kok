@@ -1,0 +1,27 @@
+get:
+  summary: Get user flags
+  tags:
+    - Users
+  parameters:
+    - $ref: ../../parameters/path/address.yaml
+  responses:
+    "200":
+      description: User flags
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../responses/Response.yaml
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      flags:
+                        type: object
+                        properties:
+                          isSubscribed:
+                            type: boolean
+                            exampe: true
+    "404":
+      $ref: ../../responses/errors/NotFoundResponse.yaml
