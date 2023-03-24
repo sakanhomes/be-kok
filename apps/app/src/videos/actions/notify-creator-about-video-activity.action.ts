@@ -16,6 +16,10 @@ export class NotifyCreatorAboutVideoActivityAction {
     ) {}
 
     public async run(video: Video, user: User, activity: VideoActivity): Promise<void> {
+        if (video.userId === user.id) {
+            return;
+        }
+
         const creator = video.user ?? await this.users.findOneBy({ id: video.userId });
 
         await this.notifier.run(creator, new VideoActivityNotification(video, user, activity));
