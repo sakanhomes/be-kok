@@ -11,6 +11,7 @@ async function bootstrap() {
 
     const app = await NestFactory.create(UploadsModule, {
         logger: nestLogger,
+        bodyParser: false,
     });
 
     const config: ConfigService = app.get(ConfigService);

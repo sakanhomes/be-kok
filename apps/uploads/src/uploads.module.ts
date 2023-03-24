@@ -16,6 +16,7 @@ import { GetUploadPartsAction } from './actions/get-upload-parts.action';
 import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
 import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
 import { RemoveAbandonedUploadsJob } from './jobs/remove-abandoned-uploads.job';
+import { json } from 'body-parser';
 
 @Module({
     imports: [
@@ -54,5 +55,7 @@ export class UploadsModule implements NestModule {
             '/uploads/*/complete',
             '/uploads/*/abort',
         ).forRoutes({ path: '/uploads/*', method: RequestMethod.POST });
+
+        consumer.apply(json()).forRoutes({ path: '/uploads', method: RequestMethod.POST });
     }
 }
