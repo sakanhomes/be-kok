@@ -5,6 +5,7 @@ import { NotFoundException } from '@app/core/exceptions/app/not-found.exception'
 import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
 import { ResolveModelPipe, ResolveModelUsing } from '@app/core/orm/pipes/resolve-model.pipe';
 import { Controller, Delete, Get, Param, Post, Query, UsePipes } from '@nestjs/common';
+import { NotifyUserAction } from '../notifications/actions/notify-user.action';
 import { GetUserPlaylistsAction } from '../playlists/actions/get-user-playlists.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
 import { Playlist } from '../playlists/models/playlist.model';
@@ -16,6 +17,7 @@ import { SubscribeToUserAction } from './actions/subscribe-to-user.action';
 import { UnsubscribeFromUserAction } from './actions/unsubscribe-from-user.action';
 import { FiltersDto } from './dtos/filters.dto';
 import { User } from './models/user.model';
+import { SubscriptionNotification } from './notifications/subscription.notification';
 import { UserResource } from './resources/user.resource';
 import { SearchUsersValidator } from './validators/search-users.validator';
 
@@ -28,6 +30,7 @@ export class UsersController {
         private readonly playlistsGetter: GetUserPlaylistsAction,
         private readonly playlistVideosLoader: LoadPlaylistVideosAction,
         private readonly usersSearcher: SearchUsersAction,
+        private readonly notifier: NotifyUserAction,
     ) {}
 
     @Get('/')
@@ -61,6 +64,8 @@ export class UsersController {
         @Param('address', ResolveModelPipe) creator: User,
     ) {
         creator = await this.subscriber.run(creator, subscriber);
+
+        this.notifier.run(creator, new SubscriptionNotification(subscriber));
 
         return new UserResource(creator);
     }
