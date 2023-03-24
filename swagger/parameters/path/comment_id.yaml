@@ -2,5 +2,4 @@ in: path
 name: commentId
 required: true
 schema:
-  type: string
-  example: qwerty
+  $ref: ../../types/public_id.yaml

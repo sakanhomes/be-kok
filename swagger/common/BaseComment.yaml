@@ -2,8 +2,7 @@ title: Comment
 type: object
 properties:
   id:
-    type: string
-    example: qwerty
+    $ref: ../types/public_id.yaml
   content:
     type: string
     example: Very cool video
