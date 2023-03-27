@@ -29,6 +29,8 @@ patch:
     - Videos
   securitySchemes:
     - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
   requestBody:
     content:
       application/json:
@@ -53,6 +55,21 @@ patch:
                     properties:
                       video:
                         $ref: ../../models/Video.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml
+    "422":
+      $ref: ../../responses/errors/ValidationErrorsResponse.yaml
+delete:
+  summary: Delete video
+  tags:
+    - Videos
+  securitySchemes:
+    - accessTokenCookie: []
+  parameters:
+    - $ref: ../../parameters/path/video_id.yaml
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
     "401":
       $ref: ../../responses/errors/UnauthorizedResponse.yaml
     "422":
