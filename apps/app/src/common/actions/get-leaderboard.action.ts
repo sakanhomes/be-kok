@@ -49,7 +49,7 @@ export class GetLeaderboardAction {
             .andWhere('transaction.createdAt >= :deadline', { deadline: subDays(Date.now(), days) })
             .groupBy('user.id')
             .orderBy('total', 'DESC')
-            .take(limit)
+            .limit(limit)
             .getRawMany();
 
         return records.map(record => record.id);
