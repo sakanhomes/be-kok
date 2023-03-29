@@ -23,6 +23,6 @@ export class ResolvePlaylistAction {
                 publicId: id,
             };
 
-        return this.playlists.findOneBy(conditions);
+        return this.playlists.findOneByOrFail(conditions);
     }
 }
