@@ -7,7 +7,7 @@ import { AddVideoToPlaylistAction } from '../playlists/actions/add-video-to-play
 import { GetUserPlaylistsAction } from '../playlists/actions/get-user-playlists.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
 import { RemoveVideoFromPlaylistAction } from '../playlists/actions/remove-video-from-playlist.action';
-import { Playlist } from '../playlists/models/playlist.model';
+import { ResolvePlaylistAction } from '../playlists/actions/resolve-playlist.action';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { NotifyCreatorAboutVideoActivityAction } from '../videos/actions/notify-creator-about-video-activity.action';
 import { VideoActivity } from '../videos/enums/video-activity.enum';
@@ -21,6 +21,7 @@ import { FiltersValidator } from './validators/filters.validator';
 export class ProfilePlaylistsController {
     public constructor(
         private readonly playlistsGetter: GetUserPlaylistsAction,
+        private readonly playlistResolver: ResolvePlaylistAction,
         private readonly videosLoader: LoadPlaylistVideosAction,
         private readonly videoAdder: AddVideoToPlaylistAction,
         private readonly videoRemover: RemoveVideoFromPlaylistAction,
@@ -38,9 +39,11 @@ export class ProfilePlaylistsController {
     @UsePipes(FiltersValidator)
     public async entity(
         @CurrentUser() user: User,
-        @Param('publicId', ResolveModelPipe) playlist: Playlist,
+        @Param('publicId') publicId: string,
         @Query() filters: FiltersDto,
     ) {
+        const playlist = await this.playlistResolver.run(user, publicId);
+
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videosLoader.run(playlist, filters);
@@ -51,9 +54,11 @@ export class ProfilePlaylistsController {
     @Post('/:playlistId/videos/:videoId')
     public async addVideoToPlaylist(
         @CurrentUser() user: User,
-        @Param('playlistId', ResolveModelUsing.publicId(), ResolveModelPipe) playlist: Playlist,
+        @Param('playlistId') playlistId: string,
         @Param('videoId', ResolveModelUsing.publicId(), ResolveModelPipe) video: Video,
     ) {
+        const playlist = await this.playlistResolver.run(user, playlistId);
+
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videoAdder.run(playlist, video);
@@ -64,9 +69,11 @@ export class ProfilePlaylistsController {
     @Delete('/:playlistId/videos/:videoId')
     public async removeVideoFromPlaylist(
         @CurrentUser() user: User,
-        @Param('playlistId', ResolveModelUsing.publicId(), ResolveModelPipe) playlist: Playlist,
+        @Param('playlistId') playlistId: string,
         @Param('videoId', ResolveModelUsing.publicId(), ResolveModelPipe) video: Video,
     ) {
+        const playlist = await this.playlistResolver.run(user, playlistId);
+
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videoRemover.run(playlist, video);

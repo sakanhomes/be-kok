@@ -1,5 +1,6 @@
 in: path
 name: playlistId
+description: Playlist ID or "default" as an alias to default playlist
 required: true
 schema:
   $ref: ../../types/public_id.yaml
