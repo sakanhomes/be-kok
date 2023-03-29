@@ -3,12 +3,12 @@ import { JwtAuth } from '@app/core/auth/decorators/jwt-auth.decorator';
 import { OptionalJwtAuth } from '@app/core/auth/decorators/optional-jwt-auth.decorator';
 import { NotFoundException } from '@app/core/exceptions/app/not-found.exception';
 import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
-import { ResolveModelPipe, ResolveModelUsing } from '@app/core/orm/pipes/resolve-model.pipe';
+import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
 import { Controller, Delete, Get, Param, Post, Query, UsePipes } from '@nestjs/common';
 import { NotifyUserAction } from '../notifications/actions/notify-user.action';
 import { GetUserPlaylistsAction } from '../playlists/actions/get-user-playlists.action';
 import { LoadPlaylistVideosAction } from '../playlists/actions/load-playlist-videos.actions';
-import { Playlist } from '../playlists/models/playlist.model';
+import { ResolvePlaylistAction } from '../playlists/actions/resolve-playlist.action';
 import { PlaylistResource } from '../playlists/resources/playlist.resource';
 import { VideoResource } from '../videos/resources/video.resource';
 import { GetUserFlagsAction } from './actions/get-user-flags.action';
@@ -29,6 +29,7 @@ export class UsersController {
         private readonly subscriber: SubscribeToUserAction,
         private readonly unsubscriber: UnsubscribeFromUserAction,
         private readonly playlistsGetter: GetUserPlaylistsAction,
+        private readonly playlistResolver: ResolvePlaylistAction,
         private readonly playlistVideosLoader: LoadPlaylistVideosAction,
         private readonly usersSearcher: SearchUsersAction,
         private readonly notifier: NotifyUserAction,
@@ -101,8 +102,10 @@ export class UsersController {
     @Get('/:address/playlists/:playlistId')
     public async playlist(
         @Param('address', ResolveModelPipe) user: User,
-        @Param('playlistId', ResolveModelUsing.publicId(), ResolveModelPipe) playlist: Playlist,
+        @Param('playlistId') playlistId: string,
     ) {
+        const playlist = await this.playlistResolver.run(user, playlistId);
+
         if (!OwnershipVerifier.verify(user, playlist)) {
             throw new NotFoundException();
         }
