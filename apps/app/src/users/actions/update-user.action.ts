@@ -1,11 +1,12 @@
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { AwsS3Service } from '@app/core/aws/aws-s3.service';
+import { ER_DUP_ENTRY } from '@app/core/db/sql-errors';
 import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 import { __ } from '@app/core/helpers';
 import { UploadsFinder } from '@app/core/support/uploads/uploads-finder';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User } from '../models/user.model';
 
@@ -34,7 +35,7 @@ export class UpdateUserAction {
     }
 
     public async run(user: User, data: UpdateUserDto): Promise<User> {
-        this.ensureUserCanBeUpdated(user, data);
+        await this.ensureUserCanBeUpdated(user, data);
         this.prepareData(data);
 
         Object.assign(user, data);
@@ -50,7 +51,11 @@ export class UpdateUserAction {
             backgroundImageUpdation = await this.setUserImage(user, data.backgroundImageUploadId, 'background');
         }
 
-        await this.users.save(user);
+        try {
+            await this.users.save(user);
+        } catch (error) {
+            this.handleUserUpdationError(error);
+        }
 
         await this.handleImageUpdation(profileImageUpdation);
         await this.handleImageUpdation(backgroundImageUpdation);
@@ -103,15 +108,40 @@ export class UpdateUserAction {
         return this.uploadsFinder.findUploadOrFail(user, id, ['image/jpeg', 'image/png'], name);
     }
 
+    private handleUserUpdationError(error: any): void {
+        if (
+            !(error instanceof QueryFailedError)
+            || error.driverError?.code !== ER_DUP_ENTRY
+        ) {
+            throw error;
+        }
+
+        throw new UnprocessableException(__('errors.name-already-taken'));
+    }
+
     private prepareData(data: UpdateUserDto) {
         if (!data.description) {
             data.description = null;
         }
     }
 
-    private ensureUserCanBeUpdated(user: User, data: UpdateUserDto) {
-        if (user.name && data.name) {
-            throw new UnprocessableException(__('errors.name-already-set'));
+    private async ensureUserCanBeUpdated(user: User, data: UpdateUserDto): Promise<void> {
+        if (data.name) {
+            if (user.name) {
+                throw new UnprocessableException(__('errors.name-already-set'));
+            }
+
+            await this.ensureUserNameIsNotTaken(data.name);
+        }
+    }
+
+    private async ensureUserNameIsNotTaken(name: string): Promise<void> {
+        const exists = await this.users.exist({
+            where: { name },
+        });
+
+        if (exists) {
+            throw new UnprocessableException(__('errors.name-already-taken'));
         }
     }
 }

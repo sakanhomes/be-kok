@@ -5,6 +5,7 @@
     "invalid-address": "Invalid address",
     "invalid-signature": "Invalid signature",
     "name-already-set": "Name has been already set",
+    "name-already-taken": "This name is already taken",
     "insufficient-account-balance": "Insufficient account balance",
     "invalid-transaction-subtype": "Invalid transaction subtype",
     "upload-not-found": "Upload not found or has invalid type",
