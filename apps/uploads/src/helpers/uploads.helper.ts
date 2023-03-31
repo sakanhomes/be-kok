@@ -52,11 +52,9 @@ export class UploadsHelper {
     }
 
     public getFileType(name: string): FileType {
-        const extension = fileExtension(name);
-
-        if (extension === 'mp4') {
+        if (FileExtensionHelper.isVideo(name)) {
             return 'video';
-        } else if (['jpg', 'png'].includes(extension)) {
+        } else if (FileExtensionHelper.isImage(name)) {
             return 'image';
         }
 
