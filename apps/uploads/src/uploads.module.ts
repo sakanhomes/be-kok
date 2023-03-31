@@ -17,6 +17,7 @@ import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.act
 import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
 import { RemoveAbandonedUploadsJob } from './jobs/remove-abandoned-uploads.job';
 import { json } from 'body-parser';
+import { AbortSingleUploadAction } from './actions/abort-single-upload.action';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { json } from 'body-parser';
         UploadPartAction,
         CompleteMultipartUploadAction,
         AbortMultipartUploadAction,
+        AbortSingleUploadAction,
         RemoveAbandonedUploadsJob,
     ],
     controllers: [UploadsController],

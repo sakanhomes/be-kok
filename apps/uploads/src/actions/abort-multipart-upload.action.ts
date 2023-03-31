@@ -28,15 +28,13 @@ export class AbortMultipartUploadAction {
         });
     }
 
-    public async run(upload: Upload): Promise<Upload> {
+    public async run(upload: Upload): Promise<void> {
         this.helper.ensureUploadIsMultipart(upload);
         this.helper.ensureUploadIsntFinished(upload);
 
         await this.markUploadAsAborted(upload);
 
         this.abortInBackground(upload);
-
-        return upload;
     }
 
     private async abortInBackground(upload: Upload): Promise<void> {

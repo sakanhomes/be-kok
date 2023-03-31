@@ -1,3 +1,4 @@
+import { UploadType } from '@app/common/uploads/enums/upload-type.enum';
 import { Upload } from '@app/common/uploads/models/upload.model';
 import { PlainJwtPayload } from '@app/core/auth/decorators/plain-jwt-payload.decorator';
 import { PlainJwtGuard } from '@app/core/auth/guards/plain-jwt.guard';
@@ -9,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
 import { AbortMultipartUploadAction } from './actions/abort-multipart-upload.action';
+import { AbortSingleUploadAction } from './actions/abort-single-upload.action';
 import { CompleteMultipartUploadAction } from './actions/complete-multipart-upload.action';
 import { CreateMultipartUploadAction } from './actions/create-multipart-upload.action';
 import { GetUploadPartsAction } from './actions/get-upload-parts.action';
@@ -32,6 +34,7 @@ export class UploadsController {
         private readonly multipartUploader: UploadPartAction,
         private readonly multipartUploadCompleter: CompleteMultipartUploadAction,
         private readonly multipartUploadAborted: AbortMultipartUploadAction,
+        private readonly singleUploadAborted: AbortSingleUploadAction,
     ) {}
 
     @Get('/')
@@ -106,9 +109,13 @@ export class UploadsController {
     @Post('/:publicId/abort')
     @HttpCode(200)
     public async abortMultipartUpload(@Param('publicId', ResolveModelPipe) upload: Upload) {
-        upload = await this.multipartUploadAborted.run(upload);
-
-        return new UploadResource(upload);
+        if (upload.type === UploadType.single) {
+            await this.singleUploadAborted.run(upload);
+        } else if (upload.type === UploadType.multipart) {
+            await this.multipartUploadAborted.run(upload);
+        } else {
+            throw new UnprocessableException('Unknown upload type');
+        }
     }
 
     private ensureUploadExists(request: HasUpload<Request>): void {
