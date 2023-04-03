@@ -15,5 +15,7 @@ properties:
   repliesAmount:
     type: number
     example: 12345
+  createdAt:
+    $ref: ../types/timestamp.yaml
   user:
     $ref: ../common/BasicUser.yaml
