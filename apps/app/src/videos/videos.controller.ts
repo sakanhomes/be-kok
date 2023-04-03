@@ -1,6 +1,4 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UsePipes } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Video } from './models/video.model';
 import { VideoResource } from './resources/video.resource';
 import { ResolveModelPipe } from '@app/core/orm/pipes/resolve-model.pipe';
@@ -32,8 +30,6 @@ import { VideoActivity } from './enums/video-activity.enum';
 export class VideosController {
     public constructor(
         private readonly resouceCreator: CreateVideoResourceAction,
-        @InjectRepository(Video)
-        private readonly videos: Repository<Video>,
         private readonly videoCreator: CreateVideoAction,
         private readonly videoUpdater: UpdateVideoAction,
         private readonly videoDeleter: DeleteVideoAction,
@@ -64,14 +60,12 @@ export class VideosController {
         return new VideoResource(video);
     }
 
-    @Get('/:id')
+    @Get('/:publicId')
     @OptionalJwtAuth()
-    public async entity(@CurrentUser() user: User | null, @Param('id') id: string) {
-        const video = await this.videos.findOneOrFail({
-            where: { publicId: id },
-            relations: ['user'],
-        });
-
+    public async entity(
+        @CurrentUser() user: User | null,
+        @Param('publicId', ResolveModelPipe) video: Video,
+    ) {
         if (!video.isPublic && !OwnershipVerifier.verify(user, video)) {
             throw new ForbiddenException();
         }
