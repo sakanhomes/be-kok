@@ -23,22 +23,13 @@ export class CreateCommentResourcesCollectionAction {
     public async run(user: User | null, comments: Comment[]): Promise<CommentCollection> {
         const options = user
             ? await this.getCommentsOptionsForUser(user, comments)
-            : this.getDefaultOptions(comments.length);
+            : await this.getCommentsOptionsForAnonymousUser(comments);
 
         return new CommentCollection(comments, options);
     }
 
     private async getCommentsOptionsForUser(user: User, comments: Comment[]): Promise<CommentResourceOptions[]> {
-        const commentIds: string[] = [];
-        const repliedCommentIds: Set<string> = new Set<string>();
-
-        for (const comment of comments) {
-            commentIds.push(comment.id);
-
-            if (comment.repliedCommentId) {
-                repliedCommentIds.add(comment.repliedCommentId);
-            }
-        }
+        const commentIds: string[] = comments.map(comment => comment.id);
 
         const search = {
             userId: user.id,
@@ -47,12 +38,7 @@ export class CreateCommentResourcesCollectionAction {
 
         const likes = await this.likes.findBy(search).then(likes => keyBy(likes, 'commentId'));
         const dislikes = await this.dislikes.findBy(search).then(dislikes => keyBy(dislikes, 'commentId'));
-        const repliedComments = await this.comments.find({
-            where: {
-                id: In([...repliedCommentIds.values()]),
-            },
-            relations: ['user'],
-        }).then(comments => keyBy(comments, 'id'));
+        const repliedComments = await this.getRepliedComments(comments);
 
         const options = comments.map(comment => ({
             flags: {
@@ -65,12 +51,36 @@ export class CreateCommentResourcesCollectionAction {
         return options;
     }
 
-    private getDefaultOptions(amount: number): CommentResourceOptions[] {
-        return new Array(amount).fill({
+    private async getCommentsOptionsForAnonymousUser(comments: Comment[]): Promise<CommentResourceOptions[]> {
+        const repliedComments = await this.getRepliedComments(comments);
+
+        const options = comments.map(comment => ({
             flags: {
                 isLiked: false,
                 isDisliked: false,
             },
+            repliedComment: comment.repliedCommentId ? repliedComments[comment.repliedCommentId] : null,
+        }));
+
+        return options;
+    }
+
+    private async getRepliedComments(comments: Comment[]): Promise<Record<string, Comment>> {
+        const repliedCommentIds: Set<string> = new Set<string>();
+
+        for (const comment of comments) {
+            if (comment.repliedCommentId) {
+                repliedCommentIds.add(comment.repliedCommentId);
+            }
+        }
+
+        const repliedComments = await this.comments.find({
+            where: {
+                id: In([...repliedCommentIds.values()]),
+            },
+            relations: ['user'],
         });
+
+        return keyBy(repliedComments, 'id');
     }
 }
