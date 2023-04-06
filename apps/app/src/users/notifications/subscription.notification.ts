@@ -15,4 +15,10 @@ export class SubscriptionNotification extends BaseNotification implements CanBeD
             subscriberName: this.subscriber.name ?? this.subscriber.address,
         };
     }
+
+    public getParams(): Record<string, any> {
+        return {
+            user: this.makeUserParams(this.subscriber),
+        };
+    }
 }

@@ -1,4 +1,3 @@
-import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { __ } from '@app/core/helpers';
 import { BaseNotification } from '../../notifications/base.notification';
 import { CanBeDisabled } from '../../notifications/interfaces/can-be-disabled.interface';
@@ -27,7 +26,8 @@ export class VideoActivityNotification extends BaseNotification implements CanBe
 
     public getParams(): Record<string, any> {
         return {
-            videoPreviewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
+            user: this.makeUserParams(this.user),
+            video: this.makeVideoParams(this.video),
         };
     }
 

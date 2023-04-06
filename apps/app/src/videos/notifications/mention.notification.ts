@@ -1,4 +1,3 @@
-import { makeAwsS3FileUrl } from '@app/core/aws/helpers';
 import { BaseNotification } from '../../notifications/base.notification';
 import { CanBeDisabled } from '../../notifications/interfaces/can-be-disabled.interface';
 import { User } from '../../users/models/user.model';
@@ -23,7 +22,8 @@ export class MentionNotification extends BaseNotification implements CanBeDisabl
 
     public getParams(): Record<string, any> {
         return {
-            videoPreviewImage: makeAwsS3FileUrl(this.video.previewImageBucket, this.video.previewImageFile),
+            user: this.makeUserParams(this.mentioner),
+            video: this.makeVideoParams(this.video),
         };
     }
 }
