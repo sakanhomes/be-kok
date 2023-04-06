@@ -46,6 +46,8 @@ paths:
     $ref: ./routes/notifications/ListNotifications.yaml
   /notifications/read:
     $ref: ./routes/notifications/ReadNotifications.yaml
+  /notifications/read/all:
+    $ref: ./routes/notifications/ReadAllNotifications.yaml
   /users:
     $ref: ./routes/users/SearchUsers.yaml
   /users/{address}:

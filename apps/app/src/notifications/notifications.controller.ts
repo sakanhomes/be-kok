@@ -7,6 +7,7 @@ import { MarkNotificationsAsReadAction } from './actions/mark-notifications-as-r
 import { NotificationResource } from './resources/notification.resource';
 import { ListNotificationsValidator } from './validators/list-notifications.validator';
 import { ReadNotificationsValidator } from './validators/read-notifications.validator';
+import { MarkAllNotificationsAsReadAction } from './actions/mark-all-notifications-as-read.action';
 
 @Controller('/notifications')
 @JwtAuth()
@@ -14,6 +15,7 @@ export class NotificationsController {
     public constructor(
         private readonly notificationsGetter: GetUserNotifications,
         private readonly reader: MarkNotificationsAsReadAction,
+        private readonly allNotificationsReader: MarkAllNotificationsAsReadAction,
     ) {}
 
     @Get('/')
@@ -34,5 +36,10 @@ export class NotificationsController {
         @Body() { notifications }: { notifications: string[] },
     ) {
         await this.reader.run(user, notifications);
+    }
+
+    @Post('/read/all')
+    public async readAll(@CurrentUser() user: User) {
+        await this.allNotificationsReader.run(user);
     }
 }

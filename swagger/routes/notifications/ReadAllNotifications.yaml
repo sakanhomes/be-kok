@@ -1,0 +1,11 @@
+post:
+  summary: Mark all notifications as read
+  tags:
+    - Notifications
+  securitySchemes:
+    - accessTokenCookie: []
+  responses:
+    "200":
+      $ref: ../../responses/EmptyResponse.yaml
+    "401":
+      $ref: ../../responses/errors/UnauthorizedResponse.yaml

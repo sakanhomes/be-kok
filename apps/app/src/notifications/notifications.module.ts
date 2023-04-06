@@ -9,6 +9,7 @@ import { BaseNotification } from './base.notification';
 import { ClearNotificationsJob } from './jobs/clear-notifications.job';
 import { Notification } from './models/notification.model';
 import { NotificationsController } from './notifications.controller';
+import { MarkAllNotificationsAsReadAction } from './actions/mark-all-notifications-as-read.action';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { NotificationsController } from './notifications.controller';
     providers: [
         GetUserNotifications,
         MarkNotificationsAsReadAction,
+        MarkAllNotificationsAsReadAction,
         NotifyUserAction,
         ClearNotificationsJob,
     ],
