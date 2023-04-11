@@ -36,7 +36,7 @@ export class CommonController {
     @Get('/trending')
     @UsePipes(CommonVideosFiltersValidator)
     public async trending(@Query() filters: CommonVideosFiltersDto) {
-        const videos = await this.trendingVideosGetter.run(8, filters);
+        const videos = await this.trendingVideosGetter.run(filters.amount ?? 12, filters);
 
         return VideoResource.collection(videos);
     }

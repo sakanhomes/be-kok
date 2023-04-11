@@ -36,7 +36,7 @@ export class GetTrendingVideosAction {
         const query = this.getTrendingVideoIdsQuery();
         const deadline = subDays(startOfToday(), this.config.trends.lastDaysRange);
 
-        query.andWhere('trend.day >= :deadline', { deadline }).take(amount);
+        query.andWhere('trend.day >= :deadline', { deadline }).limit(amount);
 
         if (filters) {
             this.applyFilters(query, filters);

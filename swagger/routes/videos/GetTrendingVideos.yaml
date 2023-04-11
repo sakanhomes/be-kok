@@ -3,6 +3,7 @@ get:
   tags:
     - Videos
   parameters:
+    - $ref: ../../parameters/query/amount.yaml
     - $ref: ../../parameters/query/category.yaml
   responses:
     "200":

@@ -3,10 +3,12 @@ import { ObjectSchema } from 'joi';
 import * as Joi from 'joi';
 import { enumKeys } from '@app/core/helpers';
 import { Category } from '../enums/category.enum';
+import { CommonRules } from '@app/common/validation/rules/common.rules';
 
 export class CommonVideosFiltersValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
+            amount: CommonRules.getResultsLimitRules(),
             category: this.getCategoryRules(),
         });
     }
