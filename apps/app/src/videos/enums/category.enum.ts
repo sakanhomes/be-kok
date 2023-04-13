@@ -10,4 +10,6 @@ export enum Category {
     lifestyle,
     animation,
     documentary,
+    animals,
+    web3,
 }
