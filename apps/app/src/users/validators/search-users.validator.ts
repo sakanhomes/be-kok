@@ -6,7 +6,7 @@ import { CommonRules } from '@app/common/validation/rules/common.rules';
 export class SearchUsersValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
-            search: CommonRules.getSearchRules(true),
+            search: CommonRules.getSearchRules(true, 2),
             limit: CommonRules.getResultsLimitRules(),
         });
     }

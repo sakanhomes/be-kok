@@ -6,7 +6,7 @@ import * as Joi from 'joi';
 export class SearchVideosValidator extends Validator {
     protected schema(): ObjectSchema<any> {
         return Joi.object({
-            search: CommonRules.getSearchRules(true),
+            search: CommonRules.getSearchRules(true, 2),
             limit: CommonRules.getResultsLimitRules(),
         });
     }

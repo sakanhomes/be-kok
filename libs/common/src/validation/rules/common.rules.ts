@@ -1,8 +1,8 @@
 import * as Joi from 'joi';
 
 export class CommonRules {
-    public static getSearchRules(required = false): Joi.StringSchema {
-        const rules = Joi.string().trim().min(3).max(42);
+    public static getSearchRules(required = false, min = 3): Joi.StringSchema {
+        const rules = Joi.string().trim().min(min).max(42);
 
         return this.requiredIf(rules, required);
     }
