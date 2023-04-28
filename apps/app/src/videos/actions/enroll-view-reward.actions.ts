@@ -17,7 +17,6 @@ import { TransactionType } from '../../accounts/enums/transaction-type.enum';
 import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
 import { RewardNotAllowedException } from '../exceptions/reward-not-allowed.exception';
 import { VideosConfig } from 'config/videos';
-import { UnprocessableException } from '@app/core/exceptions/app/unprocessable.exception';
 
 @Injectable()
 export class EnrollViewRewardAction {
@@ -48,7 +47,10 @@ export class EnrollViewRewardAction {
     }
 
     public async run(user: User, video: Video): Promise<AccountTransaction> {
-        this.ensureWatchingRewardEnabled();
+        if (this.config.rewards.view.enabled === false) {
+            return;
+        }
+
         this.ensureUserCanReceiveRewardForViewingVideo(user, video);
 
         const account = await this.accountGetter.run(user);
@@ -109,12 +111,6 @@ export class EnrollViewRewardAction {
     private ensureUserCanReceiveRewardForViewingVideo(user: User, video: Video): void {
         if (OwnershipVerifier.verify(user, video)) {
             throw new RewardNotAllowedException();
-        }
-    }
-
-    private ensureWatchingRewardEnabled() {
-        if (this.config.rewards.view.enabled === false) {
-            throw new UnprocessableException('WTE reward disabled');
         }
     }
 }
