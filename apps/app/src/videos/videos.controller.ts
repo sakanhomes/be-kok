@@ -15,7 +15,6 @@ import { CreateVideoValidator } from './validators/create-video.validator';
 import { CreateVideoDto } from './dtos/create-video.dto';
 import { CreateVideoAction } from './actions/create-video.action';
 import { RecordViewAction } from './actions/record-view.action';
-import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { RewardsLimitExceededException } from './exceptions/rewards-limit-exceeded.exception';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
@@ -25,7 +24,8 @@ import { CreateVideoResourceAction } from './actions/create-video-resource.actio
 import { RecordTrendingActivityAction } from './actions/record-trending-activity.action';
 import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
 import { VideoActivity } from './enums/video-activity.enum';
-import { EnrollLikeRewardAction } from './actions/enroll-like-reward.action';
+import { EnrollVideoActivityRewardToCreatorAction } from './actions/enroll-video-activity-reward-to-creator.action';
+import { RewardableActivity } from './enums/rewardable-activity.enum';
 
 @Controller('/videos')
 export class VideosController {
@@ -38,8 +38,7 @@ export class VideosController {
         private readonly likeRemover: RemoveVideoLikeAction,
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
-        private readonly viewRewardEnroller: EnrollViewRewardAction,
-        private readonly likeRewardEnroller: EnrollLikeRewardAction,
+        private readonly rewardsEnroller: EnrollVideoActivityRewardToCreatorAction,
         private readonly trendingActivityRecorder: RecordTrendingActivityAction,
         private readonly creatorNotifier: NotifyCreatorAboutVideoActivityAction,
     ) {}
@@ -103,7 +102,7 @@ export class VideosController {
 
         this.creatorNotifier.run(video, user, VideoActivity.LIKE);
 
-        await this.likeRewardEnroller.runSilent(video);
+        await this.rewardsEnroller.runSilent(video, RewardableActivity.LIKE);
 
         return await this.resouceCreator.run(user, video);
     }
@@ -125,7 +124,7 @@ export class VideosController {
         await this.trendingActivityRecorder.run(user, video);
 
         if (user) {
-            await this.viewRewardEnroller.runSilent(video);
+            await this.rewardsEnroller.runSilent(video, RewardableActivity.VIEW);
         }
 
         return await this.resouceCreator.run(user, video);

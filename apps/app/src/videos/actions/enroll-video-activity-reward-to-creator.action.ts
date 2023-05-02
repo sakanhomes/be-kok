@@ -14,9 +14,17 @@ import { TransactionSubtype } from '../../accounts/enums/transaction-subtype.enu
 import { TransactionType } from '../../accounts/enums/transaction-type.enum';
 import { VideosConfig } from 'config/videos';
 import { Config } from '@app/core/config/decorators/config.decorator';
+import { RewardableActivity } from '../enums/rewardable-activity.enum';
+
+type SupportedRewarableActivity = Exclude<RewardableActivity, RewardableActivity.CREATION>;
 
 @Injectable()
-export class EnrollLikeRewardAction {
+export class EnrollVideoActivityRewardToCreatorAction {
+    private readonly transactionSubtypes: { [K in SupportedRewarableActivity]: TransactionSubtype } = {
+        [RewardableActivity.VIEW]: TransactionSubtype.VIEW,
+        [RewardableActivity.LIKE]: TransactionSubtype.LIKE,
+    };
+
     public constructor(
         private readonly locker: LockService,
         @InjectRepository(User)
@@ -29,9 +37,9 @@ export class EnrollLikeRewardAction {
         private readonly config: VideosConfig,
     ) {}
 
-    public async runSilent(video: Video): Promise<AccountTransaction | null> {
+    public async runSilent(video: Video, activity: SupportedRewarableActivity): Promise<AccountTransaction | null> {
         try {
-            return await this.run(video);
+            return await this.run(video, activity);
         } catch (error) {
             if (!(error instanceof RewardsLimitExceededException)) {
                 throw error;
@@ -41,49 +49,53 @@ export class EnrollLikeRewardAction {
         }
     }
 
-    public async run(video: Video): Promise<AccountTransaction> {
-        if (this.config.rewards.like.enabled === false) {
+    public async run(video: Video, activity: SupportedRewarableActivity): Promise<AccountTransaction> {
+        if (this.config.rewards[activity].enabled === false) {
             return;
         }
 
         const creator = await this.users.findOneBy({ id: video.userId });
         const account = await this.accountGetter.run(creator);
 
-        const key = `videos.rewards-enrolling.like.${video.id}`;
+        const key = `videos.rewards-enrolling.${activity}.${video.id}`;
 
         await this.locker.get(key);
 
         try {
-            await this.ensureRewardsLimitIsNotExceeded(account, video);
+            await this.ensureRewardsLimitIsNotExceeded(account, video, activity);
 
-            return await this.transactionCreator.run(this.buildTransaction(account, video));
+            return await this.transactionCreator.run(this.buildTransaction(account, video, activity));
         } finally {
             this.locker.release(key);
         }
     }
 
-    private buildTransaction(account: Account, video: Video): AccountTransaction {
+    private buildTransaction(account: Account, video: Video, activity: SupportedRewarableActivity): AccountTransaction {
         return AccountTransactionBuilder.build()
-            .reward(TransactionSubtype.LIKE)
-            .amount(this.config.rewards.like.amount)
+            .reward(this.transactionSubtypes[activity])
+            .amount(this.config.rewards[activity].amount)
             .to(account)
             .attach(video)
             .get();
     }
 
-    private async ensureRewardsLimitIsNotExceeded(account: Account, video: Video): Promise<void> {
-        if (this.config.rewards.like.limit === null) {
+    private async ensureRewardsLimitIsNotExceeded(
+        account: Account,
+        video: Video,
+        activity: SupportedRewarableActivity,
+    ): Promise<void> {
+        if (this.config.rewards[activity].limit === null) {
             return;
         }
 
         const enrolledRewardsAmount = await this.transactions.countBy({
             accountId: account.id,
             type: TransactionType.REWARD,
-            subtype: TransactionSubtype.LIKE,
+            subtype: this.transactionSubtypes[activity],
             videoId: video.id,
         });
 
-        if (enrolledRewardsAmount >= this.config.rewards.like.limit) {
+        if (enrolledRewardsAmount >= this.config.rewards[activity].limit) {
             throw new RewardsLimitExceededException(video);
         }
     }

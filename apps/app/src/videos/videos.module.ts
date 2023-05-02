@@ -14,7 +14,6 @@ import { AccountTransaction } from '../accounts/models/account-transaction.model
 import { Account } from '../accounts/models/account.model';
 import { VIDEOS_CONFIG } from './constants';
 import { ConfigService } from '@nestjs/config';
-import { EnrollViewRewardAction } from './actions/enroll-view-reward.actions';
 import { EnrollCreationRewardAction } from './actions/enroll-creation-reward.action';
 import { DeleteVideoAction } from './actions/delete-video.action';
 import { VideoLike } from './models/video-like.model';
@@ -37,7 +36,7 @@ import { MentionNotification } from './notifications/mention.notification';
 import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comment-author.action';
 import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
 import { VideoActivityNotification } from './notifications/video-activity.notification';
-import { EnrollLikeRewardAction } from './actions/enroll-like-reward.action';
+import { EnrollVideoActivityRewardToCreatorAction } from './actions/enroll-video-activity-reward-to-creator.action';
 
 @Module({
     imports: [
@@ -69,8 +68,7 @@ import { EnrollLikeRewardAction } from './actions/enroll-like-reward.action';
         RecordViewAction,
         GetTrendingActivityRecordAction,
         RecordTrendingActivityAction,
-        EnrollViewRewardAction,
-        EnrollLikeRewardAction,
+        EnrollVideoActivityRewardToCreatorAction,
         EnrollCreationRewardAction,
         ClearTrendingVideosActivityJob,
         SearchVideosAction,

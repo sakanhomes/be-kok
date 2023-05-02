@@ -1,9 +1,11 @@
+import { RewardableActivity } from 'apps/app/src/videos/enums/rewardable-activity.enum';
+
 export type VideosConfig = {
     trends: {
         lastDaysRange: number;
     };
     rewards: {
-        [K in 'creation' | 'view' | 'like']: {
+        [K in RewardableActivity]: {
             enabled?: boolean;
             amount: number;
             limit: number | null;
