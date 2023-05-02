@@ -15,6 +15,8 @@ import { Video } from '../videos/models/video.model';
 import { FiltersDto } from './dtos/filters.dto';
 import { User } from './models/user.model';
 import { FiltersValidator } from './validators/filters.validator';
+import { EnrollVideoActivityRewardToCreatorAction } from '../videos/actions/enroll-video-activity-reward-to-creator.action';
+import { RewardableActivity } from '../videos/enums/rewardable-activity.enum';
 
 @Controller('/me/playlists')
 @JwtAuth()
@@ -26,6 +28,7 @@ export class ProfilePlaylistsController {
         private readonly videoAdder: AddVideoToPlaylistAction,
         private readonly videoRemover: RemoveVideoFromPlaylistAction,
         private readonly creatorNotifier: NotifyCreatorAboutVideoActivityAction,
+        private readonly rewardsEnroller: EnrollVideoActivityRewardToCreatorAction,
     ) {}
 
     @Get('/')
@@ -37,11 +40,7 @@ export class ProfilePlaylistsController {
 
     @Get('/:publicId')
     @UsePipes(FiltersValidator)
-    public async entity(
-        @CurrentUser() user: User,
-        @Param('publicId') publicId: string,
-        @Query() filters: FiltersDto,
-    ) {
+    public async entity(@CurrentUser() user: User, @Param('publicId') publicId: string, @Query() filters: FiltersDto) {
         const playlist = await this.playlistResolver.run(user, publicId);
 
         OwnershipVerifier.verifyOrFail(user, playlist);
@@ -62,6 +61,7 @@ export class ProfilePlaylistsController {
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videoAdder.run(playlist, video);
+        await this.rewardsEnroller.run(video, RewardableActivity.COLLECTION);
 
         this.creatorNotifier.run(video, user, VideoActivity.COLLECTION);
     }

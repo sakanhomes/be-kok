@@ -80,7 +80,7 @@ import { EnrollVideoActivityRewardToCreatorAction } from './actions/enroll-video
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
-    exports: [NotifyCreatorAboutVideoActivityAction],
+    exports: [NotifyCreatorAboutVideoActivityAction, EnrollVideoActivityRewardToCreatorAction],
     controllers: [CommonController, VideosController, VideoCommentsController],
 })
 export class VideosModule implements OnModuleInit {

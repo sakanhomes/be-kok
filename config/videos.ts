@@ -30,5 +30,9 @@ export default (): VideosConfig => ({
             amount: 1,
             limit: null,
         },
+        collection: {
+            amount: 1,
+            limit: null,
+        },
     },
 });

@@ -23,6 +23,7 @@ export class EnrollVideoActivityRewardToCreatorAction {
     private readonly transactionSubtypes: { [K in SupportedRewarableActivity]: TransactionSubtype } = {
         [RewardableActivity.VIEW]: TransactionSubtype.VIEW,
         [RewardableActivity.LIKE]: TransactionSubtype.LIKE,
+        [RewardableActivity.COLLECTION]: TransactionSubtype.COLLECTION,
     };
 
     public constructor(
