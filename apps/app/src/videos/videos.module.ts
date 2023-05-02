@@ -37,6 +37,7 @@ import { MentionNotification } from './notifications/mention.notification';
 import { NotifyRepliedCommentAuthorAction } from './actions/notify-replied-comment-author.action';
 import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
 import { VideoActivityNotification } from './notifications/video-activity.notification';
+import { EnrollLikeRewardAction } from './actions/enroll-like-reward.action';
 
 @Module({
     imports: [
@@ -69,6 +70,7 @@ import { VideoActivityNotification } from './notifications/video-activity.notifi
         GetTrendingActivityRecordAction,
         RecordTrendingActivityAction,
         EnrollViewRewardAction,
+        EnrollLikeRewardAction,
         EnrollCreationRewardAction,
         ClearTrendingVideosActivityJob,
         SearchVideosAction,
@@ -80,16 +82,11 @@ import { VideoActivityNotification } from './notifications/video-activity.notifi
             useFactory: (config: ConfigService) => config.get('videos'),
         },
     ],
-    exports: [
-        NotifyCreatorAboutVideoActivityAction,
-    ],
+    exports: [NotifyCreatorAboutVideoActivityAction],
     controllers: [CommonController, VideosController, VideoCommentsController],
 })
 export class VideosModule implements OnModuleInit {
     onModuleInit() {
-        NotificationsModule.registerNotifications([
-            MentionNotification,
-            VideoActivityNotification,
-        ]);
+        NotificationsModule.registerNotifications([MentionNotification, VideoActivityNotification]);
     }
 }

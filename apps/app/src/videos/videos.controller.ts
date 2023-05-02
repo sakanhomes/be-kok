@@ -25,6 +25,7 @@ import { CreateVideoResourceAction } from './actions/create-video-resource.actio
 import { RecordTrendingActivityAction } from './actions/record-trending-activity.action';
 import { NotifyCreatorAboutVideoActivityAction } from './actions/notify-creator-about-video-activity.action';
 import { VideoActivity } from './enums/video-activity.enum';
+import { EnrollLikeRewardAction } from './actions/enroll-like-reward.action';
 
 @Controller('/videos')
 export class VideosController {
@@ -38,6 +39,7 @@ export class VideosController {
         private readonly viewsRecorder: RecordViewAction,
         private readonly creationRewardsEnroller: EnrollCreationRewardAction,
         private readonly viewRewardEnroller: EnrollViewRewardAction,
+        private readonly likeRewardEnroller: EnrollLikeRewardAction,
         private readonly trendingActivityRecorder: RecordTrendingActivityAction,
         private readonly creatorNotifier: NotifyCreatorAboutVideoActivityAction,
     ) {}
@@ -100,6 +102,8 @@ export class VideosController {
         video = await this.likeAdder.run(user, video);
 
         this.creatorNotifier.run(video, user, VideoActivity.LIKE);
+
+        await this.likeRewardEnroller.runSilent(video);
 
         return await this.resouceCreator.run(user, video);
     }

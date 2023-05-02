@@ -3,7 +3,7 @@ export type VideosConfig = {
         lastDaysRange: number;
     };
     rewards: {
-        [K in 'creation' | 'view']: {
+        [K in 'creation' | 'view' | 'like']: {
             enabled?: boolean;
             amount: number;
             limit: number | null;
@@ -21,6 +21,10 @@ export default (): VideosConfig => ({
             limit: 3,
         },
         view: {
+            amount: 1,
+            limit: null,
+        },
+        like: {
             amount: 1,
             limit: null,
         },
