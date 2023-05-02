@@ -21,7 +21,7 @@ import { AbortSingleUploadAction } from './actions/abort-single-upload.action';
 
 @Module({
     imports: [
-        CoreModule.forRoot(),
+        CoreModule.forRootAsync(),
         TypeOrmModule.forFeature([Upload, UploadPart]),
     ],
     providers: [

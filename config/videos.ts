@@ -1,15 +1,15 @@
 export type VideosConfig = {
     trends: {
         lastDaysRange: number;
-    },
+    };
     rewards: {
         [K in 'creation' | 'view']: {
             enabled?: boolean;
             amount: number;
-            limit: number;
+            limit: number | null;
         };
-    }
-}
+    };
+};
 
 export default (): VideosConfig => ({
     trends: {
@@ -21,9 +21,8 @@ export default (): VideosConfig => ({
             limit: 3,
         },
         view: {
-            enabled: false,
             amount: 1,
-            limit: 10,
+            limit: null,
         },
     },
 });

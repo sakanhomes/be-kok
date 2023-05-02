@@ -62,10 +62,7 @@ export class VideosController {
 
     @Get('/:publicId')
     @OptionalJwtAuth()
-    public async entity(
-        @CurrentUser() user: User | null,
-        @Param('publicId', ResolveModelPipe) video: Video,
-    ) {
+    public async entity(@CurrentUser() user: User | null, @Param('publicId', ResolveModelPipe) video: Video) {
         if (!video.isPublic && !OwnershipVerifier.verify(user, video)) {
             throw new ForbiddenException();
         }
@@ -90,10 +87,7 @@ export class VideosController {
 
     @Delete('/:publicId')
     @JwtAuth()
-    public async delete(
-        @CurrentUser() user: User,
-        @Param('publicId', ResolveModelPipe) video: Video,
-    ) {
+    public async delete(@CurrentUser() user: User, @Param('publicId', ResolveModelPipe) video: Video) {
         OwnershipVerifier.verifyOrFail(user, video);
 
         await this.videoDeleter.run(video);
@@ -102,10 +96,7 @@ export class VideosController {
     @Post('/:publicId/likes')
     @HttpCode(200)
     @JwtAuth()
-    public async addLikeToVideo(
-        @CurrentUser() user: User,
-        @Param('publicId', ResolveModelPipe) video: Video,
-    ) {
+    public async addLikeToVideo(@CurrentUser() user: User, @Param('publicId', ResolveModelPipe) video: Video) {
         video = await this.likeAdder.run(user, video);
 
         this.creatorNotifier.run(video, user, VideoActivity.LIKE);
@@ -115,10 +106,7 @@ export class VideosController {
 
     @Delete('/:publicId/likes')
     @JwtAuth()
-    public async removeLikeFromVideo(
-        @CurrentUser() user: User,
-        @Param('publicId', ResolveModelPipe) video: Video,
-    ) {
+    public async removeLikeFromVideo(@CurrentUser() user: User, @Param('publicId', ResolveModelPipe) video: Video) {
         video = await this.likeRemover.run(user, video);
 
         return await this.resouceCreator.run(user, video);
@@ -127,16 +115,13 @@ export class VideosController {
     @Post('/:publicId/viewed')
     @HttpCode(200)
     @OptionalJwtAuth()
-    public async trackView(
-        @CurrentUser() user: User | null,
-        @Param('publicId', ResolveModelPipe) video: Video,
-    ) {
+    public async trackView(@CurrentUser() user: User | null, @Param('publicId', ResolveModelPipe) video: Video) {
         video = await this.viewsRecorder.run(user, video);
 
         await this.trendingActivityRecorder.run(user, video);
 
         if (user) {
-            await this.viewRewardEnroller.runSilent(user, video);
+            await this.viewRewardEnroller.runSilent(video);
         }
 
         return await this.resouceCreator.run(user, video);

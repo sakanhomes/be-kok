@@ -20,7 +20,7 @@ import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
     imports: [
-        CoreModule.forRoot(),
+        CoreModule.forRootAsync(),
         I18nModule.forRoot({
             resolvers: [AcceptLanguageResolver],
             fallbackLanguage: 'en',
