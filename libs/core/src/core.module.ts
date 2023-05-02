@@ -14,8 +14,8 @@ import { UPLOADS_CONFIG, VIDEO_BUCKET } from 'apps/uploads/src/constants';
 @Global()
 @Module({})
 export class CoreModule {
-    public static forRoot() {
-        const config = ConfigModule.forRootAsync({
+    public static async forRootAsync() {
+        const config = await ConfigModule.forRootAsync({
             envFilePath: path.join(__dirname, '../../../.env'),
         });
         const db = CoreModule.registerDatabase();
@@ -23,12 +23,8 @@ export class CoreModule {
         return {
             module: CoreModule,
             imports: [config, db, LoggingModule, ScheduleModule.forRoot()],
-            providers: [
-                ConfigService,
-                LockService,
-                ...this.registerAwsS3Service(),
-            ],
-            exports: [ConfigService, LoggingModule, LockService, AwsS3Service, UPLOADS_CONFIG, VIDEO_BUCKET],
+            providers: [ConfigService, LockService, ...this.registerAwsS3Service()],
+            exports: [config, LoggingModule, LockService, AwsS3Service, UPLOADS_CONFIG, VIDEO_BUCKET],
         };
     }
 
@@ -58,9 +54,7 @@ export class CoreModule {
                 inject: [ConfigService],
                 useFactory: (config: ConfigService) => {
                     return config.get('uploads.enableLocalAwsStub')
-                        ? new LocalAwsS3Service(
-                            path.join(process.cwd(), 'storage/aws-local'),
-                        )
+                        ? new LocalAwsS3Service(path.join(process.cwd(), 'storage/aws-local'))
                         : new AwsS3Service(
                             config.get('services.aws-s3.region'),
                             config.get('services.aws-s3.key'),
