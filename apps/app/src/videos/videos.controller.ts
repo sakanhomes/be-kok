@@ -102,7 +102,7 @@ export class VideosController {
 
         this.creatorNotifier.run(video, user, VideoActivity.LIKE);
 
-        await this.rewardsEnroller.runSilent(video, RewardableActivity.LIKE);
+        await this.rewardsEnroller.runSilent(user, video, RewardableActivity.LIKE);
 
         return await this.resouceCreator.run(user, video);
     }
@@ -124,7 +124,7 @@ export class VideosController {
         await this.trendingActivityRecorder.run(user, video);
 
         if (user) {
-            await this.rewardsEnroller.runSilent(video, RewardableActivity.VIEW);
+            await this.rewardsEnroller.runSilent(user, video, RewardableActivity.VIEW);
         }
 
         return await this.resouceCreator.run(user, video);

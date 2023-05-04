@@ -61,7 +61,7 @@ export class ProfilePlaylistsController {
         OwnershipVerifier.verifyOrFail(user, playlist);
 
         await this.videoAdder.run(playlist, video);
-        await this.rewardsEnroller.run(video, RewardableActivity.COLLECTION);
+        await this.rewardsEnroller.runSilent(user, video, RewardableActivity.COLLECTION);
 
         this.creatorNotifier.run(video, user, VideoActivity.COLLECTION);
     }

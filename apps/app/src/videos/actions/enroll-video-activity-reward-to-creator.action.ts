@@ -15,6 +15,7 @@ import { TransactionType } from '../../accounts/enums/transaction-type.enum';
 import { VideosConfig } from 'config/videos';
 import { Config } from '@app/core/config/decorators/config.decorator';
 import { RewardableActivity } from '../enums/rewardable-activity.enum';
+import { RewardAlreadyEnrolledException } from '../exceptions/reward-already-enrolled.exception';
 
 type SupportedRewarableActivity = Exclude<RewardableActivity, RewardableActivity.CREATION>;
 
@@ -38,19 +39,28 @@ export class EnrollVideoActivityRewardToCreatorAction {
         private readonly config: VideosConfig,
     ) {}
 
-    public async runSilent(video: Video, activity: SupportedRewarableActivity): Promise<AccountTransaction | null> {
+    public async runSilent(
+        user: User,
+        video: Video,
+        activity: SupportedRewarableActivity,
+    ): Promise<AccountTransaction | null> {
         try {
-            return await this.run(video, activity);
+            return await this.run(user, video, activity);
         } catch (error) {
-            if (!(error instanceof RewardsLimitExceededException)) {
+            /* eslint-disable prettier/prettier */
+            if (
+                !(error instanceof RewardsLimitExceededException)
+                && !(error instanceof RewardAlreadyEnrolledException)
+            ) {
                 throw error;
             }
+            /* eslint-enable prettier/prettier */
 
             return null;
         }
     }
 
-    public async run(video: Video, activity: SupportedRewarableActivity): Promise<AccountTransaction> {
+    public async run(user: User, video: Video, activity: SupportedRewarableActivity): Promise<AccountTransaction> {
         if (this.config.rewards[activity].enabled === false) {
             return;
         }
@@ -63,21 +73,49 @@ export class EnrollVideoActivityRewardToCreatorAction {
         await this.locker.get(key);
 
         try {
+            await this.ensureRewardIsntEnrolled(account, user, video, activity);
             await this.ensureRewardsLimitIsNotExceeded(account, video, activity);
 
-            return await this.transactionCreator.run(this.buildTransaction(account, video, activity));
+            return await this.transactionCreator.run(this.buildTransaction(account, video, activity, user));
         } finally {
             this.locker.release(key);
         }
     }
 
-    private buildTransaction(account: Account, video: Video, activity: SupportedRewarableActivity): AccountTransaction {
+    private buildTransaction(
+        account: Account,
+        video: Video,
+        activity: SupportedRewarableActivity,
+        trigger: User,
+    ): AccountTransaction {
         return AccountTransactionBuilder.build()
             .reward(this.transactionSubtypes[activity])
             .amount(this.config.rewards[activity].amount)
             .to(account)
             .attach(video)
+            .triggeredBy(trigger)
             .get();
+    }
+
+    private async ensureRewardIsntEnrolled(
+        account: Account,
+        trigger: User,
+        video: Video,
+        activity: SupportedRewarableActivity,
+    ): Promise<void> {
+        const rewardEnrolled = await this.transactions.exist({
+            where: {
+                accountId: account.id,
+                type: TransactionType.REWARD,
+                subtype: this.transactionSubtypes[activity],
+                videoId: video.id,
+                triggerId: trigger.id,
+            },
+        });
+
+        if (rewardEnrolled) {
+            throw new RewardAlreadyEnrolledException(account, video);
+        }
     }
 
     private async ensureRewardsLimitIsNotExceeded(

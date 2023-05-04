@@ -8,11 +8,11 @@ export class AccountTransactionBuilder {
     private transaction: AccountTransaction;
 
     public constructor() {
-        this.transaction = new AccountTransaction;
+        this.transaction = new AccountTransaction();
     }
 
     public static build(): AccountTransactionBuilder {
-        return new AccountTransactionBuilder;
+        return new AccountTransactionBuilder();
     }
 
     public get(): AccountTransaction {
@@ -42,6 +42,12 @@ export class AccountTransactionBuilder {
         const property = model.constructor.name.toLowerCase();
 
         this.transaction[property] = model;
+
+        return this;
+    }
+
+    public triggeredBy(trigger: { id: string }): this {
+        this.transaction.triggerId = trigger.id;
 
         return this;
     }
