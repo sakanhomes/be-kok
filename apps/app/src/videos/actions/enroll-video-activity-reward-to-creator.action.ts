@@ -16,6 +16,8 @@ import { VideosConfig } from 'config/videos';
 import { Config } from '@app/core/config/decorators/config.decorator';
 import { RewardableActivity } from '../enums/rewardable-activity.enum';
 import { RewardAlreadyEnrolledException } from '../exceptions/reward-already-enrolled.exception';
+import { OwnershipVerifier } from '@app/core/orm/ownership-verifier';
+import { RewardNotAllowedException } from '../exceptions/reward-not-allowed.exception';
 
 type SupportedRewarableActivity = Exclude<RewardableActivity, RewardableActivity.CREATION>;
 
@@ -51,6 +53,7 @@ export class EnrollVideoActivityRewardToCreatorAction {
             if (
                 !(error instanceof RewardsLimitExceededException)
                 && !(error instanceof RewardAlreadyEnrolledException)
+                && !(error instanceof RewardNotAllowedException)
             ) {
                 throw error;
             }
@@ -64,6 +67,8 @@ export class EnrollVideoActivityRewardToCreatorAction {
         if (this.config.rewards[activity].enabled === false) {
             return;
         }
+
+        this.ensureTriggerIsntCreator(user, video);
 
         const creator = await this.users.findOneBy({ id: video.userId });
         const account = await this.accountGetter.run(creator);
@@ -136,6 +141,12 @@ export class EnrollVideoActivityRewardToCreatorAction {
 
         if (enrolledRewardsAmount >= this.config.rewards[activity].limit) {
             throw new RewardsLimitExceededException(video);
+        }
+    }
+
+    private ensureTriggerIsntCreator(trigger: User, video: Video): void {
+        if (OwnershipVerifier.verify(trigger, video)) {
+            throw new RewardNotAllowedException();
         }
     }
 }
