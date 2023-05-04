@@ -27,6 +27,9 @@ export class AccountTransaction {
     amount: Decimal;
 
     @Column()
+    triggerId: string | null = null;
+
+    @Column()
     videoId: string | null;
 
     @CreateDateColumn()
